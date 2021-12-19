@@ -1,0 +1,7 @@
+rnbqkbnrpppppppp                             N  PPPPPPPPRNBQKB R
+rnbqkb rpppppppp     n                       N  PPPPPPPPRNBQKB R
+rnbqkb rpppppppp     n            P          N  PP PPPPPRNBQKB R
+rnbqkb rpppppp p     np           P          N  PP PPPPPRNBQKB R
+rnbqkb rpppppp p     np           P       N  N  PP PPPPPR BQKB R
+rnbqk  rppppppbp     np           P       N  N  PP PPPPPR BQKB R
+rnbqk  rppppppbp     np           PP      N  N  PP  PPPPR BQKB R
