@@ -69,6 +69,9 @@ class TestCastle(unittest.TestCase):
         self.game.move_san('O-O')
         self.assertEqual(repr(self.game.board), "rnbq rk pppppppp                                PPPPPPPPRNBQ RK ")
 
+        self.assertEqual("works ok for white", "after first moving non-castling rook")
+        self.assertEqual("works ok for black", "after first moving non-castling rook")
+
     def test_queen_side_castle(self):
         g = game.Game()
         g.board = board.Board("r   kbnrpppppppp                                PPPPPPPPR   KBNR")
@@ -78,6 +81,9 @@ class TestCastle(unittest.TestCase):
 
         g.move_san('O-O-O')
         self.assertEqual(repr(g.board), "  kr bnrpppppppp                                PPPPPPPP  KR BNR")
+
+        self.assertEqual("works ok for white", "after first moving non-castling rook")
+        self.assertEqual("works ok for black", "after first moving non-castling rook")
 
 # Putting the "FG" in "FGDD"
 #
