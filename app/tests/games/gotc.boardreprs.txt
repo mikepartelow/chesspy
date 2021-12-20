@@ -5,3 +5,7 @@ rnbqkb rpppppp p     np           P          N  PP PPPPPRNBQKB R
 rnbqkb rpppppp p     np           P       N  N  PP PPPPPR BQKB R
 rnbqk  rppppppbp     np           P       N  N  PP PPPPPR BQKB R
 rnbqk  rppppppbp     np           PP      N  N  PP  PPPPR BQKB R
+rnbq rk ppppppbp     np           PP      N  N  PP  PPPPR BQKB R
+rnbq rk ppppppbp     np           PP B    N  N  PP  PPPPR  QKB R
+rnbq rk ppp ppbp     np    p      PP B    N  N  PP  PPPPR  QKB R
+rnbq rk ppp ppbp     np    p      PP B   QN  N  PP  PPPPR   KB R

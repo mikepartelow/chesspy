@@ -28,7 +28,8 @@
     
 
 ## Ideas, FIXMEs, TODOs
-    - [ ] grep "enum", fix FIXMEs    
+    - [ ] grep "enum", fix FIXMEs
+    - [ ] for each piece, SAN test for: can't move due to interposition, can't move due to expose check, move can only be disambiguated by color, move fails due to source ambiguity   
     - [ ] way to run all doctests for all files
     - [ ] git pre-commit that demands no FIXMEs
     - [ ] git pre-commit that requires docstrings

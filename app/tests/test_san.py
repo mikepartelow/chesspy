@@ -328,17 +328,65 @@ class TestSanBishop(unittest.TestCase):
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
 
-    @unittest.expectedFailure
-    def test_3(self):
-        # test knight moves that can only be disambiguated by src knight color
-        #   game.turn == black returns black knight
-        #   game.turn == white returns white knight
-        self.assertTrue(False)
+class TestSanQueen(unittest.TestCase):
+    def setUp(self):
+        self.game = game.Game()
 
-    @unittest.expectedFailure
+    def test_0(self):
+        mv = san.parse('Qg5', game=self.game) # v ->
+        self.assertEqual(mv.src, (0, 3))
+        self.assertEqual(mv.dst, (3, 6))
+        self.assertEqual(mv.piece, 'Q')
+        self.assertFalse(mv.capture)
+
+    def test_1(self):
+        mv = san.parse('Qa5', game=self.game) # v <-
+        self.assertEqual(mv.src, (0, 3))
+        self.assertEqual(mv.dst, (3, 0))
+        self.assertEqual(mv.piece, 'Q')
+        self.assertFalse(mv.capture)
+
+    def test_2(self):
+        mv = san.parse('Qe2', game=self.game) # ^ ->
+        self.assertEqual(mv.src, (7, 3))
+        self.assertEqual(mv.dst, (6, 4))
+        self.assertEqual(mv.piece, 'Q')
+        self.assertFalse(mv.capture)
+
+    def test_3(self):
+        mv = san.parse('Qb3', game=self.game) # ^ <-
+        self.assertEqual(mv.src, (7, 3))
+        self.assertEqual(mv.dst, (5, 1))
+        self.assertEqual(mv.piece, 'Q')
+        self.assertFalse(mv.capture)
+
     def test_4(self):
-        # test knight moves that can only be disambiguated by "would expose check"
-        self.assertTrue(False)
+        mv = san.parse('Qg7', game=self.game) # ->
+        self.assertEqual(mv.src, (0, 5))
+        self.assertEqual(mv.dst, (1, 6))
+        self.assertEqual(mv.piece, 'Q')
+        self.assertFalse(mv.capture)
+
+    def test_5(self):
+        mv = san.parse('Qb4', game=self.game) # <-
+        self.assertEqual(mv.src, (0, 5))
+        self.assertEqual(mv.dst, (4, 1))
+        self.assertEqual(mv.piece, 'B')
+        self.assertFalse(mv.capture)
+
+    def test_6(self):
+        mv = san.parse('Qf4', game=self.game) # ^
+        self.assertEqual(mv.src, (7, 2))
+        self.assertEqual(mv.dst, (4, 5))
+        self.assertEqual(mv.piece, 'B')
+        self.assertFalse(mv.capture)
+
+    def test_7(self):
+        mv = san.parse('Qb5', game=self.game) # v
+        self.assertEqual(mv.src, (7, 5))
+        self.assertEqual(mv.dst, (3, 1))
+        self.assertEqual(mv.piece, 'B')
+        self.assertFalse(mv.capture)
 
 class TestSanDeluxe1(unittest.TestCase):
     @unittest.expectedFailure

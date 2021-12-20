@@ -70,13 +70,14 @@ class TestCastle(unittest.TestCase):
         self.assertEqual(repr(self.game.board), "rnbq rk pppppppp                                PPPPPPPPRNBQ RK ")
 
     def test_queen_side_castle(self):
-        g = Game()
-        game.board = Board("rnbqkbnrpppppppp                                PPPPPPPPR   KBNR")
+        g = game.Game()
+        g.board = board.Board("r   kbnrpppppppp                                PPPPPPPPR   KBNR")
         
         g.move_san('O-O-O')
-        self.assertEqual(repr(g.board), "rnbqkbnrpppppppp                                PPPPPPPP KR  BNR")
+        self.assertEqual(repr(g.board), "r   kbnrpppppppp                                PPPPPPPP  KR BNR")
 
-        self.assertEqual("Now", "Do It For Black")
+        g.move_san('O-O-O')
+        self.assertEqual(repr(g.board), "  kr bnrpppppppp                                PPPPPPPP  KR BNR")
 
 # Putting the "FG" in "FGDD"
 #
@@ -85,10 +86,11 @@ class TestFamousGames(unittest.TestCase):
         g = game.Game()
 
         for sanstr, boardrepr in itertools.zip_longest(simple_moves('tests/games/gotc.txt'), board_reprs('tests/games/gotc.boardreprs.txt')):
+            turn = g.turn
             g.move_san(sanstr)
             # FIXME: remove the print()s once the test passes
             print(g.board)
-            print(sanstr)
+            print(f"{turn}: {sanstr}")
             self.assertEqual(repr(g.board), boardrepr)
 
     @unittest.expectedFailure

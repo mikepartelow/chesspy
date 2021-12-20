@@ -34,13 +34,13 @@ class Game:
             elif mv.castle == 'queenside':
                 # FIXME: enum
                 if self.turn == 'white':
-                    self.board.place_piece_at('K', 7, 1)
-                    self.board.place_piece_at('R', 7, 2)
+                    self.board.place_piece_at('K', 7, 2)
+                    self.board.place_piece_at('R', 7, 3)
                     self.board.place_piece_at(None, 7, 4)
                     self.board.place_piece_at(None, 7, 0)
                 else:
-                    self.board.place_piece_at('K', 0 , 1)
-                    self.board.place_piece_at('R', 0, 2)
+                    self.board.place_piece_at('k', 0 , 2)
+                    self.board.place_piece_at('r', 0, 3)
                     self.board.place_piece_at(None, 0, 4)
                     self.board.place_piece_at(None, 0, 0)
         else:
@@ -85,6 +85,7 @@ class Game:
                             mv.src_y, mv.src_x = src_y, src_x
                             break
             case 'B':
+                # FIXME: refactor with Queen
                 ranges = itertools.chain(zip(range(mv.dst_y+1, 8), range(mv.dst_x+1, 8)),
                                          zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x-1, -1, -1)),
                                          zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x+1, 8)),
@@ -92,6 +93,17 @@ class Game:
 
                 for y, x in ranges:
                     if self.board.square_at(y, x) in ('B', 'b'):
+                        mv.src_y, mv.src_x = y, x
+                        break
+            case 'Q':
+                # FIXME: refactor with Bishop
+                ranges = itertools.chain(zip(range(mv.dst_y+1, 8), range(mv.dst_x+1, 8)),
+                                         zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x-1, -1, -1)),
+                                         zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x+1, 8)),
+                                         zip(range(mv.dst_y+1, 8), range(mv.dst_x-1, -1, -1)))
+
+                for y, x in ranges:
+                    if self.board.square_at(y, x) in ('Q', 'q'):
                         mv.src_y, mv.src_x = y, x
                         break
 
