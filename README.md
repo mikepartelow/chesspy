@@ -1,4 +1,4 @@
-# A Chess Platform in Python 3
+# A FGDD Chess Platform in Python 3.10
 
 > It's time to brush up on my Python Best Practices. What better way than to develop a chess program?
 
