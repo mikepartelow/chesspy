@@ -2,6 +2,13 @@ import unittest
 from chesspy import board
 
 class TestBoard(unittest.TestCase):
+	def test_init(self):
+		b = board.Board()
+		self.assertEqual(repr(b), "rnbqkbnrpppppppp                                PPPPPPPPRNBQKBNR")
+
+		b = board.Board("rnbqkbnrpppppppp                   p            PPPPPPPPRNBQKBNR")
+		self.assertEqual(repr(b), "rnbqkbnrpppppppp                   p            PPPPPPPPRNBQKBNR")
+
 	def test_repr(self):
 		b = board.Board()
 		self.assertEqual(repr(b), "rnbqkbnrpppppppp                                PPPPPPPPRNBQKBNR")

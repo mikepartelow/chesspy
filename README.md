@@ -37,7 +37,8 @@
     - [ ] exception heirarchy - not IndexError for everything
     - [ ] basic integration test that uses gotc and immortal
     - [ ] TDD game_test FAN
-    - [ ] download some GM's lichess game file and turn it into an integration test
+    - [ ] TDD PGN
+    - [ ] download some GM's lichess PGN and turn it into an integration test
     - [ ] networked 2 player
     - [ ] an AI mode that can beat me
     - [ ] an AI mode that can beat Magnus
