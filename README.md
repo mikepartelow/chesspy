@@ -28,6 +28,7 @@
     
 
 ## Ideas, FIXMEs, TODOs
+    - [ ] grep "enum", fix FIXMEs    
     - [ ] way to run all doctests for all files
     - [ ] git pre-commit that demands no FIXMEs
     - [ ] git pre-commit that requires docstrings

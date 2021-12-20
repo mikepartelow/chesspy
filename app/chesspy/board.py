@@ -1,14 +1,17 @@
 class Board:
-    def __init__(self):
-        self.squares = [ 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
-                         'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p', 
-                          None, None, None, None, None, None, None, None,
-                          None, None, None, None, None, None, None, None,
-                          None, None, None, None, None, None, None, None,
-                          None, None, None, None, None, None, None, None,
-                          'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 
-                          'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R',
-                        ]
+    def __init__(self, reprstr=None):
+        if reprstr is not None:
+            self.squares = [ ' ' if ch is None else ch for ch in reprstr ]
+        else:
+            self.squares = [ 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
+                             'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p', 
+                              None, None, None, None, None, None, None, None,
+                              None, None, None, None, None, None, None, None,
+                              None, None, None, None, None, None, None, None,
+                              None, None, None, None, None, None, None, None,
+                              'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 
+                              'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R',
+                            ]
 
     def __str__(self):
         s = []

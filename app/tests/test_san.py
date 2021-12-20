@@ -80,26 +80,26 @@ class TestSanBasic(unittest.TestCase):
 
     def test_8(self):
         mv = san.parse('O-O')
-        self.assertTrue(mv.castle)
+        self.assertEqual(mv.castle, 'kingside')
 
         mv = san.parse('O-O-O')
-        self.assertTrue(mv.castle)
+        self.assertEqual(mv.castle, 'queenside')
 
         mv = san.parse('O-O+')
-        self.assertTrue(mv.castle)
+        self.assertEqual(mv.castle, 'kingside')
         self.assertTrue(mv.check)
 
         mv = san.parse('O-O#')
-        self.assertTrue(mv.castle)
+        self.assertEqual(mv.castle, 'kingside')
         self.assertTrue(mv.check)
         self.assertTrue(mv.mate)
 
         mv = san.parse('O-O-O+')
-        self.assertTrue(mv.castle)
+        self.assertEqual(mv.castle, 'queenside')
         self.assertTrue(mv.check)
 
-        mv = san.parse('O-O-)#')
-        self.assertTrue(mv.castle)
+        mv = san.parse('O-O-O#')
+        self.assertEqual(mv.castle, 'queenside')
         self.assertTrue(mv.check)
         self.assertTrue(mv.mate)
 
@@ -126,7 +126,7 @@ class TestSanBasic(unittest.TestCase):
     @unittest.expectedFailure
     def test_invalid_syntax(self):
         baddies = ('e33', 'e3++', 'e3#+', 'e3+#', 'x3e', 'xe3+#', 'xRe3', 'R3dxe3', 'O', 'O-', 'bxa8=',
-                   'b=xa8Q', 'bxa4=Q+', 'bxa1=K+')
+                   'b=xa8Q', 'bxa4=Q+', 'bxa1=K+', 'O-O-)#', 'O-O-O-O', 'O-OxO-O-O')
         for baddy in baddies:
             with self.assertRaises(IndexError, msg=baddy):
                 san.parse(baddy)

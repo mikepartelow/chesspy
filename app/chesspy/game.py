@@ -6,19 +6,54 @@ import logging
 class Game:
     def __init__(self):
         self.board = Board()
+        # FIXME: enum
+        self.turn = 'white'
 
     def move_san(self, sanstr):
         logging.debug("Game::move_san(%s)", sanstr)
 
+        capture = None
+
         mv = san.parse(sanstr, self)
-        piece = self.board.square_at(mv.src_y, mv.src_x)
-        assert(piece is not None)
 
-        capture = self.board.square_at(mv.dst_y, mv.dst_x)
-        assert((capture is None) == (mv.capture is False))
+        if mv.castle:
+            # FIXME: refactor to do_castle()
+            # FIXME: enum
+            if mv.castle == 'kingside':
+                # FIXME: enum
+                if self.turn == 'white':
+                    self.board.place_piece_at('K', 7 , 6)
+                    self.board.place_piece_at('R', 7, 5)
+                    self.board.place_piece_at(None, 7, 4)
+                    self.board.place_piece_at(None, 7, 7)
+                else:
+                    self.board.place_piece_at('k', 0, 6)
+                    self.board.place_piece_at('r', 0, 5)
+                    self.board.place_piece_at(None, 0, 4)
+                    self.board.place_piece_at(None, 0, 7)
+            elif mv.castle == 'queenside':
+                # FIXME: enum
+                if self.turn == 'white':
+                    self.board.place_piece_at('K', 7, 1)
+                    self.board.place_piece_at('R', 7, 2)
+                    self.board.place_piece_at(None, 7, 4)
+                    self.board.place_piece_at(None, 7, 0)
+                else:
+                    self.board.place_piece_at('K', 0 , 1)
+                    self.board.place_piece_at('R', 0, 2)
+                    self.board.place_piece_at(None, 0, 4)
+                    self.board.place_piece_at(None, 0, 0)
+        else:
+            piece = self.board.square_at(mv.src_y, mv.src_x)
+            assert(piece is not None)
 
-        self.board.place_piece_at(piece, mv.dst_y, mv.dst_x)
-        self.board.place_piece_at(None, mv.src_y, mv.src_x)
+            capture = self.board.square_at(mv.dst_y, mv.dst_x)
+            assert((capture is None) == (mv.capture is False))
+
+            self.board.place_piece_at(piece, mv.dst_y, mv.dst_x)
+            self.board.place_piece_at(None, mv.src_y, mv.src_x)
+
+        self.turn = 'black' if self.turn == 'white' else 'white'
 
         return capture
 
