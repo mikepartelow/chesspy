@@ -4,3 +4,17 @@ rnbqkbnrpppp ppp            p       PP          PPPP  PPRNBQKBNR
 rnbqkbnrpppp ppp                    Pp          PPPP  PPRNBQKBNR
 rnbqkbnrpppp ppp                  B Pp          PPPP  PPRNBQK NR
 rnb kbnrpppp ppp                  B Pp q        PPPP  PPRNBQK NR
+rnb kbnrpppp ppp                  B Pp q        PPPP  PPRNBQ KNR
+rnb kbnrp pp ppp         p        B Pp q        PPPP  PPRNBQ KNR
+rnb kbnrp pp ppp         B          Pp q        PPPP  PPRNBQ KNR
+rnb kb rp pp ppp     n   B          Pp q        PPPP  PPRNBQ KNR
+rnb kb rp pp ppp     n   B          Pp q     N  PPPP  PPRNBQ K R
+rnb kb rp pp ppp     n q B          Pp       N  PPPP  PPRNBQ K R
+rnb kb rp pp ppp     n q B          Pp     P N  PPP   PPRNBQ K R
+rnb kb rp pp ppp       q B     n    Pp     P N  PPP   PPRNBQ K R
+rnb kb rp pp ppp       q B     n    Pp N   P    PPP   PPRNBQ K R
+rnb kb rp pp ppp         B    qn    Pp N   P    PPP   PPRNBQ K R
+rnb kb rp pp ppp         B   Nqn    Pp     P    PPP   PPRNBQ K R
+rnb kb rp  p ppp  p      B   Nqn    Pp     P    PPP   PPRNBQ K R
+rnb kb rp  p ppp  p      B   Nqn    PpP    P    PPP    PRNBQ K R
+rnb kb rp  p ppp  p  n   B   Nq     PpP    P    PPP    PRNBQ K R

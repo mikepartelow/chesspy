@@ -105,6 +105,8 @@ class TestFamousGames(unittest.TestCase):
     def test_immortal(self):
         g = game.Game()
 
+        self.assertEqual("Rg1", "is broken. needs interposition detection")
+
         for sanstr, boardrepr in itertools.zip_longest(simple_moves('tests/games/immortal.txt'), board_reprs('tests/games/immortal.boardreprs.txt')):
             turn = g.turn
             print(f"{turn}: {sanstr}")

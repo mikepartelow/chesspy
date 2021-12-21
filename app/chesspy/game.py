@@ -146,6 +146,16 @@ class Game:
                         mv.src_y, mv.src_x = y, x
                         break
 
+            case 'K':
+                for y in range(mv.dst_y-1, mv.dst_y+2):
+                    for x in range(mv.dst_x-1, mv.dst_x+2):
+                        if (y, x) != (mv.dst_y, mv.dst_x) and y >= 0 and y < 8 and x >= 0 and y < 8:
+                            if self.board.square_at(y, x) in ('K', 'k'):
+                                mv.src_y, mv.src_x = y, x
+                                break
+                    if mv.src_y and mv.src_x:
+                        break
+
             case _:
                 raise IndexError
 
