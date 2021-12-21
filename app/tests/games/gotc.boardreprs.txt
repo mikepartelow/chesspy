@@ -9,3 +9,8 @@ rnbq rk ppppppbp     np           PP      N  N  PP  PPPPR BQKB R
 rnbq rk ppppppbp     np           PP B    N  N  PP  PPPPR  QKB R
 rnbq rk ppp ppbp     np    p      PP B    N  N  PP  PPPPR  QKB R
 rnbq rk ppp ppbp     np    p      PP B   QN  N  PP  PPPPR   KB R
+rnbq rk ppp ppbp     np           pP B   QN  N  PP  PPPPR   KB R
+rnbq rk ppp ppbp     np           QP B    N  N  PP  PPPPR   KB R
+rnbq rk pp  ppbp  p  np           QP B    N  N  PP  PPPPR   KB R
+rnbq rk pp  ppbp  p  np           QPPB    N  N  PP   PPPR   KB R
+r bq rk pp nppbp  p  np           QPPB    N  N  PP   PPPR   KB R

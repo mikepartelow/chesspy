@@ -97,6 +97,13 @@ class TestFamousGames(unittest.TestCase):
             print(f"{turn}: {sanstr}")
             self.assertEqual(repr(g.board), boardrepr)
 
-    @unittest.expectedFailure
     def test_immortal(self):
-        self.assertTrue(False)
+        g = game.Game()
+
+        for sanstr, boardrepr in itertools.zip_longest(simple_moves('tests/games/immortal.txt'), board_reprs('tests/games/immortal.boardreprs.txt')):
+            turn = g.turn
+            g.move_san(sanstr)
+            # FIXME: remove the print()s once the test passes
+            print(g.board)
+            print(f"{turn}: {sanstr}")
+            self.assertEqual(repr(g.board), boardrepr)

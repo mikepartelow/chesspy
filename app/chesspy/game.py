@@ -4,6 +4,18 @@ from . import san
 import itertools
 import logging
 
+def color_of(ch):
+    if ch.isupper():
+        return Color.WHITE
+    else:
+        return Color.BLACK
+
+def colorize(ch, color):
+    if color == Color.WHITE:
+        return ch.upper()
+    else:
+        return ch.lower()
+
 class Game:
     def __init__(self):
         self.board = Board()
@@ -61,7 +73,24 @@ class Game:
         # FIXME: this is well tested through test_san but deserves its own unit test.
         match mv.piece:
             case 'P':
-                if mv.dst_y in (4, 5):
+                if mv.capture:
+                    p_src = colorize('P', self.turn)
+                    if (p_dst := self.board.square_at(mv.dst_y, mv.dst_x)) and color_of(p_dst) != color_of(p_src):
+                        if self.turn == Color.WHITE:
+                            def dirop(y):
+                                return y + 1
+                        else:
+                            def dirop(y):
+                                return y - 1
+
+                        if mv.src_x and self.board.square_at(dirop(mv.dst_y), mv.src_x) == p_src:
+                            mv.src_y = dirop(mv.dst_y)
+                        elif mv.dst_x > 0 and self.board.square_at(dirop(mv.dst_y), mv.dst_x - 1) == p_src:
+                            mv.src_y, mv_src_x = dirop(mv.dst_y), mv.dst_x - 1
+                        elif mv.dst_x < 7 and self.board.square_at(dirop(mv.dst_y), mv.dst_x + 1) == p_src:
+                            mv.src_y, mv_src_x = dirop(mv.dst_y), mv.dst_x + 1
+
+                elif mv.dst_y in (4, 5):
                     if self.board.square_at(5, mv.dst_x) is None and \
                       self.board.square_at(mv.dst_y, mv.dst_x) is None and \
                       self.board.square_at(6, mv.dst_x) == 'P':

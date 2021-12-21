@@ -1,0 +1,6 @@
+rnbqkbnrpppppppp                    P           PPPP PPPRNBQKBNR
+rnbqkbnrpppp ppp            p       P           PPPP PPPRNBQKBNR
+rnbqkbnrpppp ppp            p       PP          PPPP  PPRNBQKBNR
+rnbqkbnrpppp ppp                    Pp          PPPP  PPRNBQKBNR
+rnbqkbnrpppp ppp                  B Pp          PPPP  PPRNBQK NR
+rnb kbnrpppp ppp                  B Pp q        PPPP  PPRNBQK NR
