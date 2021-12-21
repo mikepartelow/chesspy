@@ -139,12 +139,14 @@ class Game:
 
             case 'R':
                 # FIXME: refactor with Queen
-                ranges = itertools.chain(zip([mv.dst_y]*8, [x for x in range(0, 8) if x != mv.dst_x]),
-                                         zip([y for y in range(0, 8) if y != mv.dst_y], [mv.dst_x]*8))
-                for y, x in ranges:
-                    if self.board.square_at(y, x) in ('R', 'r'):
-                        mv.src_y, mv.src_x = y, x
-                        break
+                if (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 0, -1)) is not None and p[0] in ['R', 'r']:
+                    mv.src_y, mv.src_x = p[1:]
+                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 0, 1)) is not None and p[0] in ['R', 'r']:
+                    mv.src_y, mv.src_x = p[1:]
+                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 1, 0)) is not None and p[0] in ['R', 'r']:
+                    mv.src_y, mv.src_x = p[1:]
+                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, -1, 0)) is not None and p[0] in ['R', 'r']:
+                    mv.src_y, mv.src_x = p[1:]
 
             case 'K':
                 for y in range(mv.dst_y-1, mv.dst_y+2):

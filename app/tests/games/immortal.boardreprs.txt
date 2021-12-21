@@ -18,3 +18,4 @@ rnb kb rp pp ppp         B   Nqn    Pp     P    PPP   PPRNBQ K R
 rnb kb rp  p ppp  p      B   Nqn    Pp     P    PPP   PPRNBQ K R
 rnb kb rp  p ppp  p      B   Nqn    PpP    P    PPP    PRNBQ K R
 rnb kb rp  p ppp  p  n   B   Nq     PpP    P    PPP    PRNBQ K R
+rnb kb rp  p ppp  p  n   B   Nq     PpP    P    PPP    PRNBQ KR

@@ -44,10 +44,60 @@ class TestBoard(unittest.TestCase):
 			b.square_at(-1, 1)
 
 		with self.assertRaises(IndexError):
-			b.square_at(1, -1)			
+			b.square_at(1, -1)
 
 		with self.assertRaises(IndexError):
 			b.square_at(1, 8)
 
 		with self.assertRaises(IndexError):
-			b.square_at(8, 1)						
+			b.square_at(8, 1)
+
+class TestBoardFindFrom(unittest.TestCase):
+	def setUp(self):
+		self.board = board.Board()
+
+	def test_0a(self): # ^
+		self.assertEqual(self.board.find_first_from(5, 4, -1, 0), ('p', 1, 4))
+		self.board.place_piece_at(None, 1, 4)
+		self.assertEqual(self.board.find_first_from(5, 4, -1, 0), ('k', 0, 4))
+		self.assertEqual(self.board.find_first_from(0, 4, -1, 0), None)
+
+	def test_0b(self): # v
+		self.assertEqual(self.board.find_first_from(2, 4, 1, 0), ('P', 6, 4))
+		self.board.place_piece_at(None, 6, 4)
+		self.assertEqual(self.board.find_first_from(2, 4, 1, 0), ('K', 7, 4))
+		self.assertEqual(self.board.find_first_from(7, 4, 1, 0), None)
+
+	def test_0c(self): # <-
+		self.board.place_piece_at('Q', 5, 0)
+		self.board.place_piece_at('R', 5, 1)
+
+		self.assertEqual(self.board.find_first_from(5, 6, 0, -1), ('R', 5, 1))
+		self.board.place_piece_at(None, 5, 1)
+		self.assertEqual(self.board.find_first_from(5, 6, 0, -1), ('Q', 5, 0))
+		self.assertEqual(self.board.find_first_from(5, 0, 0, -1), None)
+
+	def test_0d(self): # ->
+		self.board.place_piece_at('Q', 2, 7)
+		self.board.place_piece_at('R', 2, 6)
+
+		self.assertEqual(self.board.find_first_from(2, 3, 0, 1), ('R', 2, 6))
+		self.board.place_piece_at(None, 2, 6)
+		self.assertEqual(self.board.find_first_from(2, 3, 0, 1), ('Q', 2, 7))
+		self.assertEqual(self.board.find_first_from(2, 7, 0, 1), None)
+
+	@unittest.expectedFailure
+	def test_1a(self): # ^ ->
+		self.assertTrue(False)
+
+	@unittest.expectedFailure
+	def test_1b(self): # v ->
+		self.assertTrue(False)
+
+	@unittest.expectedFailure
+	def test_1c(self): # ^ <-
+		self.assertTrue(False)
+
+	@unittest.expectedFailure
+	def test_1d(self): # v <-
+		self.assertTrue(False)

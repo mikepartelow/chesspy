@@ -60,3 +60,33 @@ class Board:
             raise IndexError
 
         self.squares[8*y+x] = piece
+
+    def find_first_from(self, src_y, src_x, inc_y, inc_x):
+        """Find the first piece encountered starting from (dst_y, dst_x) while incrementing (y, x) by (inc_y, inc_x)
+
+        Returns tuple (p, y, x) where p is the first piece encountered, (y, x) are coordinates of p, or None if no piece is found.
+        """
+        assert(inc_y != 0 or inc_x != 0)
+        assert(inc_y in [-1, 0, 1])
+        assert(inc_x in [-1, 0, 1])
+
+        if inc_y in [-1, 1]:
+            dst_y = -1 if inc_y < 0 else 8
+            y_range = range(src_y+inc_y, dst_y, inc_y)
+        else:
+            y_range = [src_y]
+
+        if inc_x in [-1, 1]:
+            dst_x = -1 if inc_x < 0 else 8
+            x_range = range(src_x+inc_x, dst_x, inc_x)
+        else:
+            x_range = [src_x]
+
+        for y in y_range:
+            for x in x_range:
+                if y < 0 or y > 7 or x < 0 or x > 7:
+                    # FIXME: this should never happen if we computed things correctly above.
+                    raise IndexError
+
+                if (p := self.squares[8*y + x]) is not None:
+                    return (p, y, x)
