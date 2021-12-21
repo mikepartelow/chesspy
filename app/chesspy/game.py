@@ -1,4 +1,5 @@
 from .board import Board
+from .color import Color
 from . import san
 import itertools
 import logging
@@ -6,8 +7,7 @@ import logging
 class Game:
     def __init__(self):
         self.board = Board()
-        # FIXME: enum
-        self.turn = 'white'
+        self.turn = Color.WHITE
 
     def move_san(self, sanstr):
         logging.debug("Game::move_san(%s)", sanstr)
@@ -20,8 +20,7 @@ class Game:
             # FIXME: refactor to do_castle()
             # FIXME: enum
             if mv.castle == 'kingside':
-                # FIXME: enum
-                if self.turn == 'white':
+                if self.turn == Color.WHITE:
                     self.board.place_piece_at('K', 7 , 6)
                     self.board.place_piece_at('R', 7, 5)
                     self.board.place_piece_at(None, 7, 4)
@@ -32,8 +31,7 @@ class Game:
                     self.board.place_piece_at(None, 0, 4)
                     self.board.place_piece_at(None, 0, 7)
             elif mv.castle == 'queenside':
-                # FIXME: enum
-                if self.turn == 'white':
+                if self.turn == Color.WHITE:
                     self.board.place_piece_at('K', 7, 2)
                     self.board.place_piece_at('R', 7, 3)
                     self.board.place_piece_at(None, 7, 4)
@@ -53,7 +51,7 @@ class Game:
             self.board.place_piece_at(piece, mv.dst_y, mv.dst_x)
             self.board.place_piece_at(None, mv.src_y, mv.src_x)
 
-        self.turn = 'black' if self.turn == 'white' else 'white'
+        self.turn = Color.toggle(self.turn)
 
         return capture
 

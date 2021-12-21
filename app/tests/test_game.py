@@ -19,13 +19,11 @@ def board_reprs(path):
 class TestTurns(unittest.TestCase):
     def test_0(self):
         g = game.Game()
-        # FIXME: enum
-        self.assertEqual(g.turn, 'white')
+        self.assertEqual(g.turn, Color.WHITE)
 
         g.move_san('e4')
 
-        # FIXME: enum
-        self.assertEqual(g.turn, 'black')
+        self.assertEqual(g.turn, Color.BLACK)
 
 class TestMoveSan(unittest.TestCase):
     def setUp(self):
