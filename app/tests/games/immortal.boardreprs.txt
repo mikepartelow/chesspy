@@ -18,4 +18,19 @@ rnb kb rp pp ppp         B   Nqn    Pp     P    PPP   PPRNBQ K R
 rnb kb rp  p ppp  p      B   Nqn    Pp     P    PPP   PPRNBQ K R
 rnb kb rp  p ppp  p      B   Nqn    PpP    P    PPP    PRNBQ K R
 rnb kb rp  p ppp  p  n   B   Nq     PpP    P    PPP    PRNBQ K R
-rnb kb rp  p ppp  p  n   B   Nq     PpP    P    PPP    PRNBQ KR
+rnb kb rp  p ppp  p  n   B   Nq     PpP    P    PPP    PRNBQ KR 
+rnb kb rp  p ppp     n   p   Nq     PpP    P    PPP    PRNBQ KR 
+rnb kb rp  p ppp     n   p   Nq     PpPP   P    PPP     RNBQ KR 
+rnb kb rp  p ppp     nq  p   N      PpPP   P    PPP     RNBQ KR 
+rnb kb rp  p pp      nq  p   N p    PpPP   P    PPP     RNBQ KR 
+rnb kb rp  p pp      n   p   Nqp    PpPP   P    PPP     RNBQ KR 
+rnb kb rp  p pp      n   p   Nqp    PpPP   P Q  PPP     RNB  KR 
+rnb kbnrp  p pp          p   Nqp    PpPP   P Q  PPP     RNB  KR 
+rnb kbnrp  p pp          p   Nqp    PBPP   P Q  PPP     RN   KR 
+rnb kbnrp  p pp      q   p   N p    PBPP   P Q  PPP     RN   KR 
+rnb kbnrp  p pp      q   p   N p    PBPP  NP Q  PPP     R    KR 
+rnb k nrp  p pp      q   pb  N p    PBPP  NP Q  PPP     R    KR 
+rnb k nrp  p pp      q   pbN N p    PBPP   P Q  PPP     R    KR 
+rnb k nrp  p pp          pbN N p    PBPP   P Q  PqP     R    KR 
+rnb k nrp  p pp    B     pbN N p    P PP   P Q  PqP     R    KR 
+rnb k nrp  p pp    B     p N N p    P PP   P Q  PqP     R    Kb 

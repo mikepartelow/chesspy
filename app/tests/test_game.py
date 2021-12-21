@@ -15,7 +15,7 @@ def simple_moves(path):
 def board_reprs(path):
     with open(path, 'r') as f:
         for line in f.readlines():
-            yield line.strip()
+            yield line.replace("\n", '') # can't strip because space at EOL is OK!
 
 class TestTurns(unittest.TestCase):
     def test_0(self):
