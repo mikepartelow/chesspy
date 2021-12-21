@@ -393,65 +393,188 @@ class TestSanQueen(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()
 
-    def test_0(self):
+    def test_0a(self):
+        self.game.board.place_piece_at('Q', 4, 0)
+        mv = san.parse('Qe4', game=self.game) # ->
+        self.assertEqual(mv.src, (4, 0))
+        self.assertEqual(mv.dst, (4, 4))
+        self.assertEqual(mv.piece, 'Q')
+        self.assertFalse(mv.capture)
+
+    def test_0b(self):
+        self.game.board.place_piece_at('Q', 4, 7)
+        mv = san.parse('Qe4', game=self.game) # <-
+        self.assertEqual(mv.src, (4, 7))
+        self.assertEqual(mv.dst, (4, 4))
+        self.assertEqual(mv.piece, 'Q')
+        self.assertFalse(mv.capture)
+
+    def test_0c(self):
+        self.game.board.place_piece_at('Q', 2, 4)
+        mv = san.parse('Qe4', game=self.game) # v
+        self.assertEqual(mv.src, (2, 4))
+        self.assertEqual(mv.dst, (4, 4))
+        self.assertEqual(mv.piece, 'Q')
+        self.assertFalse(mv.capture)
+
+    def test_0d(self):
+        self.game.board.place_piece_at('Q', 5, 4)
+        mv = san.parse('Qe4', game=self.game) # ^
+        self.assertEqual(mv.src, (5, 4))
+        self.assertEqual(mv.dst, (4, 4))
+        self.assertEqual(mv.piece, 'Q')
+        self.assertFalse(mv.capture)
+
+    def test_1a(self):
         mv = san.parse('Qg5', game=self.game) # v ->
         self.assertEqual(mv.src, (0, 3))
         self.assertEqual(mv.dst, (3, 6))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
 
-    def test_1(self):
+    def test_1b(self):
         mv = san.parse('Qa5', game=self.game) # v <-
         self.assertEqual(mv.src, (0, 3))
         self.assertEqual(mv.dst, (3, 0))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
 
-    def test_2(self):
+    def test_1c(self):
         mv = san.parse('Qe2', game=self.game) # ^ ->
         self.assertEqual(mv.src, (7, 3))
         self.assertEqual(mv.dst, (6, 4))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
 
-    def test_3(self):
+    def test_1d(self):
         mv = san.parse('Qb3', game=self.game) # ^ <-
         self.assertEqual(mv.src, (7, 3))
         self.assertEqual(mv.dst, (5, 1))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
 
-    @unittest.expectedFailure
-    def test_4(self):
-        mv = san.parse('Qg7', game=self.game) # ->
-        self.assertEqual(mv.src, (0, 5))
-        self.assertEqual(mv.dst, (1, 6))
-        self.assertEqual(mv.piece, 'Q')
+class TestSanRook(unittest.TestCase):
+    def setUp(self):
+        self.game = game.Game()
+
+    def test_0a(self):
+        self.game.board.place_piece_at('R', 4, 0)
+        mv = san.parse('Re4', game=self.game) # ->
+        self.assertEqual(mv.src, (4, 0))
+        self.assertEqual(mv.dst, (4, 4))
+        self.assertEqual(mv.piece, 'R')
+        self.assertFalse(mv.capture)
+
+    def test_0b(self):
+        self.game.board.place_piece_at('R', 4, 7)
+        mv = san.parse('Re4', game=self.game) # <-
+        self.assertEqual(mv.src, (4, 7))
+        self.assertEqual(mv.dst, (4, 4))
+        self.assertEqual(mv.piece, 'R')
+        self.assertFalse(mv.capture)
+
+    def test_0c(self):
+        self.game.board.place_piece_at('R', 2, 4)
+        mv = san.parse('Re4', game=self.game) # v
+        self.assertEqual(mv.src, (2, 4))
+        self.assertEqual(mv.dst, (4, 4))
+        self.assertEqual(mv.piece, 'R')
+        self.assertFalse(mv.capture)
+
+    def test_0d(self):
+        self.game.board.place_piece_at('R', 5, 4)
+        mv = san.parse('Re4', game=self.game) # ^
+        self.assertEqual(mv.src, (5, 4))
+        self.assertEqual(mv.dst, (4, 4))
+        self.assertEqual(mv.piece, 'R')
         self.assertFalse(mv.capture)
 
     @unittest.expectedFailure
-    def test_5(self):
-        mv = san.parse('Qb4', game=self.game) # <-
-        self.assertEqual(mv.src, (0, 5))
-        self.assertEqual(mv.dst, (4, 1))
-        self.assertEqual(mv.piece, 'B')
+    def test_1a(self):
+        # illegal moves: interposition
+        mv = san.parse('Rf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
+        self.assertFalse(mv.capture)
+
+        mv = san.parse('Rf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
+        self.assertFalse(mv.capture)
+
+        mv = san.parse('Rf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
+        self.assertFalse(mv.capture)
+
+        mv = san.parse('Rf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
 
     @unittest.expectedFailure
-    def test_6(self):
-        mv = san.parse('Qf4', game=self.game) # ^
-        self.assertEqual(mv.src, (7, 2))
-        self.assertEqual(mv.dst, (4, 5))
-        self.assertEqual(mv.piece, 'B')
+    def test_1b(self):
+        # illegal moves: diagonal move
+        mv = san.parse('Rf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
+        self.assertFalse(mv.capture)
+
+        mv = san.parse('Rf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
+        self.assertFalse(mv.capture)
+
+        mv = san.parse('Rf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
+        self.assertFalse(mv.capture)
+
+        mv = san.parse('Rf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
 
     @unittest.expectedFailure
-    def test_7(self):
-        mv = san.parse('Qb5', game=self.game) # v
-        self.assertEqual(mv.src, (7, 5))
-        self.assertEqual(mv.dst, (3, 1))
-        self.assertEqual(mv.piece, 'B')
+    def test_2(self):
+        # capture
+        mv = san.parse('Nf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
+
+        mv = san.parse('Nf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
+        self.assertFalse(mv.capture)
+
+        mv = san.parse('Nf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
+        self.assertFalse(mv.capture)
+
+        mv = san.parse('Nf3', game=self.game)
+        self.assertEqual(mv.src, (7, 6))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'N')
+        self.assertFalse(mv.capture)
+
+    @unittest.expectedFailure
+    def test_3(self):
+        # one rook could move vertically, one could move horizontally, both to same square, but first choice would expose check.
+        # so move second done
+        self.assertFalse(True)
 
 class TestSanDeluxe1(unittest.TestCase):
     @unittest.expectedFailure

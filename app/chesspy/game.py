@@ -124,13 +124,25 @@ class Game:
                         break
             case 'Q':
                 # FIXME: refactor with Bishop
+                # FIXME: refactor with Rook
                 ranges = itertools.chain(zip(range(mv.dst_y+1, 8), range(mv.dst_x+1, 8)),
                                          zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x-1, -1, -1)),
                                          zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x+1, 8)),
-                                         zip(range(mv.dst_y+1, 8), range(mv.dst_x-1, -1, -1)))
+                                         zip(range(mv.dst_y+1, 8), range(mv.dst_x-1, -1, -1)),
+                                         zip([mv.dst_y]*8, [x for x in range(0, 8) if x != mv.dst_x]),
+                                         zip([y for y in range(0, 8) if y != mv.dst_y], [mv.dst_x]*8))
 
                 for y, x in ranges:
                     if self.board.square_at(y, x) in ('Q', 'q'):
+                        mv.src_y, mv.src_x = y, x
+                        break
+
+            case 'R':
+                # FIXME: refactor with Queen
+                ranges = itertools.chain(zip([mv.dst_y]*8, [x for x in range(0, 8) if x != mv.dst_x]),
+                                         zip([y for y in range(0, 8) if y != mv.dst_y], [mv.dst_x]*8))
+                for y, x in ranges:
+                    if self.board.square_at(y, x) in ('R', 'r'):
                         mv.src_y, mv.src_x = y, x
                         break
 
