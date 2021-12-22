@@ -7,7 +7,7 @@ Standard Algebraic Notation (SAN) is a widely used, standardized chess move nota
 ## Focuses
 
 - TDD: Test Driven Development
-- FGDD: Famous Game Driven Development. Use games like Game Of The Century and The Immortal Game to drive TDD.
+- FGDD: Famous Game Driven Development. Use games like Game Of The Century and The Immortal Game to reveal necessary tests for TDD.
 - Prefer stdlib over rolling my own.
 - Prefer rolling my own over 3rd party libs - point is to learn and explore.
 
