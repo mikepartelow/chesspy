@@ -14,7 +14,7 @@ class Move:
     castle      = False
 
     def __setattr__(self, name, value):
-        """Forbid setting attributes twice, mostly.
+        """Forbid setting attributes twice, unless to same value after initialization.
         """
         if name in ['check', 'mate', 'capture', 'castle']:
             if getattr(self, name) != False:
@@ -22,7 +22,9 @@ class Move:
             else:
                 return super().__setattr__(name, value)
 
-        if getattr(self, name) != None:
+        if getattr(self, name) not in (None, value):
+            if getattr(self, name):
+                logging.debug("%s != %s", getattr(self, name), value)
             raise IndexError
         else:
             return super().__setattr__(name, value)

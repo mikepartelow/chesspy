@@ -19,7 +19,7 @@ def parse(sanstr, game=None):
     mv = Move()
 
     if sanstr.startswith('O-O'):
-        mv.castle = True
+        mv.castle = 'queenside' if 'O-O-O' in sanstr else 'kingside'
         if sanstr.endswith('+'):
             mv.check = True
         elif sanstr.endswith('#'):
