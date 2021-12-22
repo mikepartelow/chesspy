@@ -2,7 +2,7 @@
 
 > It's time to brush up on my Python Best Practices. What better way than to develop a chess program?
 
-Standard Algebraic Notation (SAN) is a widely used, standardized chess move notation. This version of **chesspy** parses SAN to replay games. Fun!
+Standard Algebraic Notation (SAN) is a widely used, standardized chess move notation. This version of **chesspy** parses SAN to replay games. Once SAN parsing is covered by a full suite of unit tests, **chesspy** can expand into two-player, internet, and even one-player modes. Fun!
 
 ## Focuses
 
