@@ -346,31 +346,45 @@ class TestSanBishop(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()
 
-    def test_0(self):
+    def test_0a(self):
+        # self.game.board.place_piece_at(None, 1, 6)
+        self.game.turn = Color.BLACK
         mv = san.parse('Bg7', game=self.game) # v ->
         self.assertEqual(mv.src, (0, 5))
         self.assertEqual(mv.dst, (1, 6))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
 
+        self.assertEqual("should fail", "due to interposition")
+
+    def test_0b(self):
+        print(self.game.board)
+        self.game.turn = Color.BLACK
         mv = san.parse('Bb4', game=self.game) # v <-
         self.assertEqual(mv.src, (0, 5))
         self.assertEqual(mv.dst, (4, 1))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
 
+        self.assertEqual("should fail", "due to interposition")
+
+    def test_0c(self):
         mv = san.parse('Bf4', game=self.game) # ^ ->
         self.assertEqual(mv.src, (7, 2))
         self.assertEqual(mv.dst, (4, 5))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
 
+        self.assertEqual("should fail", "due to interposition")
+
+    def test_0d(self):
         mv = san.parse('Bb5', game=self.game) # ^ <-
         self.assertEqual(mv.src, (7, 5))
         self.assertEqual(mv.dst, (3, 1))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
 
+        self.assertEqual("should fail", "due to interposition")
     @unittest.expectedFailure
     def test_1(self):
         # illegal moves: interposition
