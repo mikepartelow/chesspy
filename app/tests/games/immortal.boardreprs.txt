@@ -22,15 +22,24 @@ rnb kb rp  p ppp  p  n   B   Nq     PpP    P    PPP    PRNBQ KR
 rnb kb rp  p ppp     n   p   Nq     PpP    P    PPP    PRNBQ KR 
 rnb kb rp  p ppp     n   p   Nq     PpPP   P    PPP     RNBQ KR 
 rnb kb rp  p ppp     nq  p   N      PpPP   P    PPP     RNBQ KR 
-rnb kb rp  p pp      nq  p   N p    PpPP   P    PPP     RNBQ KR 
-rnb kb rp  p pp      n   p   Nqp    PpPP   P    PPP     RNBQ KR 
-rnb kb rp  p pp      n   p   Nqp    PpPP   P Q  PPP     RNB  KR 
-rnb kbnrp  p pp          p   Nqp    PpPP   P Q  PPP     RNB  KR 
-rnb kbnrp  p pp          p   Nqp    PBPP   P Q  PPP     RN   KR 
-rnb kbnrp  p pp      q   p   N p    PBPP   P Q  PPP     RN   KR 
-rnb kbnrp  p pp      q   p   N p    PBPP  NP Q  PPP     R    KR 
-rnb k nrp  p pp      q   pb  N p    PBPP  NP Q  PPP     R    KR 
-rnb k nrp  p pp      q   pbN N p    PBPP   P Q  PPP     R    KR 
-rnb k nrp  p pp          pbN N p    PBPP   P Q  PqP     R    KR 
-rnb k nrp  p pp    B     pbN N p    P PP   P Q  PqP     R    KR 
-rnb k nrp  p pp    B     p N N p    P PP   P Q  PqP     R    Kb 
+rnb kb rp  p ppp     nq  p   N P    PpP    P    PPP     RNBQ KR 
+rnb kb rp  p ppp     n   p   NqP    PpP    P    PPP     RNBQ KR 
+rnb kb rp  p ppp     n   p   NqP    PpP    P Q  PPP     RNB  KR 
+rnb kbnrp  p ppp         p   NqP    PpP    P Q  PPP     RNB  KR 
+rnb kbnrp  p ppp         p   NqP    PBP    P Q  PPP     RN   KR 
+rnb kbnrp  p ppp     q   p   N P    PBP    P Q  PPP     RN   KR 
+rnb kbnrp  p ppp     q   p   N P    PBP   NP Q  PPP     R    KR 
+rnb k nrp  p ppp     q   pb  N P    PBP   NP Q  PPP     R    KR 
+rnb k nrp  p ppp     q   pbN N P    PBP    P Q  PPP     R    KR 
+rnb k nrp  p ppp         pbN N P    PBP    P Q  PqP     R    KR 
+rnb k nrp  p ppp   B     pbN N P    P P    P Q  PqP     R    KR 
+rnb k nrp  p ppp   B     p N N P    P P    P Q  PqP     R    Kb 
+rnb k nrp  p ppp   B     p NPN P      P    P Q  PqP     R    Kb 
+rnb k nrp  p ppp   B     p NPN P      P    P Q  P P     q    Kb 
+rnb k nrp  p ppp   B     p NPN P      P    P Q  P P K   q     b 
+r b k nrp  p pppn  B     p NPN P      P    P Q  P P K   q     b 
+r b k nrp  p pNpn  B     p NP  P      P    P Q  P P K   q     b 
+r bk  nrp  p pNpn  B     p NP  P      P    P Q  P P K   q     b 
+r bk  nrp  p pNpn  B Q   p NP  P      P    P    P P K   q     b 
+r bk   rp  p pNpn  B n   p NP  P      P    P    P P K   q     b 
+r bk   rp  pBpNpn    n   p NP  P      P    P    P P K   q     b 

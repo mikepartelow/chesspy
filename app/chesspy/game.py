@@ -73,34 +73,35 @@ class Game:
         # FIXME: this is well tested through test_san but deserves its own unit test.
         match mv.piece:
             case 'P':
+                if self.turn == Color.WHITE:
+                    def ahead_of(y): return y + 1
+                    def behind(y):   return y - 1
+                else:
+                    def ahead_of(y): return y - 1
+                    def behind(y):   return y + 1
+
                 if mv.capture:
                     p_src = colorize('P', self.turn)
                     if (p_dst := self.board.square_at(mv.dst_y, mv.dst_x)) and color_of(p_dst) != color_of(p_src):
-                        if self.turn == Color.WHITE:
-                            def dirop(y):
-                                return y + 1
-                        else:
-                            def dirop(y):
-                                return y - 1
+                        if mv.src_x and self.board.square_at(ahead_of(mv.dst_y), mv.src_x) == p_src:
+                            mv.src_y = ahead_of(mv.dst_y)
+                        elif mv.dst_x > 0 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x - 1) == p_src:
+                            mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x - 1
+                        elif mv.dst_x < 7 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x + 1) == p_src:
+                            mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x + 1
 
-                        if mv.src_x and self.board.square_at(dirop(mv.dst_y), mv.src_x) == p_src:
-                            mv.src_y = dirop(mv.dst_y)
-                        elif mv.dst_x > 0 and self.board.square_at(dirop(mv.dst_y), mv.dst_x - 1) == p_src:
-                            mv.src_y, mv_src_x = dirop(mv.dst_y), mv.dst_x - 1
-                        elif mv.dst_x < 7 and self.board.square_at(dirop(mv.dst_y), mv.dst_x + 1) == p_src:
-                            mv.src_y, mv_src_x = dirop(mv.dst_y), mv.dst_x + 1
+                elif self.board.square_at(mv.dst_y, mv.dst_x) is None:
+                    if self.turn == Color.WHITE:
+                        idx, pawn, origin = 1, 'P', 6
+                    else:
+                        idx, pawn, origin = -1, 'p', 1
 
-                elif mv.dst_y in (4, 5):
-                    if self.board.square_at(5, mv.dst_x) is None and \
-                      self.board.square_at(mv.dst_y, mv.dst_x) is None and \
-                      self.board.square_at(6, mv.dst_x) == 'P':
-                        mv.src_y, mv.src_x = 6, mv.dst_x
-                elif mv.dst_y in (2, 3):
-                    if self.board.square_at(2, mv.dst_x) is None and \
-                      self.board.square_at(mv.dst_y, mv.dst_x) is None and \
-                      self.board.square_at(1, mv.dst_x) == 'p':
-                        mv.src_y, mv.src_x = 1, mv.dst_x
+                    if (p := self.board.find_first_from(mv.dst_y, mv.dst_x, idx, 0)) and p[0] == pawn:
+                        if (abs(mv.dst_y - p[1]) == 2 and p[1] == origin) or abs(mv.dst_y - p[1]) == 1:
+                            mv.src_y, mv.src_x = p[1:]
+
             case 'N':
+                p_src = colorize('N', self.turn)
                 offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
                 offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
 
@@ -108,23 +109,25 @@ class Game:
                     src_y, src_x = mv.dst_y + offset_y, mv.dst_x + offset_x
 
                     if src_y >= 0 and src_y < 8 and src_x >= 0 and src_x < 8:
-                        if self.board.square_at(src_y, src_x) in ('N', 'n'):
+                        if (p := self.board.square_at(src_y, src_x)) == p_src:
                             mv.src_y, mv.src_x = src_y, src_x
                             break
             case 'B':
                 # FIXME: refactor with Queen
+                p_src = colorize('B', self.turn)
                 ranges = itertools.chain(zip(range(mv.dst_y+1, 8), range(mv.dst_x+1, 8)),
                                          zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x-1, -1, -1)),
                                          zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x+1, 8)),
                                          zip(range(mv.dst_y+1, 8), range(mv.dst_x-1, -1, -1)))
 
                 for y, x in ranges:
-                    if self.board.square_at(y, x) in ('B', 'b'):
+                    if self.board.square_at(y, x) == p_src:
                         mv.src_y, mv.src_x = y, x
                         break
             case 'Q':
                 # FIXME: refactor with Bishop
                 # FIXME: refactor with Rook
+                p_src = colorize('Q', self.turn)
                 ranges = itertools.chain(zip(range(mv.dst_y+1, 8), range(mv.dst_x+1, 8)),
                                          zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x-1, -1, -1)),
                                          zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x+1, 8)),
@@ -133,26 +136,28 @@ class Game:
                                          zip([y for y in range(0, 8) if y != mv.dst_y], [mv.dst_x]*8))
 
                 for y, x in ranges:
-                    if self.board.square_at(y, x) in ('Q', 'q'):
+                    if self.board.square_at(y, x) == p_src:
                         mv.src_y, mv.src_x = y, x
                         break
 
             case 'R':
                 # FIXME: refactor with Queen
-                if (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 0, -1)) is not None and p[0] in ['R', 'r']:
+                p_src = colorize('R', self.turn)
+                if (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 0, -1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
                     mv.src_y, mv.src_x = p[1:]
-                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 0, 1)) is not None and p[0] in ['R', 'r']:
+                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 0, 1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
                     mv.src_y, mv.src_x = p[1:]
-                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 1, 0)) is not None and p[0] in ['R', 'r']:
+                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 1, 0, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
                     mv.src_y, mv.src_x = p[1:]
-                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, -1, 0)) is not None and p[0] in ['R', 'r']:
+                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, -1, 0, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
                     mv.src_y, mv.src_x = p[1:]
 
             case 'K':
+                p_src = colorize('K', self.turn)
                 for y in range(mv.dst_y-1, mv.dst_y+2):
                     for x in range(mv.dst_x-1, mv.dst_x+2):
                         if (y, x) != (mv.dst_y, mv.dst_x) and y >= 0 and y < 8 and x >= 0 and y < 8:
-                            if self.board.square_at(y, x) in ('K', 'k'):
+                            if self.board.square_at(y, x) == p_src:
                                 mv.src_y, mv.src_x = y, x
                                 break
                     if mv.src_y and mv.src_x:

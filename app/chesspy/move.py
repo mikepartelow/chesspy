@@ -23,6 +23,8 @@ class Move:
                 return super().__setattr__(name, value)
 
         if getattr(self, name) not in (None, value):
+            if getattr(self, name):
+                print(f"{getattr(self, name)} != {value}")
             raise IndexError
         else:
             return super().__setattr__(name, value)

@@ -1,5 +1,5 @@
 import unittest
-from chesspy import san, game
+from chesspy import san, game, board
 from chesspy.color import Color
 
 class TestMove(unittest.TestCase):
@@ -132,6 +132,21 @@ class TestSanBasic(unittest.TestCase):
             with self.assertRaises(IndexError, msg=baddy):
                 san.parse(baddy)
 
+class TestSanFancy(unittest.TestCase):
+    def setUp(self):
+        self.game = game.Game()
+
+    def test_0(self):
+        # disambiguated rook move from Game Of The Century. Code is tempted to move wrong rook.
+        self.game.board = board.Board("r    rk pp   pbp qp   p   B       BP  b Q n  N  P    PPP   RK  R")
+        print(self.game.board)
+        self.game.turn = Color.BLACK
+        mv = san.parse('Rfe8+', game=self.game)
+        self.assertEqual(mv.src, (0, 5))
+        self.assertEqual(mv.dst, (0, 4))
+        self.assertEqual(mv.piece, 'R')
+        self.assertTrue(mv.check)
+
 class TestSanPawn(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()
@@ -150,6 +165,7 @@ class TestSanPawn(unittest.TestCase):
         self.assertFalse(mv.capture)
 
     def test_1(self):
+        self.game.turn = Color.BLACK
         mv = san.parse('e5', game=self.game)
         self.assertEqual(mv.src, (1, 4))
         self.assertEqual(mv.dst, (3, 4))
@@ -217,7 +233,7 @@ class TestSanPawn(unittest.TestCase):
         # don't capture self
         self.game.board.place_piece_at('P', 5, 2)
         with self.assertRaises(IndexError):
-            mv = san.parse('bxc3', game=self.game)        
+            mv = san.parse('bxc3', game=self.game)
 
     def test_5b(self):
         # capture opponent
@@ -231,7 +247,7 @@ class TestSanPawn(unittest.TestCase):
         # don't capture self
         self.game.board.place_piece_at('P', 5, 2)
         with self.assertRaises(IndexError):
-            mv = san.parse('dxc3', game=self.game)        
+            mv = san.parse('dxc3', game=self.game)
 
     def test_5c(self):
         # capture opponent
@@ -246,8 +262,7 @@ class TestSanPawn(unittest.TestCase):
         # don't capture self
         self.game.board.place_piece_at('p', 2, 5)
         with self.assertRaises(IndexError):
-            mv = san.parse('exf6', game=self.game)        
-
+            mv = san.parse('exf6', game=self.game)
 
     def test_5d(self):
         # capture opponent
@@ -262,8 +277,23 @@ class TestSanPawn(unittest.TestCase):
         # don't capture self
         self.game.board.place_piece_at('p', 2, 5)
         with self.assertRaises(IndexError):
-            mv = san.parse('gxf6', game=self.game)        
+            mv = san.parse('gxf6', game=self.game)
 
+    def test_6a(self):
+        # regular forward move move
+        self.game.turn = Color.BLACK
+        self.game.board.place_piece_at('p', 3, 4)
+        self.game.board.place_piece_at(None, 6, 4)
+        mv = san.parse('e4', game=self.game)
+        self.assertEqual(mv.src, (3, 4))
+        self.assertEqual(mv.dst, (4, 4))
+        self.assertEqual(mv.piece, 'P')
+        self.assertFalse(mv.capture)
+
+        self.game.board.place_piece_at('p', 3, 4)
+        self.game.board.place_piece_at('R', 4, 4)
+        with self.assertRaises(IndexError):
+            san.parse('e4', game=self.game)
 
 class TestSanKnight(unittest.TestCase):
     def setUp(self):
@@ -282,24 +312,30 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
 
+        self.game.turn = Color.BLACK
         mv = san.parse('Nc6', game=self.game)
         self.assertEqual(mv.src, (0, 1))
         self.assertEqual(mv.dst, (2, 2))
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
 
+        self.game.turn = Color.BLACK
         mv = san.parse('Na6', game=self.game)
         self.assertEqual(mv.src, (0, 1))
         self.assertEqual(mv.dst, (2, 0))
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
 
-    @unittest.expectedFailure
     def test_1(self):
-        # test knight moves that can only be disambiguated by src knight color
-        #   game.turn == black returns black knight
-        #   game.turn == white returns white knight
-        self.assertTrue(False)
+        # knight moves that can only be disambiguated by src knight color
+        # move 22 of The Immortal Game is such a move!
+        self.game.board = board.Board("r bk  nrp  p pNpn  B q   p NP  P      P    P Q  P P K         b ")
+        self.game.turn = Color.BLACK
+        mv = san.parse('Nxf6', game=self.game)
+        self.assertEqual(mv.src, (0, 6))
+        self.assertEqual(mv.dst, (2, 5))
+        self.assertEqual(mv.piece, 'N')
+        self.assertTrue(mv.capture)
 
     @unittest.expectedFailure
     def test_2(self):

@@ -1,7 +1,7 @@
 class Board:
     def __init__(self, reprstr=None):
         if reprstr is not None:
-            self.squares = [ ' ' if ch is None else ch for ch in reprstr ]
+            self.squares = [ None if ch == ' ' else ch for ch in reprstr ]
         else:
             self.squares = [ 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
                              'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p', 
@@ -61,8 +61,10 @@ class Board:
 
         self.squares[8*y+x] = piece
 
-    def find_first_from(self, src_y, src_x, inc_y, inc_x):
-        """Find the first piece encountered starting from (dst_y, dst_x) while incrementing (y, x) by (inc_y, inc_x)
+    def find_first_from(self, start_y, start_x, inc_y, inc_x, src_y=None, src_x=None):
+        """Find the first piece encountered starting from (start_y, start_x) while incrementing (y, x) by (inc_y, inc_x)
+
+        If src_y or src_x are not None, return only coords that include them.
 
         Returns tuple (p, y, x) where p is the first piece encountered, (y, x) are coordinates of p, or None if no piece is found.
         """
@@ -72,15 +74,15 @@ class Board:
 
         if inc_y in [-1, 1]:
             dst_y = -1 if inc_y < 0 else 8
-            y_range = range(src_y+inc_y, dst_y, inc_y)
+            y_range = range(start_y+inc_y, dst_y, inc_y)
         else:
-            y_range = [src_y]
+            y_range = [start_y]
 
         if inc_x in [-1, 1]:
             dst_x = -1 if inc_x < 0 else 8
-            x_range = range(src_x+inc_x, dst_x, inc_x)
+            x_range = range(start_x+inc_x, dst_x, inc_x)
         else:
-            x_range = [src_x]
+            x_range = [start_x]
 
         for y in y_range:
             for x in x_range:
@@ -89,4 +91,5 @@ class Board:
                     raise IndexError
 
                 if (p := self.squares[8*y + x]) is not None:
-                    return (p, y, x)
+                    if src_y in (None, y) and src_x in (None, x):
+                        return (p, y, x)

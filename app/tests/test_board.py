@@ -84,7 +84,7 @@ class TestBoardFindFrom(unittest.TestCase):
 		self.assertEqual(self.board.find_first_from(2, 3, 0, 1), ('R', 2, 6))
 		self.board.place_piece_at(None, 2, 6)
 		self.assertEqual(self.board.find_first_from(2, 3, 0, 1), ('Q', 2, 7))
-		self.assertEqual(self.board.find_first_from(2, 7, 0, 1), None)
+		self.assertEqual(self.board.find_first_from(2, 7, 0, 1), None)	
 
 	@unittest.expectedFailure
 	def test_1a(self): # ^ ->
@@ -100,4 +100,8 @@ class TestBoardFindFrom(unittest.TestCase):
 
 	@unittest.expectedFailure
 	def test_1d(self): # v <-
+		self.assertTrue(False)
+
+	@unittest.expectedFailure
+	def test_2a(self): # specifies src_y/src_x to disambiguate
 		self.assertTrue(False)

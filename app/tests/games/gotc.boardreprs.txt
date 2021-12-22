@@ -19,5 +19,4 @@ r bq rk pp  ppbp np  np           QPPB    N  N  PP   PPP   RKB R
 r bq rk pp  ppbp np  np   Q        PPB    N  N  PP   PPP   RKB R
 r  q rk pp  ppbp np  np   Q        PPBb   N  N  PP   PPP   RKB R
 r  q rk pp  ppbp np  np   Q   B    PP b   N  N  PP   PPP   RKB R
-r  q rk pp  ppbp np  np   Q   B N  PP b      N  PP   PPP   RKB R
-r  q rk pp  ppbp np  np       B N  PP b Q    N  PP   PPP   RKB R
+r  q rk pp  ppbp  p  np   Q   B n  PP b   N  N  PP   PPP   RKB R
