@@ -71,6 +71,11 @@ class Game:
         """Given a partially constructed Move, deduce the src coordinates for the move.
         """
         # FIXME: this is well tested through test_san but deserves its own unit test.
+
+        if (p := self.board.square_at(mv.dst_y, mv.dst_x)) and color_of(p) == self.turn:
+            # can't land on our own piece
+            raise IndexError
+
         match mv.piece:
             case 'P':
                 if self.turn == Color.WHITE:
@@ -114,16 +119,16 @@ class Game:
                             break
             case 'B':
                 # FIXME: refactor with Queen
-                p_src = colorize('B', self.turn)
-                ranges = itertools.chain(zip(range(mv.dst_y+1, 8), range(mv.dst_x+1, 8)),
-                                         zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x-1, -1, -1)),
-                                         zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x+1, 8)),
-                                         zip(range(mv.dst_y+1, 8), range(mv.dst_x-1, -1, -1)))
+                p_src = colorize('B', self.turn)                
+                if (p := self.board.find_first_from(mv.dst_y, mv.dst_x, -1, -1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
+                    mv.src_y, mv.src_x = p[1:]
+                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 1, 1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
+                    mv.src_y, mv.src_x = p[1:]
+                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 1, -1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
+                    mv.src_y, mv.src_x = p[1:]
+                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, -1, 1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
+                    mv.src_y, mv.src_x = p[1:]
 
-                for y, x in ranges:
-                    if self.board.square_at(y, x) == p_src:
-                        mv.src_y, mv.src_x = y, x
-                        break
             case 'Q':
                 # FIXME: refactor with Bishop
                 # FIXME: refactor with Rook

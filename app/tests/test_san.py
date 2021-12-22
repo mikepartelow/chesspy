@@ -125,6 +125,14 @@ class TestSanBasic(unittest.TestCase):
         self.assertFalse(mv.mate)
 
     @unittest.expectedFailure
+    def test_friendly_fire(self):
+        # don't allow capture of own piece
+        # don't allow it with 'x' in the san
+        # don't allow it without 'x' in the san
+        # don't allow it, san i am
+        self.assertEqual(False, True)
+
+    @unittest.expectedFailure
     def test_invalid_syntax(self):
         baddies = ('e33', 'e3++', 'e3#+', 'e3+#', 'xe3', 'x3e', 'xe3+#', 'xRe3', 'R3dxe3', 'O', 'O-', 'bxa8=',
                    'b=xa8Q', 'bxa4=Q+', 'bxa1=K+', 'O-O-)#', 'O-O-O-O', 'O-OxO-O-O')
@@ -146,6 +154,7 @@ class TestSanFancy(unittest.TestCase):
         self.assertEqual(mv.dst, (0, 4))
         self.assertEqual(mv.piece, 'R')
         self.assertTrue(mv.check)
+
 
 class TestSanPawn(unittest.TestCase):
     def setUp(self):
@@ -347,20 +356,29 @@ class TestSanBishop(unittest.TestCase):
         self.game = game.Game()
 
     def test_0a(self):
-        # self.game.board.place_piece_at(None, 1, 6)
         self.game.turn = Color.BLACK
+
+        with self.assertRaises(IndexError):
+            san.parse('Bg7', game=self.game)
+        
+        self.game.board.place_piece_at(None, 1, 6)        
         mv = san.parse('Bg7', game=self.game) # v ->
         self.assertEqual(mv.src, (0, 5))
         self.assertEqual(mv.dst, (1, 6))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
 
-        self.assertEqual("should fail", "due to interposition")
-
     def test_0b(self):
-        print(self.game.board)
         self.game.turn = Color.BLACK
-        mv = san.parse('Bb4', game=self.game) # v <-
+
+        with self.assertRaises(IndexError):
+            san.parse('B', game=self.game)
+
+        self.assertEqual("make this", "a long move not just one square")
+        # self.game.board.place_piece_at('b',?,?)
+        # self.game.board.place_piece_at('b',?,?)
+
+        mv = san.parse('B', game=self.game) # v <-
         self.assertEqual(mv.src, (0, 5))
         self.assertEqual(mv.dst, (4, 1))
         self.assertEqual(mv.piece, 'B')
