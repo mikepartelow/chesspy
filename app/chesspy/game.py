@@ -152,7 +152,7 @@ class Game:
                 p_src = colorize('K', self.turn)
                 for y in range(mv.dst_y-1, mv.dst_y+2):
                     for x in range(mv.dst_x-1, mv.dst_x+2):
-                        if (y, x) != (mv.dst_y, mv.dst_x) and y >= 0 and y < 8 and x >= 0 and y < 8:
+                        if (y, x) != (mv.dst_y, mv.dst_x) and y >= 0 and y < 8 and x >= 0 and x < 8:
                             if self.board.square_at(y, x) == p_src:
                                 mv.src_y, mv.src_x = y, x
                                 break

@@ -91,7 +91,6 @@ class TestCastle(unittest.TestCase):
 #
 class TestFamousGames(unittest.TestCase):
 
-    @unittest.expectedFailure
     def test_gotc(self):
         g = game.Game()
 
@@ -99,11 +98,9 @@ class TestFamousGames(unittest.TestCase):
             turn = g.turn
             # print(f"{int(idx/2+1)}. {turn}: {sanstr}")
             g.move_san(sanstr)
-            # FIXME: remove the print()s once the test passes
             # print(g.board)
             # print("")
             self.assertEqual(repr(g.board), boardrepr)
-
 
     def test_immortal(self):
         g = game.Game()
