@@ -16,6 +16,30 @@ def colorize(ch, color):
     else:
         return ch.lower()
 
+def deduce_src_moves_like_rook(mv, board, p_target):
+    if (p := board.find_first_on_h_or_v(mv.dst, 0, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        mv.src_y, mv.src_x = p[1:]
+    elif (p := board.find_first_on_h_or_v(mv.dst, 0, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        mv.src_y, mv.src_x = p[1:]
+    elif (p := board.find_first_on_h_or_v(mv.dst, 1, 0, mv.src_y, mv.src_x)) and p[0] == p_target:
+        mv.src_y, mv.src_x = p[1:]
+    elif (p := board.find_first_on_h_or_v(mv.dst, -1, 0, mv.src_y, mv.src_x)) and p[0] == p_target:
+        mv.src_y, mv.src_x = p[1:]
+
+    return mv.src != (None, None)
+
+def deduce_src_moves_like_bishop(mv, board, p_target):
+    if (p := board.find_first_on_diagonal(mv.dst, -1, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        mv.src_y, mv.src_x = p[1:]
+    elif (p := board.find_first_on_diagonal(mv.dst, 1, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        mv.src_y, mv.src_x = p[1:]
+    elif (p := board.find_first_on_diagonal(mv.dst, 1, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        mv.src_y, mv.src_x = p[1:]
+    elif (p := board.find_first_on_diagonal(mv.dst, -1, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        mv.src_y, mv.src_x = p[1:]
+
+    return mv.src != (None, None)
+
 class Game:
     def __init__(self):
         self.board = Board()
@@ -101,7 +125,7 @@ class Game:
                     else:
                         idx, pawn, origin = -1, 'p', 1
 
-                    if (p := self.board.find_first_from(mv.dst_y, mv.dst_x, idx, 0)) and p[0] == pawn:
+                    if (p := self.board.find_first_on_h_or_v(mv.dst, idx, 0)) and p[0] == pawn:
                         if (abs(mv.dst_y - p[1]) == 2 and p[1] == origin) or abs(mv.dst_y - p[1]) == 1:
                             mv.src_y, mv.src_x = p[1:]
 
@@ -118,45 +142,12 @@ class Game:
                             mv.src_y, mv.src_x = src_y, src_x
                             break
             case 'B':
-                # FIXME: refactor with Queen
-                p_src = colorize('B', self.turn)                
-                if (p := self.board.find_first_from(mv.dst_y, mv.dst_x, -1, -1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
-                    mv.src_y, mv.src_x = p[1:]
-                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 1, 1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
-                    mv.src_y, mv.src_x = p[1:]
-                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 1, -1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
-                    mv.src_y, mv.src_x = p[1:]
-                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, -1, 1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
-                    mv.src_y, mv.src_x = p[1:]
-
+                deduce_src_moves_like_bishop(mv, self.board, colorize('B', self.turn))
             case 'Q':
-                # FIXME: refactor with Bishop
-                # FIXME: refactor with Rook
-                p_src = colorize('Q', self.turn)
-                ranges = itertools.chain(zip(range(mv.dst_y+1, 8), range(mv.dst_x+1, 8)),
-                                         zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x-1, -1, -1)),
-                                         zip(range(mv.dst_y-1, -1, -1), range(mv.dst_x+1, 8)),
-                                         zip(range(mv.dst_y+1, 8), range(mv.dst_x-1, -1, -1)),
-                                         zip([mv.dst_y]*8, [x for x in range(0, 8) if x != mv.dst_x]),
-                                         zip([y for y in range(0, 8) if y != mv.dst_y], [mv.dst_x]*8))
-
-                for y, x in ranges:
-                    if self.board.square_at(y, x) == p_src:
-                        mv.src_y, mv.src_x = y, x
-                        break
-
+                p_target = colorize('Q', self.turn)
+                deduce_src_moves_like_rook(mv, self.board, p_target) or deduce_src_moves_like_bishop(mv, self.board, p_target)
             case 'R':
-                # FIXME: refactor with Queen
-                p_src = colorize('R', self.turn)
-                if (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 0, -1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
-                    mv.src_y, mv.src_x = p[1:]
-                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 0, 1, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
-                    mv.src_y, mv.src_x = p[1:]
-                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, 1, 0, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
-                    mv.src_y, mv.src_x = p[1:]
-                elif (p := self.board.find_first_from(mv.dst_y, mv.dst_x, -1, 0, mv.src_y, mv.src_x)) is not None and p[0] == p_src:
-                    mv.src_y, mv.src_x = p[1:]
-
+                deduce_src_moves_like_rook(mv, self.board, colorize('R', self.turn))
             case 'K':
                 p_src = colorize('K', self.turn)
                 for y in range(mv.dst_y-1, mv.dst_y+2):

@@ -146,8 +146,7 @@ class TestSanFancy(unittest.TestCase):
 
     def test_0(self):
         # disambiguated rook move from Game Of The Century. Code is tempted to move wrong rook.
-        self.game.board = board.Board("r    rk pp   pbp qp   p   B       BP  b Q n  N  P    PPP   RK  R")
-        print(self.game.board)
+        self.game.board = board.Board("r    rk pp   pbp qp   p   B       BP  b Q n  N  P    PPP   RK  R")        
         self.game.turn = Color.BLACK
         mv = san.parse('Rfe8+', game=self.game)
         self.assertEqual(mv.src, (0, 5))
@@ -338,7 +337,7 @@ class TestSanKnight(unittest.TestCase):
     def test_1(self):
         # knight moves that can only be disambiguated by src knight color
         # move 22 of The Immortal Game is such a move!
-        self.game.board = board.Board("r bk  nrp  p pNpn  B q   p NP  P      P    P Q  P P K         b ")
+        self.game.board = board.Board("r bk  nrp  p pNpn  B Q   p NP  P      P    P    P P K   q     b ")
         self.game.turn = Color.BLACK
         mv = san.parse('Nxf6', game=self.game)
         self.assertEqual(mv.src, (0, 6))
@@ -372,37 +371,40 @@ class TestSanBishop(unittest.TestCase):
         self.game.turn = Color.BLACK
 
         with self.assertRaises(IndexError):
-            san.parse('B', game=self.game)
+            san.parse('Ba3', game=self.game)
 
-        self.assertEqual("make this", "a long move not just one square")
-        # self.game.board.place_piece_at('b',?,?)
-        # self.game.board.place_piece_at('b',?,?)
+        self.game.board.place_piece_at(None, 1, 4)
 
-        mv = san.parse('B', game=self.game) # v <-
+        mv = san.parse('Ba3', game=self.game) # v <-
         self.assertEqual(mv.src, (0, 5))
-        self.assertEqual(mv.dst, (4, 1))
+        self.assertEqual(mv.dst, (5, 0))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
 
-        self.assertEqual("should fail", "due to interposition")
-
     def test_0c(self):
+        with self.assertRaises(IndexError):
+            san.parse('Bf4', game=self.game)
+
+        self.game.board.place_piece_at(None, 6, 3)
+
         mv = san.parse('Bf4', game=self.game) # ^ ->
         self.assertEqual(mv.src, (7, 2))
         self.assertEqual(mv.dst, (4, 5))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
 
-        self.assertEqual("should fail", "due to interposition")
-
     def test_0d(self):
+        with self.assertRaises(IndexError):
+            san.parse('Bb5', game=self.game)
+
+        self.game.board.place_piece_at(None, 6, 4)
+
         mv = san.parse('Bb5', game=self.game) # ^ <-
         self.assertEqual(mv.src, (7, 5))
         self.assertEqual(mv.dst, (3, 1))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
 
-        self.assertEqual("should fail", "due to interposition")
     @unittest.expectedFailure
     def test_1(self):
         # illegal moves: interposition
@@ -567,6 +569,12 @@ class TestSanQueen(unittest.TestCase):
         self.assertFalse(mv.capture)
 
     def test_1a(self):
+        self.game.turn = Color.BLACK
+        with self.assertRaises(IndexError):
+            san.parse('Qa5', game=self.game)
+
+        self.game.board.place_piece_at(None, 1, 4)
+
         mv = san.parse('Qg5', game=self.game) # v ->
         self.assertEqual(mv.src, (0, 3))
         self.assertEqual(mv.dst, (3, 6))
@@ -574,6 +582,12 @@ class TestSanQueen(unittest.TestCase):
         self.assertFalse(mv.capture)
 
     def test_1b(self):
+        self.game.turn = Color.BLACK
+        with self.assertRaises(IndexError):
+            san.parse('Qa5', game=self.game)
+
+        self.game.board.place_piece_at(None, 1, 2)
+
         mv = san.parse('Qa5', game=self.game) # v <-
         self.assertEqual(mv.src, (0, 3))
         self.assertEqual(mv.dst, (3, 0))
@@ -581,6 +595,11 @@ class TestSanQueen(unittest.TestCase):
         self.assertFalse(mv.capture)
 
     def test_1c(self):
+        with self.assertRaises(IndexError):
+            san.parse('Qe2', game=self.game)
+
+        self.game.board.place_piece_at(None, 6, 4)
+
         mv = san.parse('Qe2', game=self.game) # ^ ->
         self.assertEqual(mv.src, (7, 3))
         self.assertEqual(mv.dst, (6, 4))
@@ -588,6 +607,10 @@ class TestSanQueen(unittest.TestCase):
         self.assertFalse(mv.capture)
 
     def test_1d(self):
+        with self.assertRaises(IndexError):
+            san.parse('Qb3', game=self.game)
+
+        self.game.board.place_piece_at(None, 6, 2)
         mv = san.parse('Qb3', game=self.game) # ^ <-
         self.assertEqual(mv.src, (7, 3))
         self.assertEqual(mv.dst, (5, 1))
