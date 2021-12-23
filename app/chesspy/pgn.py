@@ -38,7 +38,7 @@ def moves(path):
                 elif tokens[idx].endswith(')'):
                     count -= 1
                 else:
-                    logging.debug("  nom: |%s|", tokens[idx])
+                    # logging.debug("  nom: |%s|", tokens[idx])
                     pass
                 idx += 1
             continue # let the while condition check if we're done
