@@ -22,11 +22,10 @@ class TestPgnBasic(unittest.TestCase):
     def test_evergreen(self):
         g = game.Game()
 
-        for idx, sanstr in enumerate(pgn.moves('tests/games/evergreen.pgn')):
+        for idx, (sanstr, boardrepr) in enumerate(itertools.zip_longest(pgn.moves('tests/games/evergreen.pgn'), board_reprs('tests/games/evergreen.boardreprs.txt'))):
             turn = g.turn
             # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
             g.move_san(sanstr)
             # print(g.board)
             # print("")
-            # print(repr(g.board))
-
+            self.assertEqual(repr(g.board), boardrepr, idx)
