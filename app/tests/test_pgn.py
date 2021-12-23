@@ -24,9 +24,9 @@ class TestPgnBasic(unittest.TestCase):
 
         for idx, sanstr in enumerate(pgn.moves('tests/games/evergreen.pgn')):
             turn = g.turn
-            print(f"{int( idx/2+1)}. {turn}: {sanstr}")
+            # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
             g.move_san(sanstr)
-            print(g.board)
-            print("")
-            print(repr(g.board))
+            # print(g.board)
+            # print("")
+            # print(repr(g.board))
 
