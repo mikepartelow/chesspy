@@ -5,8 +5,7 @@ def moves(path):
     move_idx = 1
 
     with open(path) as f:
-        for line in f.readlines():
-            tokens.extend(t for t in line.split())
+        tokens = [ t for t in f.read().split() ]
 
     idx, end = 0, len(tokens)
 
@@ -37,9 +36,6 @@ def moves(path):
                     count += 1
                 elif tokens[idx].endswith(')'):
                     count -= 1
-                else:
-                    # logging.debug("  nom: |%s|", tokens[idx])
-                    pass
                 idx += 1
             continue # let the while condition check if we're done
 
