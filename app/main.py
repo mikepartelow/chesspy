@@ -11,21 +11,22 @@ if __name__ == "__main__":
         print(g.board)
         sys.exit(0)
 
-    print("Run Unit Tests")
+    # The Immortal Game:  Adolf Anderssen vs Lionel Kieseritzky, 21 June 1851.
+    #
+    with open('games/simple/immortal.txt') as f:
+        g = chesspy.game.Game()
 
-    # d = 'games/simple'
-    # for e in os.listdir(d):
-    #     print(e)
-    #     print("---")
-    #     g = chesspy.game.Game()
-    #     with open(os.path.join(d, e), 'r') as f:
-    #         for line in f.readlines():
-    #             sanstr_white, *sanstr_black = line.split()
-    #             print(sanstr_white)
-    #             g.move_san(sanstr_white)
-    #             print(g.board)
+        for move_num, line in enumerate(f.readlines()):
+            sanstr_white, *sanstr_black = line.split()
 
-    #             if sanstr_black:
-    #                 print(sanstr_black)
-    #                 g.move_san(sanstr_black[0])
-    #                 print(g.board)
+            print(f"{move_num+1}. {sanstr_white}")
+            g.move_san(sanstr_white)
+            print(g.board)
+            print("")
+            
+            if sanstr_black:
+                sanstr_black = sanstr_black[0]
+                print(f"{move_num+1}... {sanstr_black}")
+                g.move_san(sanstr_black)
+                print(g.board)                
+                print("")

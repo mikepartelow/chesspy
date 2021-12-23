@@ -18,7 +18,8 @@ Standard Algebraic Notation (SAN) is a widely used, standardized chess move nota
 ## Run
 
     docker run -ti -v `PWD`/app:/chesspy -ti chesspy bash
-    python main.py board
+    python main.py board # display a chess board with pieces
+    python main.py       # display a playthrough of The Immortal Game
 
 ## Test
     

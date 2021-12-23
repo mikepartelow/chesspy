@@ -6,4 +6,4 @@ COPY app/ /chesspy
 
 WORKDIR /chesspy
 
-CMD python ./main.py board
+CMD python ./main.py
