@@ -8,3 +8,4 @@ logging.basicConfig(filename=TEST_LOG_PATH, encoding='utf-8', level=logging.DEBU
 from .test_san import *
 from .test_board import *
 from .test_game import *
+from .test_pgn import *
