@@ -154,6 +154,14 @@ class TestSanFancy(unittest.TestCase):
         self.assertEqual(mv.piece, 'R')
         self.assertTrue(mv.check)
 
+class TestSanAnnotations(unittest.TestCase):
+    annotations = ( '!', '!!', '?', '??', '!?', '?!', )
+    moves       = ( 'e4', 'O-O-O#', 'bxa1=Q+', 'Rxe3', )
+    
+    def test_0(self):
+        for move in self.moves:
+            for annotation in self.annotations:
+                san.parse(f"{move}{annotation}")
 
 class TestSanPawn(unittest.TestCase):
     def setUp(self):
@@ -345,8 +353,18 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.piece, 'N')
         self.assertTrue(mv.capture)
 
-    @unittest.expectedFailure
     def test_2(self):
+        # knight move disambiguated by SAN. 
+        # move 14 of The Evergreen Game is such a move.
+        self.game.board = board.Board(" rb k  rp ppnppp bn   q     P   Q B     B Pp N  P    PPPRN  R K ")
+        mv = san.parse('Nbd2', game=self.game)
+        self.assertEqual(mv.src, (7, 1))
+        self.assertEqual(mv.dst, (6, 3))
+        self.assertEqual(mv.piece, 'N')
+        self.assertFalse(mv.capture)
+
+    @unittest.expectedFailure
+    def test_3(self):
         # test knight moves that can only be disambiguated by "would expose check"
         self.assertTrue(False)
 

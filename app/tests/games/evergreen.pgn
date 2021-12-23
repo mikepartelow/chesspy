@@ -1,0 +1,34 @@
+[Event "'The Evergreen Game'"]
+[Site "http://gameknot.com/"]
+[Date "Berlin 1852"]
+[Round "-"]
+[White "Adolph Anderssen"]
+[Black "Jean Dufresne"]
+[Result "1-0"]
+[UTCDate "2020.09.23"]
+[UTCTime "02:28:00"]
+[Variant "Standard"]
+[ECO "C52"]
+[Opening "Italian Game: Evans Gambit, Dufresne Defense"]
+[Annotator "https://lichess.org/@/Yushan"]
+
+{ Anderssen was one of the strongest players of his era (along with Steinitz and Morphy). In this game, dubbed 'the Evergreen' game, he displays the art of the sacrifice no less than THREE times in an attacking combination which is simply historical. Take note of the subtelty of his 19. Rad1, and how it unleashes utter destruction on black's position. This game has it all - a Royal fork, a double check, and a queen sacrifice. Pretty amazing stuff:) Enjoy! }
+1. e4 e5 2. Nf3 Nc6 3. Bc4 { Guico Piano (or Italian Game) } 3... Bc5 4. b4 { The Evans Gambit is an old-time favorite. White sacrifices a pawn so that he can gain time by pushing around Black's Bishop. Modem Grandmasters prefer 4.d3 for a quieter game. } 4... Bxb4 { "Evans Gambit Accepted" opening } 5. c3 { With the idea of owning the center with a solid pawn structure. } 5... Ba5 6. d4 { Yet another pawn sacrifice. White blows apart the center in the hope that the newly opened lines will provide access to the Black King. } 6... exd4 { White cannot play cxd4 because of the pin so they might very well have to play this game two pawns down. } 7. O-O { This move accomplishes a few things. It removes the king from the danger posed by black's dark squared bishop, secures his safety, and prepares Re1. The advantage gained by the gambit pawn is starting to take shape. } 7... d3?! { d3 takes us into a new variation called the "Dufresne Defense" which was named after Jean Dufresne because of this game. Dufresne believed that playing dxc3 could lead to problems with rapid development from white so he decided to avoid playing that line against his teacher. Yet, Black loses time because White has no interest in wasting a move to recapture this pawn. } (7... Bb6 { Engine suggestion. }) 8. Qb3 { Hello f7. } 8... Qf6 { Black defends the f7-pawn by placing his Queen on a vulnerable square. } 9. e5 { A simple tactic here with e5. If Nxe5, white can play Re1 and after something like d6, white can play Bg5, causing the black queen to retreat to g6. Then white can simply play Nxe5 and white gains a piece. If black responds to Nxe5 with dxe5, Rxe5 forks the bishop (on a5) and the king. } 9... Qg6 { Black doesn't fall for White's trap and play 9 ... Nxe5??, which leads to 10. Re1 d6 11.Nxe5 dxe5 12.Qa4+, followed by 13.QxaS and the loss of the Black Bishop. Black knows that when your King is in the center, he shouldn't open up any new files. } (9... Nxe5 10. Re1 d6 11. Bg5 Qg6 12. Nxe5 dxe5 13. Rxe5+ Kf8 14. Rxa5) 10. Re1 Nge7 11. Ba3 b5?! { Instead of getting his King to safety with 11...0-0, Black tries to counterattack. He's forgotten the principle that you should avoid opening lines when your King is in the center. } 12. Qxb5 Rb8 13. Qa4 Bb6 { Black wants to castle here, but is prevented because of 14. Bxe7 (winning a piece as the c6 knight cannot defend both the Ne7 and the Ba5). } 14. Nbd2 Bb7 15. Ne4 Qf5? { Black continues to waste time and continues to leave his King in the center. } 16. Bxd3 { White threatens 17.Nd6+, with a discovered attack on Black's Queen. } 16... Qh5 17. Nf6+! { White wants to force Black to capture the Knight on f6. (White will take the Black Queen on h5 if Black resists.) The reason for this sacrifice is that after 18. exf6, White has blasted open the e-file and enabled his Rooks to join in the hunt for Black's King. The possibility of opening lines against the enemy King, especially when he is in the center, should always be considered. Here is where the fun really begins! A beautiful sacrifice. Analyze for a few minutes before moving on. } 17... gxf6 18. exf6 Rg8 { Setting up QxN. } 19. Rad1! { A "silent move". Doesn't seem to do much apart from blunder a piece. Well, that's the "idea". } 19... Qxf3 { Note that the g-pawn is pinned. Black can't resist taking this Knight because he can now threaten to checkmate White on g2. } 20. Rxe7+! { This is completely winning here but Dufresne's next move leads to mate. } 20... Nxe7? { After this move, White has a forced checkmate. Black probably overlooked White's stunning reply. I say "probably" because in the old days players who knew they had lost a game sometimes allowed their opponents to win brilliantly. A better defense was 20 ... Kd8! but White still has a winning position. } (20... Kd8! 21. Rxd7+ Kxd7 (21... Kc8 22. Rd8+! Kxd8 23. Bf5+ Qxd1+ 24. Qxd1+ Nd4 25. g3 Bd5 26. cxd4) 22. Bf5+ Ke8 23. Bd7+ Kd8 24. Bxc6+ Qxd1+ 25. Qxd1+ Bd4 26. Qxd4+ Kc8 27. Qd7#) 21. Qxd7+ { Sacrifice #3! Black is forced to re-take with his
+king because 21...Kf8 loses to 22. QxN } 21... Kxd7 22. Bf5+ { Black's defense won't come easily in the face of a double check. } 22... Ke8 (22... Kc6 23. Bd7#) 23. Bd7+ Kf8 { 23...Kd8 loses just as fast to 24. BxN } 24. Bxe7# { A great long combination that culminates in a very pretty mate. Anderssen was a master of such tactics. If these two famous games are anything to go by, Anderssen must have been fond of checkmating his opponents by placing a Bishop on e7!
+Anderssen's place in chess history is a bit difficult to assess. The author of some of the most famous chess combinations, he lost the two most important matches he ever played. It was a tribute to his standing in the chess world that Paul Morphy was universally considered the strongest player in the world after defeating Anderssen in 1858. After Wilhelm Steinitz edged Anderssen out of the winner's seat with a score of 8-6 in 1866, he
+claimed to be the first World Champion and was generally accepted to be such. It is worth noting that Anderssen is the man he had to beat to wear this crown. } 1-0
+
+
+[Event "The Evergreen Game (Anderssen - Dufresne, Berlin, 1852): Game Replay"]
+[Site "https://lichess.org/study/O2SZpbQC/kHvuvpTC"]
+[Result "*"]
+[UTCDate "2020.09.23"]
+[UTCTime "02:45:10"]
+[Variant "Standard"]
+[ECO "C52"]
+[Opening "Italian Game: Evans Gambit, Dufresne Defense"]
+[Annotator "https://lichess.org/@/Yushan"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. b4 Bxb4 5. c3 Ba5 6. d4 exd4 7. O-O d3 8. Qb3 Qf6 9. e5 Qg6 10. Re1 Nge7 11. Ba3 b5 12. Qxb5 Rb8 13. Qa4 Bb6 14. Nbd2 Bb7 15. Ne4 Qf5 16. Bxd3 Qh5 17. Nf6+ gxf6 18. exf6 Rg8 19. Rad1 Qxf3 20. Rxe7+ Nxe7 21. Qxd7+ Kxd7 22. Bf5+ Ke8 23. Bd7+ Kf8 24. Bxe7# *
+
+

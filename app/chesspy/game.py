@@ -137,9 +137,12 @@ class Game:
                 for (offset_y, offset_x) in zip(offsets_y, offsets_x):
                     src_y, src_x = mv.dst_y + offset_y, mv.dst_x + offset_x
 
+                    if (mv.src_y and src_y != mv.src_y) or (mv.src_x and src_x != mv.src_x):
+                        continue
+
                     if src_y >= 0 and src_y < 8 and src_x >= 0 and src_x < 8:
                         if (p := self.board.square_at(src_y, src_x)) == p_src:
-                            mv.src_y, mv.src_x = src_y, src_x
+                            mv.src_y, mv.src_x = src_y, src_x                            
                             break
             case 'B':
                 deduce_src_moves_like_bishop(mv, self.board, colorize('B', self.turn))
