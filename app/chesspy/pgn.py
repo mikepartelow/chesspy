@@ -1,24 +1,23 @@
 import logging
 
 def moves(path):
-    move_idx, ignoring = 1, True
+    move_idx, ignore_until = 2, '1.'
 
     # ignoring might need to be a stack - we might have nested { () }
 
     with open(path) as f:
-        for line in f.readlines():
-
-            if line.startswith('1. '):
-                ignoring = False
+        for line in f.readlines():            
 
             for token in line.split(' '):                
-                logging.debug("|%s| : ignoring=%r", token, ignoring)
+                logging.debug("|%s| : ignore_until=%r, move_idx=%d", token, ignore_until, move_idx)
 
-                if ignoring:
-                    if token.endswith("}") or token.endswith(")"):
-                        ignoring = False
-                elif token.startswith("{") or token.startswith("("):
-                    ignoring = True
+                if ignore_until:
+                    if token.endswith(ignore_until) or token.endswith(ignore_until):
+                        ignore_until = None
+                elif token.startswith("{"):
+                    ignore_until = '}'
+                elif token.startswith("("):
+                    ignore_until = ')'
                 elif token == f"{move_idx}.":
                     move_idx += 1
                 elif token == f"{move_idx-1}...":

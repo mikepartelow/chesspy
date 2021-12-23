@@ -30,6 +30,9 @@ def parse(sanstr, game=None):
 
     while mv.dst_y is None:
         match dq.pop():
+            case '!' | '?':
+                # annotations: ignore them
+                pass
             case '+':
                 mv.check = True
             case '#':
@@ -64,7 +67,7 @@ def parse(sanstr, game=None):
         mv = game.deduce_src(mv)
         if mv.src_y is None or mv.src_x is None:
             # failed to fully deduce src
-            raise IndexError
+            raise IndexError("Failed to deduce_src()")
 
     if mv.dst_y is None or mv.dst_x is None or mv.dst_y < 0 or mv.dst_y > 7 or mv.dst_x < 0 or mv.dst_x > 7:
         # invalid SAN like "33"

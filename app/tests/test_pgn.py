@@ -18,3 +18,15 @@ class TestPgnBasic(unittest.TestCase):
             # print(g.board)
             # print("")
             self.assertEqual(repr(g.board), boardrepr, idx)
+
+    def test_evergreen(self):
+        g = game.Game()
+
+        for idx, sanstr in enumerate(pgn.moves('tests/games/evergreen.pgn')):
+            turn = g.turn
+            print(f"{int( idx/2+1)}. {turn}: {sanstr}")
+            g.move_san(sanstr)
+            print(g.board)
+            print("")
+            print(repr(g.board))
+

@@ -3,7 +3,11 @@ import sys
 import logging
 import chesspy.game
 
-logging.basicConfig(filename='logs/chesspy.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='logs/chesspy.log', 
+                    encoding='utf-8', 
+                    format='[%(asctime)s]::[%(levelname).1s]::[%(filename)s:%(lineno)d]::[%(message)s]',
+                    datefmt='%Y-%m-%d:%H:%M:%S',
+                    level=logging.DEBUG)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "board":

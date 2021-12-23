@@ -4,6 +4,7 @@ import itertools
 class Board:
     def __init__(self, reprstr=None):
         if reprstr is not None:
+            assert(len(reprstr) == 8*8)
             self.squares = [ None if ch == ' ' else ch for ch in reprstr ]
         else:
             self.squares = [ 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
