@@ -1,3 +1,4 @@
+import os
 import unittest
 import itertools
 from chesspy import game, pgn
@@ -29,3 +30,38 @@ class TestPgnBasic(unittest.TestCase):
             # print(g.board)
             # print("")
             self.assertEqual(repr(g.board), boardrepr, idx)
+
+class TestMagnusLichess(unittest.TestCase):
+    # indirect correctness check. with enough sample games, bugs compound and reveal themselves.
+    #
+    # downlaod the file at: https://lichess.org/@/DrNykterstein/download
+    # could use any lichess pgn file
+
+    def test_pgn(self):
+        g = game.Game()
+
+        pgnfile = 'tests/games/lichess_DrNykterstein_2022-01-04.pgn'
+
+        if os.path.exists(pgnfile):
+            for sanstr in pgn.moves(pgnfile):
+                # print(sanstr)
+
+                if sanstr in ('1-0', '0-1'):
+                    g = game.Game()
+                    continue
+
+                g.move_san(sanstr)
+                # print(repr(g.board))
+
+    def test_n7ZjoKNR(self):
+        g = game.Game()
+
+        pgnfile = 'tests/games/n7ZjoKNR.pgn'
+
+        for idx, sanstr in enumerate(pgn.moves(pgnfile)):
+            turn = g.turn
+            # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
+            g.move_san(sanstr)
+            # print(g.board)
+            # print("")
+        

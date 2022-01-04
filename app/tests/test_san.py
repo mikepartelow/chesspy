@@ -146,7 +146,7 @@ class TestSanFancy(unittest.TestCase):
 
     def test_0(self):
         # disambiguated rook move from Game Of The Century. Code is tempted to move wrong rook.
-        self.game.board = board.Board("r    rk pp   pbp qp   p   B       BP  b Q n  N  P    PPP   RK  R")        
+        self.game.board = board.Board("r    rk pp   pbp qp   p   B       BP  b Q n  N  P    PPP   RK  R")
         self.game.turn = Color.BLACK
         mv = san.parse('Rfe8+', game=self.game)
         self.assertEqual(mv.src, (0, 5))
@@ -157,7 +157,7 @@ class TestSanFancy(unittest.TestCase):
 class TestSanAnnotations(unittest.TestCase):
     annotations = ( '!', '!!', '?', '??', '!?', '?!', )
     moves       = ( 'e4', 'O-O-O#', 'bxa1=Q+', 'Rxe3', )
-    
+
     def test_0(self):
         for move in self.moves:
             for annotation in self.annotations:
@@ -311,6 +311,26 @@ class TestSanPawn(unittest.TestCase):
         with self.assertRaises(IndexError):
             san.parse('e4', game=self.game)
 
+    def test_en_passant_honor_system_0(self):
+        # FIXME: starting this way we aren't testing game memory - no way to know for sure that
+        #        black moved their pawn 2 spaces previous move. hence "honor system"
+        #
+        self.game.board = board.Board("        p p   p  pP k p  P   pP P  PK  P                        ")
+        print("\n")
+        print(self.game.board)
+        self.game.turn = Color.WHITE
+        self.assertEqual('p', self.game.board.square_at(3, 5))
+        mv = san.parse('gxf6', game=self.game)
+        self.assertEqual(mv.src, (3, 6))
+        self.assertEqual(mv.dst, (2, 5))
+        self.assertEqual(mv.piece, 'P')
+        self.assertTrue(mv.capture)
+        self.assertEqual(' ', self.game.board.square_at(3, 5))
+
+    @unittest.expectedFailure
+    def test_en_passant_trust_no_one_0(self):
+        self.assertEqual("do like test_en_passant_honor_system_0 but check all the en passant rules", "especially: did white's captured pawn just move 2 spaces?")
+
 class TestSanKnight(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()
@@ -354,7 +374,7 @@ class TestSanKnight(unittest.TestCase):
         self.assertTrue(mv.capture)
 
     def test_2(self):
-        # knight move disambiguated by SAN. 
+        # knight move disambiguated by SAN.
         # move 14 of The Evergreen Game is such a move.
         self.game.board = board.Board(" rb k  rp ppnppp bn   q     P   Q B     B Pp N  P    PPPRN  R K ")
         mv = san.parse('Nbd2', game=self.game)
@@ -377,8 +397,8 @@ class TestSanBishop(unittest.TestCase):
 
         with self.assertRaises(IndexError):
             san.parse('Bg7', game=self.game)
-        
-        self.game.board.place_piece_at(None, 1, 6)        
+
+        self.game.board.place_piece_at(None, 1, 6)
         mv = san.parse('Bg7', game=self.game) # v ->
         self.assertEqual(mv.src, (0, 5))
         self.assertEqual(mv.dst, (1, 6))
