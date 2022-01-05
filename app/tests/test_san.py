@@ -316,8 +316,6 @@ class TestSanPawn(unittest.TestCase):
         #        black moved their pawn 2 spaces previous move. hence "honor system"
         #
         self.game.board = board.Board("        p p   p  pP k p  P   pP P  PK  P                        ")
-        print("\n")
-        print(self.game.board)
         self.game.turn = Color.WHITE
         self.assertEqual('p', self.game.board.square_at(3, 5))
         mv = san.parse('gxf6', game=self.game)
@@ -325,7 +323,11 @@ class TestSanPawn(unittest.TestCase):
         self.assertEqual(mv.dst, (2, 5))
         self.assertEqual(mv.piece, 'P')
         self.assertTrue(mv.capture)
-        self.assertEqual(' ', self.game.board.square_at(3, 5))
+        self.assertTrue(mv.en_passant)
+
+    @unittest.expectedFailure
+    def test_en_passant_honor_system_1(self):
+        self.assertEqual("black's", "move")
 
     @unittest.expectedFailure
     def test_en_passant_trust_no_one_0(self):
