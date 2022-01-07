@@ -129,11 +129,40 @@ subset of SAN, and I had a suite of tests to detect regression bugs as I continu
 
 #### FGDD Light
 
+With the "Heavy" FGDD tests as a foundation, I was ready to feed the engine more "known good" chess games
+that were already validated by some other chess engine. I downloaded PGN formatted files of my own lichess
+games and some PGN files for other lichess users.
 
+Parsing the PGN files and running the moves through the engine would not directly test the correctness
+of the engine, but it could flush out unimplemented cases and bugs. For example, The Immortal Game and 
+The Game Of The Century contain neither "pawn promotion" nor "en passant". 
 
-- run lots of games, wait for exceptions, write TDD
-- example: en passant (not present in FGDD Heavy)
+In both cases the engine did not catch any error directly, but a few moves after the engine made a mistake,
+it could not execute a move it normally could have handled.
+
+For example, when executing pawn promotion like "h8=Q", the engine simply ignored the promotion to Queen 
+and moved the pawn to h8. A few moves later, the player moved their Queen, but my engine could find no
+Queen on the board! So it raised an exception, I looked at the move history, and implemented Pawn Promotion.
+
+With a large dataset of less-famous games, I can flush out many cases that I would miss if I wrote
+individual TDD tests myself.
+
+[FGDD Light](app/tests/test_pgn.py)
 
 #### FGDD for Move Suggestions
-- ensure engine suggests (among other things) the move at each stage in our test games
+
+Eventually my Chess Engine will do what Chess Engines are supposed to do - suggest moves given specific
+game states (board positions).
+
+I can use FGDD for partially testing that functionality, as well. For example, I can take existing games
+in PGN format and ensure that for each move in the already validated game, my Engine suggests at least
+the move that was actually played.
+
+That won't tell me whether the other suggestions are legal, or whether any of the suggestions are good
+moves, but it does serve as a solid testing foundation.
+
+#### Finalizing the Tests
+
+FGDD is a fun solution to a challenging testing problem. But it will not provide full confidence in the
+correctness of my code. More work is required for that!
 
