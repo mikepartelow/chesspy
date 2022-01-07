@@ -7,7 +7,7 @@
 A chess engine examines chess board positions and suggests good moves. I decided to build a chess engine
 because programming is fun, chess is fun, and I want to work with newer Python features and standard libraries.  
 
-There exist better chess engines than this, but I didn't have the pleasure of writing those.
+There exist better chess engines than this, but I didn't have the pleasure of writing those from scratch.
 
 ### Build chesspy
 
