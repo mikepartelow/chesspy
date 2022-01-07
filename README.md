@@ -68,6 +68,8 @@ figure out exactly which piece to move just by processing the text of a three ch
 This is not simply a matter of forbidding illegal moves. Many SAN strings (like "Nd5") specify only 
 the kind of piece to move and the destination square. 
 
+Consider this board position.
+
 ```       
       [r][n][b][q][k][b][n][r] 8
       [p][p][p][p][p][p][p][p] 7
