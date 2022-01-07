@@ -61,9 +61,9 @@ The rules of chess state that a piece cannot be moved if moving it would expose 
 White moves her e3 Knight, Black's Queen gives check. Therefore, the move "Nd5" unambiguously means to 
 move the Knight from c3, not the one from e3.
 
-For a Chess Engine to reliably parse a simple SAN move like "Nd5", it must know all the rules of chess, and it must 
-also know the state of the current game. Given a simple looking SAN move like "Nd5", a Chess Engine can't necessarily
-figure outexactly what piece to move just by parsing the three character string. 
+For a Chess Engine to reliably parse a simple looking SAN move like "Nd5", it must know all the rules of chess, and it must 
+also know the state of the current game. Given "Nd5", a Chess Engine can't necessarily
+figure out exactly which piece to move just by processing the text of a three character string. 
 
 This is not simply a matter of forbidding illegal moves. Many SAN strings (like "Nd5") specify only 
 the kind of piece to move and the destination square. 
