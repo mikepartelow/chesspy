@@ -17,18 +17,3 @@
 king because 21...Kf8 loses to 22. QxN } 21... Kxd7 22. Bf5+ { Black's defense won't come easily in the face of a double check. } 22... Ke8 (22... Kc6 23. Bd7#) 23. Bd7+ Kf8 { 23...Kd8 loses just as fast to 24. BxN } 24. Bxe7# { A great long combination that culminates in a very pretty mate. Anderssen was a master of such tactics. If these two famous games are anything to go by, Anderssen must have been fond of checkmating his opponents by placing a Bishop on e7!
 Anderssen's place in chess history is a bit difficult to assess. The author of some of the most famous chess combinations, he lost the two most important matches he ever played. It was a tribute to his standing in the chess world that Paul Morphy was universally considered the strongest player in the world after defeating Anderssen in 1858. After Wilhelm Steinitz edged Anderssen out of the winner's seat with a score of 8-6 in 1866, he
 claimed to be the first World Champion and was generally accepted to be such. It is worth noting that Anderssen is the man he had to beat to wear this crown. } 1-0
-
-
-[Event "The Evergreen Game (Anderssen - Dufresne, Berlin, 1852): Game Replay"]
-[Site "https://lichess.org/study/O2SZpbQC/kHvuvpTC"]
-[Result "*"]
-[UTCDate "2020.09.23"]
-[UTCTime "02:45:10"]
-[Variant "Standard"]
-[ECO "C52"]
-[Opening "Italian Game: Evans Gambit, Dufresne Defense"]
-[Annotator "https://lichess.org/@/Yushan"]
-
-1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. b4 Bxb4 5. c3 Ba5 6. d4 exd4 7. O-O d3 8. Qb3 Qf6 9. e5 Qg6 10. Re1 Nge7 11. Ba3 b5 12. Qxb5 Rb8 13. Qa4 Bb6 14. Nbd2 Bb7 15. Ne4 Qf5 16. Bxd3 Qh5 17. Nf6+ gxf6 18. exf6 Rg8 19. Rad1 Qxf3 20. Rxe7+ Nxe7 21. Qxd7+ Kxd7 22. Bf5+ Ke8 23. Bd7+ Kf8 24. Bxe7# *
-
-

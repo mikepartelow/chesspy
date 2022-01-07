@@ -81,7 +81,13 @@ class Game:
             piece = self.board.square_at(mv.src_y, mv.src_x)
             assert(piece is not None)
 
-            capture = self.board.square_at(mv.dst_y, mv.dst_x)
+            if mv.en_passant:
+                y = mv.dst_y + 1 if self.turn == Color.WHITE else mv.dst_y - 1
+                capture = self.board.square_at(y, mv.dst_x)
+                self.board.place_piece_at(None, y, mv.dst_x)
+            else:
+                capture = self.board.square_at(mv.dst_y, mv.dst_x)
+
             assert((capture is None) == (mv.capture is False))
 
             self.board.place_piece_at(piece, mv.dst_y, mv.dst_x)
@@ -111,13 +117,37 @@ class Game:
 
                 if mv.capture:
                     p_src = colorize('P', self.turn)
-                    if (p_dst := self.board.square_at(mv.dst_y, mv.dst_x)) and color_of(p_dst) != color_of(p_src):
+                    p_dst = self.board.square_at(mv.dst_y, mv.dst_x)
+
+                    if p_dst and color_of(p_dst) != color_of(p_src): # regular capture?
                         if mv.src_x and self.board.square_at(ahead_of(mv.dst_y), mv.src_x) == p_src:
                             mv.src_y = ahead_of(mv.dst_y)
                         elif mv.dst_x > 0 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x - 1) == p_src:
                             mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x - 1
                         elif mv.dst_x < 7 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x + 1) == p_src:
                             mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x + 1
+                    elif p_dst is None: # en passant?
+                        
+                        logging.debug("%s : %s : %s : %s", 
+                                        behind(mv.dst_y), 
+                                        self.board.square_at(behind(mv.dst_y), mv.dst_x),
+                                        colorize('P', self.turn.opponent),
+                                        self.board.square_at(ahead_of(mv.dst_y), mv.dst_x)
+                                     )
+                        
+                        if (p := self.board.square_at(ahead_of(mv.dst_y), mv.dst_x)) and \
+                                p == colorize('P', self.turn.opponent) and \
+                                self.board.square_at(behind(mv.dst_y), mv.dst_x) is None and \
+                                True: # FIXME: not "True" but "was opponent's previous move that pawn"
+                            if mv.src_x and self.board.square_at(ahead_of(mv.dst_y), mv.src_x) == p_src:
+                                mv.src_y = ahead_of(mv.dst_y)
+                                mv.en_passant = True
+                            elif mv.dst_x > 0 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x - 1) == p_src:
+                                mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x - 1
+                                mv.en_passant = True
+                            elif mv.dst_x < 7 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x + 1) == p_src:
+                                mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x + 1
+                                mv.en_passant = True
 
                 elif self.board.square_at(mv.dst_y, mv.dst_x) is None:
                     if self.turn == Color.WHITE:

@@ -3,3 +3,4 @@ __pycache__
 *.log
 .DS_Store
 app/games/*.txt
+app/tests/games/lichess_DrNykterstein_2022-01-04.pgn

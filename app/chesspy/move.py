@@ -12,11 +12,12 @@ class Move:
     mate        = False
     capture     = False
     castle      = False
+    en_passant  = False
 
     def __setattr__(self, name, value):
         """Forbid setting attributes twice, unless to same value after initialization.
         """
-        if name in ['check', 'mate', 'capture', 'castle']:
+        if name in ['check', 'mate', 'capture', 'castle', 'en_passant']:
             if getattr(self, name) != False:
                 raise IndexError
             else:

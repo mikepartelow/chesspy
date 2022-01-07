@@ -42,6 +42,31 @@ class TestMoveSan(unittest.TestCase):
     def test_2(self):
         self.assertTrue(False)
 
+class TestPromotion(unittest.TestCase):
+    def setUp(self):
+        self.game = game.Game()
+
+    def test_white(self):
+        self.assertTrue(False)
+
+    def test_black(self):
+        self.assertTrue(False)
+
+class TestEnPassant(unittest.TestCase):
+    def setUp(self):
+        self.game = game.Game()
+
+    def test_opponent_removed_from_board(self):
+        # FIXME: starting this way we aren't testing game memory - no way to know for sure that
+        #        black moved their pawn 2 spaces previous move. hence "honor system"
+        #
+        self.game.board = board.Board("        p p   p  pP k p  P   pP P  PK  P                        ")
+        self.game.turn = Color.WHITE
+        self.assertEqual('p', self.game.board.square_at(3, 5))
+        capture = self.game.move_san('gxf6')
+        self.assertEqual(None, self.game.board.square_at(3, 5))
+        self.assertEqual(capture, 'p')
+
 class TestCastle(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()
