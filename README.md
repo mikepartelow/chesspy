@@ -102,7 +102,8 @@ Many of them are Famous. That's where Famous Game Driven Development comes in!
 ### Famous Game Driven Development (FGDD)
 
 The idea is simple: leverage the existing universe of chess games that have already been validated correct
-by human referees or existing chess engines to produce tests for my chess engine.
+by human referees or existing chess engines. Those games are made of legal moves, so my Chess Engine should
+have no problem parsing and executing those moves.
 
 #### FGDD Heavy
 
