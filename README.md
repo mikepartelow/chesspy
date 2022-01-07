@@ -9,17 +9,17 @@ because programming is fun, chess is fun, and I want to work with newer Python f
 
 There exist better chess engines than this, but I didn't have the pleasure of writing those.
 
-## Build
+### Build chesspy
 
     docker build -t chesspy .
 
-## Run
+### Run chesspy
 
     docker run -ti -v `PWD`/app:/chesspy -ti chesspy bash
     python main.py board # display a chess board with pieces
     python main.py       # display a playthrough of The Immortal Game
 
-## Test
+### Test chesspy
     
     python -m unittest tests
     python -m unittest tests.test_san
@@ -27,7 +27,7 @@ There exist better chess engines than this, but I didn't have the pleasure of wr
     python -m unittest tests.test_san.TestMove.test_0
     
 
-### One way to write a software Chess Engine
+## One way to write a software Chess Engine
 
 Although the definition of a Chess Engine is "software that generates good chess moves", it's useful
 for any Chess Engine to also understand some chess move notation. Then we can build a fully featured 
@@ -84,7 +84,7 @@ If Black moves "Nf6", the Chess Engine needs more information than is provided i
 to conclude the Knight to move is currently on g8. It has to know the current board state and how Knights move, 
 among other details.
 
-### The Testing Problem
+## The Testing Problem
 
 I like Test Driven Development (TDD), where we write our tests and then we write just enough code to make our tests pass.
 
@@ -122,12 +122,15 @@ The next time I ran my tests, the tests compared manually verified "known good" 
 engine did with each move. This way I could catch any bugs that I introduced after verifying prior
 move implementations.
 
-[FGDD Heavy](app/tests/test_game.py)
+[FGDD Heavy](app/tests/test_game.py#L92)
 
 Once the engine could play through all the moves I had some confidence that my engine could parse some
 subset of SAN, and I had a suite of tests to detect regression bugs as I continued.
 
 #### FGDD Light
+
+
+
 - run lots of games, wait for exceptions, write TDD
 - example: en passant (not present in FGDD Heavy)
 
