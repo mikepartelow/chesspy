@@ -90,6 +90,9 @@ class Game:
 
             assert((capture is None) == (mv.capture is False))
 
+            if mv.promotion:
+                piece = colorize(mv.promotion, self.turn)
+
             self.board.place_piece_at(piece, mv.dst_y, mv.dst_x)
             self.board.place_piece_at(None, mv.src_y, mv.src_x)
 

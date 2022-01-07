@@ -60,7 +60,9 @@ class TestMagnusLichess(unittest.TestCase):
 
         for idx, sanstr in enumerate(pgn.moves(pgnfile)):
             turn = g.turn
-            print(f"{int( idx/2+1)}. {turn}: {sanstr}")
+            # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
+            if sanstr in ('1-0', '0-1'):
+                break
             g.move_san(sanstr)
             # print(g.board)
             # print("")

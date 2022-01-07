@@ -47,10 +47,19 @@ class TestPromotion(unittest.TestCase):
         self.game = game.Game()
 
     def test_white(self):
-        self.assertTrue(False)
+        self.game.board.place_piece_at(None, 0, 6)
+        self.game.board.place_piece_at('P', 1, 6)
+        self.game.move_san("g8=N")
+        self.assertEqual(None, self.game.board.square_at(1, 6))
+        self.assertEqual('N', self.game.board.square_at(0, 6))
 
     def test_black(self):
-        self.assertTrue(False)
+        self.game.board.place_piece_at(None, 7, 6)
+        self.game.board.place_piece_at('p', 6, 6)
+        self.game.turn = Color.BLACK
+        self.game.move_san("g1=Q")
+        self.assertEqual(None, self.game.board.square_at(6, 6))
+        self.assertEqual('q', self.game.board.square_at(7, 6))
 
 class TestEnPassant(unittest.TestCase):
     def setUp(self):
