@@ -125,7 +125,7 @@ The next time I ran my tests, the tests compared manually verified "known good" 
 engine did with each move. This way I could catch any bugs that I introduced after verifying prior
 move implementations.
 
-[FGDD Heavy](app/tests/test_game.py#L92)
+[FGDD Heavy](app/tests/test_game.py#L117)
 
 Once the engine could play through all the moves I had some confidence that my engine could parse some
 subset of SAN, and I had a suite of tests to detect regression bugs as I continued.
@@ -150,7 +150,7 @@ Queen on the board! So it raised an exception, I looked at the move history, and
 With a large dataset of less-famous games, I can flush out many cases that I would miss if I wrote
 individual TDD tests myself.
 
-[FGDD Light](app/tests/test_pgn.py)
+[FGDD Light](app/tests/test_pgn.py#L34)
 
 #### FGDD for Move Suggestions
 
