@@ -1,15 +1,13 @@
 # A FGDD Chess Platform in Python 3.10
 
-> It's time to brush up on my Python Best Practices. What better way than to develop a chess program?
+> How do you test a chess engine?
 
-Standard Algebraic Notation (SAN) is a widely used, standardized chess move notation. This version of **chesspy** parses SAN to replay games. **chesspy** 1.0 will feature two-player head-to-head and internet modes. Fun!
+## Chess Engines
 
-## Focuses
+A chess engine examines chess board positions and suggests good moves. I decided to build a chess engine
+because programming is fun, chess is fun, and I want to work with newer Python features and standard libraries.  
 
-- TDD: Test Driven Development
-- FGDD: Famous Game Driven Development. Use games like Game Of The Century and The Immortal Game to reveal necessary tests for TDD.
-- Prefer stdlib over rolling my own.
-- Prefer rolling my own over 3rd party libs - point is to learn and explore.
+There exist better chess engines than this, but I didn't have the pleasure of writing those.
 
 ## Build
 
@@ -28,3 +26,111 @@ Standard Algebraic Notation (SAN) is a widely used, standardized chess move nota
     python -m unittest tests.test_san.TestMove
     python -m unittest tests.test_san.TestMove.test_0
     
+
+### One way to write a software Chess Engine
+
+Although the definition of a Chess Engine is "software that generates good chess moves", it's useful
+for any Chess Engine to also understand some chess move notation. Then we can build a fully featured 
+game for human vs. computer, and we can use historical games as training material for our engine.
+
+Standard Algebraic Notation (SAN) is a widely used, standardized chess move notation. It is used by all
+major chess organizations and websites, and understood by chess players of all nationalities. Games recorded
+in SAN are easily obtainable on the internet or in centuries-old chess manuals at your public library.
+
+SAN is relatively simple for humans to understand. But what seems simple to a human can require pretty
+complicated code to implement in software.
+
+Consider the following board position, with Black's Queen on e4, and White's Knights on c3 and e3.
+
+```       
+      [r][n][b][ ][k][b][n][r] 8
+      [p][p][p][p][p][p][p][p] 7
+      [ ][ ][ ][ ][ ][ ][ ][ ] 6
+      [ ][ ][ ][ ][ ][ ][ ][ ] 5
+      [ ][ ][ ][ ][q][ ][ ][ ] 4
+      [ ][ ][N][ ][N][ ][ ][ ] 3
+      [P][P][P][P][ ][P][P][P] 2
+      [R][ ][B][Q][K][B][ ][R] 1
+       a  b  c  d  e  f  g  h
+```
+
+What does the SAN move "Nd5" mean? It means "Knight to d5". Both of white's knights can reach d5 in one move,
+but if you are familiar with the rules of chess, it is clear that only the knight on c3 can legally move.
+
+The rules of chess state that a piece cannot be moved if moving it would expose the King to check. If 
+White moves her e3 Knight, Black's Queen gives check. Therefore, the move "Nd5" unambiguously means to 
+move the Knight from c3, not the one from e3.
+
+For a Chess Engine to reliably parse a simple SAN move like "Nd5", it must know all the rules of chess, and it must 
+also know the state of the current game. Given a simple looking SAN move like "Nd5", a Chess Engine can't necessarily
+figure outexactly what piece to move just by parsing the three character string. 
+
+This is not simply a matter of forbidding illegal moves. Many SAN strings (like "Nd5") specify only 
+the kind of piece to move and the destination square. 
+
+```       
+      [r][n][b][q][k][b][n][r] 8
+      [p][p][p][p][p][p][p][p] 7
+      [ ][ ][ ][ ][ ][ ][ ][ ] 6
+      [ ][ ][ ][ ][ ][ ][ ][ ] 5
+      [ ][ ][ ][ ][ ][ ][ ][ ] 4
+      [ ][ ][N][ ][ ][ ][ ][ ] 3
+      [P][P][P][P][P][P][P][P] 2
+      [R][ ][B][Q][K][B][N][R] 1
+       a  b  c  d  e  f  g  h
+```
+
+If Black moves "Nf6", the Chess Engine needs more information than is provided in the 3 character string
+to conclude the Knight to move is currently on g8. It has to know the current board state and how Knights move, 
+among other details.
+
+### The Testing Problem
+
+I like Test Driven Development (TDD), where we write our tests and then we write just enough code to make our tests pass.
+
+How do I know my tests are good? I can write some simple bootstrapping tests validating basic moves. But to
+engineer real confidence in my SAN parser, I'll need lots more test cases than I am willing to manually
+type out.
+
+Fortunately, there are plenty of fully validated chess games represented in SAN format all over the internet.
+
+Many of them are Famous. That's where Famous Game Driven Development comes in!
+
+
+### Famous Game Driven Development (FGDD)
+
+The idea is simple: leverage the existing universe of chess games that have already been validated correct
+by human referees or existing chess engines to produce tests for my chess engine.
+
+#### FGDD Heavy
+
+I started with two Famous Chess Games: The Immortal Game and The Game of the Century.
+
+We already know all the moves in these games are legal (and some are brilliant), so if my Engine can't
+make the correct move when given the legal SAN move strings from these games, I know immediately my code
+is wrong.
+
+I populated a simple text file with the SAN formatted moves from these games.
+
+I fed the moves to my SAN parser. For each move, I wrote the code to execute the move, and printed out 
+a 64 (8x8) character text representation of the board state, and a visual representation of the board state.
+
+I manually (visually!) verified that my engine made the right move, and then added the 64 character 
+text representation of the board state to a "known good" file.
+
+The next time I ran my tests, the tests compared manually verified "known good" board states to what the 
+engine did with each move. This way I could catch any bugs that I introduced after verifying prior
+move implementations.
+
+[FGDD Heavy](app/tests/test_game.py)
+
+Once the engine could play through all the moves I had some confidence that my engine could parse some
+subset of SAN, and I had a suite of tests to detect regression bugs as I continued.
+
+#### FGDD Light
+- run lots of games, wait for exceptions, write TDD
+- example: en passant (not present in FGDD Heavy)
+
+#### FGDD for Move Suggestions
+- ensure engine suggests (among other things) the move at each stage in our test games
+
