@@ -145,9 +145,10 @@ it could not execute a move it normally could have handled.
 
 For example, when executing pawn promotion like "h8=Q", the engine simply ignored the promotion to Queen 
 and moved the pawn to h8. A few moves later, the player moved their Queen, but my engine could find no
-Queen on the board! So it raised an exception, I looked at the move history, and implemented Pawn Promotion.
+Queen on the board! So it raised an exception, I looked at the move history, and added tests specifically
+for Pawn Promotion, in TDD style.
 
-With a large dataset of less-famous games, I can flush out many cases that I would miss if I wrote
+With a large dataset of less-famous games, I can flush out many cases that I would miss if I tried to imagine
 individual TDD tests myself.
 
 [FGDD Light](app/tests/test_pgn.py#L34)
