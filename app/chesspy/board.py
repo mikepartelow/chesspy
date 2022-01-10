@@ -93,7 +93,7 @@ class Board:
         Returns tuple (p, y, x) where p is the first piece encountered, (y, x) are coordinates of p, or None if no piece is found.
         """
         start_y, start_x = start
-        logging.debug("find_first_on_diagonal(%s, %s, %s, %s, %s, %s)", start_y, start_x, inc_y, inc_x, src_y, src_x)
+        logging.debug("find_first_on_h_or_v(%s, %s, %s, %s, %s, %s)", start_y, start_x, inc_y, inc_x, src_y, src_x)
 
         assert((inc_y == 0 or inc_x == 0) and (inc_y != 0 or inc_x != 0))
 

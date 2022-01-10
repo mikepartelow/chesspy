@@ -667,6 +667,15 @@ class TestSanQueen(unittest.TestCase):
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
 
+    def test_2a(self):
+        self.game.board = board.Board(" Q   QK        R              p      r       k P                ")
+        self.game.turn = Color.WHITE
+        mv = san.parse('Qbxf4+', game=self.game)
+        self.assertEqual(mv.src, (0, 1))
+        self.assertEqual(mv.dst, (4, 5))
+        self.assertEqual(mv.piece, 'Q')
+        self.assertTrue(mv.capture)
+
 class TestSanRook(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()

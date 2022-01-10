@@ -44,14 +44,14 @@ class TestMagnusLichess(unittest.TestCase):
 
         if os.path.exists(pgnfile):
             for sanstr in pgn.moves(pgnfile):
-                # print(sanstr)
+                print(sanstr)
 
                 if sanstr in ('1-0', '0-1'):
                     g = game.Game()
                     continue
 
                 g.move_san(sanstr)
-                # print(repr(g.board))
+                print('"{}"'.format(repr(g.board)))
 
     def test_n7ZjoKNR(self):
         g = game.Game()

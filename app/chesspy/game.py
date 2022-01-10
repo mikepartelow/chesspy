@@ -26,7 +26,7 @@ def deduce_src_moves_like_rook(mv, board, p_target):
     elif (p := board.find_first_on_h_or_v(mv.dst, -1, 0, mv.src_y, mv.src_x)) and p[0] == p_target:
         mv.src_y, mv.src_x = p[1:]
 
-    return mv.src != (None, None)
+    return mv.src_y is not None and mv.src_x is not None
 
 def deduce_src_moves_like_bishop(mv, board, p_target):
     if (p := board.find_first_on_diagonal(mv.dst, -1, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
@@ -38,7 +38,7 @@ def deduce_src_moves_like_bishop(mv, board, p_target):
     elif (p := board.find_first_on_diagonal(mv.dst, -1, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
         mv.src_y, mv.src_x = p[1:]
 
-    return mv.src != (None, None)
+    return mv.src_y is not None and mv.src_x is not None
 
 class Game:
     def __init__(self):
