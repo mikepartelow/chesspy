@@ -44,9 +44,14 @@ class Game:
     def __init__(self):
         self.board = Board()
         self.turn = Color.WHITE
+        self.over = False
 
     def move_san(self, sanstr):
         logging.debug("Game::move_san(%s)", sanstr)
+
+        if sanstr in ('1-0', '0-1'):
+            self.over = True
+            return None
 
         capture = None
 
@@ -96,7 +101,10 @@ class Game:
             self.board.place_piece_at(piece, mv.dst_y, mv.dst_x)
             self.board.place_piece_at(None, mv.src_y, mv.src_x)
 
-        self.turn = Color.toggle(self.turn)
+        if mv.mate:
+            self.over = True
+        else:
+            self.turn = Color.toggle(self.turn)
 
         return capture
 

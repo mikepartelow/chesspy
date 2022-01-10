@@ -26,6 +26,30 @@ class TestTurns(unittest.TestCase):
 
         self.assertEqual(g.turn, Color.BLACK)
 
+class TestGameOverMan(unittest.TestCase):
+    def setUp(self):
+        self.game = game.Game()
+
+    def test_0(self):
+        self.game.board = board.Board("           bk         p   KPp       q                           ")
+        self.game.turn = Color.BLACK
+        self.assertFalse(self.game.over)
+        self.game.move_san('Qd4#')
+        self.assertTrue(self.game.over)        
+
+    def test_1(self):
+        self.game.board = board.Board("           bk         p   KPp       q                           ")
+        self.game.turn = Color.BLACK
+        self.assertFalse(self.game.over)
+        self.game.move_san('1-0')
+        self.assertTrue(self.game.over)        
+
+    def test_2(self):
+        self.game.turn = Color.WHITE
+        self.assertFalse(self.game.over)
+        self.game.move_san('0-1')
+        self.assertTrue(self.game.over)        
+
 class TestMoveSan(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()

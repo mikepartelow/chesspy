@@ -44,14 +44,14 @@ class TestMagnusLichess(unittest.TestCase):
 
         if os.path.exists(pgnfile):
             for sanstr in pgn.moves(pgnfile):
+                print('"{}"'.format(repr(g.board)))
                 print(sanstr)
 
-                if sanstr in ('1-0', '0-1'):
+                g.move_san(sanstr)          
+                if g.over:
                     g = game.Game()
                     continue
-
-                g.move_san(sanstr)
-                print('"{}"'.format(repr(g.board)))
+          
 
     def test_n7ZjoKNR(self):
         g = game.Game()
@@ -61,9 +61,9 @@ class TestMagnusLichess(unittest.TestCase):
         for idx, sanstr in enumerate(pgn.moves(pgnfile)):
             turn = g.turn
             # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
-            if sanstr in ('1-0', '0-1'):
-                break
             g.move_san(sanstr)
+            if g.over:
+                break
             # print(g.board)
             # print("")
 
@@ -75,9 +75,9 @@ class TestMagnusLichess(unittest.TestCase):
         for idx, sanstr in enumerate(pgn.moves(pgnfile)):
             turn = g.turn
             # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
-            if sanstr in ('1-0', '0-1'):
-                break
             g.move_san(sanstr)
+            if g.over:
+                break
             # print(g.board)
             # print("'{}'".format(repr(g.board)))
             # print("")
