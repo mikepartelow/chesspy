@@ -45,11 +45,15 @@ class TestGameOverMan(unittest.TestCase):
         self.assertTrue(self.game.over)        
 
     def test_2(self):
-        self.game.turn = Color.WHITE
         self.assertFalse(self.game.over)
         self.game.move_san('0-1')
         self.assertTrue(self.game.over)        
 
+    def test_3(self):
+        self.assertFalse(self.game.over)
+        self.game.move_san('1/2-1/2')
+        self.assertTrue(self.game.over)        
+                
 class TestMoveSan(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()

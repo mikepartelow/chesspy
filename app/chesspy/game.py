@@ -49,7 +49,7 @@ class Game:
     def move_san(self, sanstr):
         logging.debug("Game::move_san(%s)", sanstr)
 
-        if sanstr in ('1-0', '0-1'):
+        if sanstr in ('1-0', '0-1', '1/2-1/2',):
             self.over = True
             return None
 
@@ -180,7 +180,7 @@ class Game:
                 for (offset_y, offset_x) in zip(offsets_y, offsets_x):
                     src_y, src_x = mv.dst_y + offset_y, mv.dst_x + offset_x
 
-                    if (mv.src_y and src_y != mv.src_y) or (mv.src_x and src_x != mv.src_x):
+                    if (mv.src_y is not None and src_y != mv.src_y) or (mv.src_x is not None and src_x != mv.src_x):                        
                         continue
 
                     if src_y >= 0 and src_y < 8 and src_x >= 0 and src_x < 8:

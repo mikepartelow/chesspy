@@ -395,8 +395,18 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
 
-    @unittest.expectedFailure
     def test_3(self):
+        # knight move disambiguated by SAN where a src coordinate is 0
+        self.game.board = board.Board("  k rb  pp q  p n p bp     n       P  P    N B  PPPBQ   RN K    ")
+        self.game.turn = Color.BLACK
+        mv = san.parse("Nab4", game=self.game)
+        self.assertEqual(mv.src, (2, 0))
+        self.assertEqual(mv.dst, (4, 1))
+        self.assertEqual(mv.piece, 'N')
+        self.assertFalse(mv.capture)        
+
+    @unittest.expectedFailure
+    def test_4(self):
         # test knight moves that can only be disambiguated by "would expose check"
         self.assertTrue(False)
 

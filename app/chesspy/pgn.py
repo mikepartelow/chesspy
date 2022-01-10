@@ -52,7 +52,7 @@ def moves(path):
             else:
                 logging.debug("yielding [%s]", token)
                 yield token                
-                if token.endswith('#') or token in ('1-0', '0-1',):                    
+                if token.endswith('#') or token in ('1-0', '0-1', '1/2-1/2',):                    
                     logging.debug("breaking due to endgame")
                     break
 
