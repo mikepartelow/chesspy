@@ -44,8 +44,8 @@ class TestMagnusLichess(unittest.TestCase):
 
         if os.path.exists(pgnfile):
             for sanstr in pgn.moves(pgnfile):
-                print('"{}"'.format(repr(g.board)))
-                print(sanstr)
+                # print('"{}"'.format(repr(g.board)))
+                # print(sanstr)
 
                 g.move_san(sanstr)          
                 if g.over:
@@ -80,6 +80,21 @@ class TestMagnusLichess(unittest.TestCase):
                 break
             # print(g.board)
             # print("'{}'".format(repr(g.board)))
+            # print("")
+
+    def test_YXOWlp4b(self):
+        g = game.Game()
+
+        pgnfile = 'tests/games/YXOWlp4b.pgn'
+
+        for idx, sanstr in enumerate(pgn.moves(pgnfile)):
+            turn = g.turn
+            # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
+            g.move_san(sanstr)
+            if g.over:
+                break
+            # print(g.board)
+            # print('"{}"'.format(repr(g.board)))
             # print("")
 
         
