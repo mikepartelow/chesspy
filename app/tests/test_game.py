@@ -65,7 +65,7 @@ class TestEnPassant(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()
 
-    def test_opponent_removed_from_board(self):
+    def test_opponent_removed_from_board_w(self):
         # FIXME: starting this way we aren't testing game memory - no way to know for sure that
         #        black moved their pawn 2 spaces previous move. hence "honor system"
         #
@@ -75,6 +75,18 @@ class TestEnPassant(unittest.TestCase):
         capture = self.game.move_san('gxf6')
         self.assertEqual(None, self.game.board.square_at(3, 5))
         self.assertEqual(capture, 'p')
+
+    def test_opponent_removed_from_board_b(self):
+        # FIXME: starting this way we aren't testing game memory - no way to know for sure that
+        #        black moved their pawn 2 spaces previous move. hence "honor system"
+        #
+        self.game.board = board.Board("    b            p      p   k  p   NpP   P  K   P      P        ")
+        self.game.turn = Color.BLACK
+        self.assertEqual('P', self.game.board.square_at(4, 5))
+        capture = self.game.move_san('exf3')
+        self.assertEqual(None, self.game.board.square_at(4, 5))
+        self.assertEqual(capture, 'P')
+
 
 class TestCastle(unittest.TestCase):
     def setUp(self):

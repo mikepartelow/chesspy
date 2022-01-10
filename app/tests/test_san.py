@@ -325,9 +325,19 @@ class TestSanPawn(unittest.TestCase):
         self.assertTrue(mv.capture)
         self.assertTrue(mv.en_passant)
 
-    @unittest.expectedFailure
     def test_en_passant_honor_system_1(self):
-        self.assertEqual("black's", "move")
+        # FIXME: starting this way we aren't testing game memory - no way to know for sure that
+        #        black moved their pawn 2 spaces previous move. hence "honor system"
+        #
+        self.game.board = board.Board("    b            p      p   k  p   NpP   P  K   P      P        ")
+        self.game.turn = Color.BLACK
+        self.assertEqual('P', self.game.board.square_at(4, 5))
+        mv = san.parse('exf3', game=self.game)
+        self.assertEqual(mv.src, (4, 4))
+        self.assertEqual(mv.dst, (5, 5))
+        self.assertEqual(mv.piece, 'P')
+        self.assertTrue(mv.capture)
+        self.assertTrue(mv.en_passant)
 
     @unittest.expectedFailure
     def test_en_passant_trust_no_one_0(self):

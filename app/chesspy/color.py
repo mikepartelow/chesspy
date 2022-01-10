@@ -8,7 +8,7 @@ class Color(Enum):
         return "white" if self == Color.WHITE else "black"
 
     def opponent(self):
-        return BLACK if self == WHITE else WHITE
+        return self.BLACK if self == self.WHITE else self.WHITE
 
     @staticmethod
     def toggle(color):
