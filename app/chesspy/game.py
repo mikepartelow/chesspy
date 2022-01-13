@@ -3,6 +3,7 @@ from .color import Color
 from . import san
 import itertools
 import logging
+import copy
 
 def color_of(ch):
     if ch.isupper():
@@ -41,9 +42,9 @@ def deduce_src_moves_like_bishop(mv, board, p_target):
     return mv.src_y is not None and mv.src_x is not None
 
 class Game:
-    def __init__(self):
-        self.board = Board()
-        self.turn = Color.WHITE
+    def __init__(self, board=None, turn=None):
+        self.board = board or Board()
+        self.turn = turn or Color.WHITE
         self.over = False
 
     def is_check(self):
@@ -61,8 +62,10 @@ class Game:
             y, x = king_pos[0] + yo, king_pos[1] + xo
             if y >= 0 and y < 8 and x >= 0 and x < 8:
                 if self.board.square_at(y, x) == opponent_knight:
+                    logging.debug("Game::is_check() -> True")
                     return True
 
+        logging.debug("Game::is_check() -> False")
         return False
 
     def move_san(self, sanstr):
@@ -102,23 +105,7 @@ class Game:
                     self.board.place_piece_at(None, 0, 4)
                     self.board.place_piece_at(None, 0, 0)
         else:
-            piece = self.board.square_at(mv.src_y, mv.src_x)
-            assert(piece is not None)
-
-            if mv.en_passant:
-                y = mv.dst_y + 1 if self.turn == Color.WHITE else mv.dst_y - 1
-                capture = self.board.square_at(y, mv.dst_x)
-                self.board.place_piece_at(None, y, mv.dst_x)
-            else:
-                capture = self.board.square_at(mv.dst_y, mv.dst_x)
-
-            assert((capture is None) == (mv.capture is False))
-
-            if mv.promotion:
-                piece = colorize(mv.promotion, self.turn)
-
-            self.board.place_piece_at(piece, mv.dst_y, mv.dst_x)
-            self.board.place_piece_at(None, mv.src_y, mv.src_x)
+            self.move_move(mv)
 
         if mv.mate:
             self.over = True
@@ -126,6 +113,56 @@ class Game:
             self.turn = Color.toggle(self.turn)
 
         return capture
+
+    def move_move(self, mv):
+        piece = self.board.square_at(mv.src_y, mv.src_x)
+        assert(piece is not None)
+
+        if mv.en_passant:
+            y = mv.dst_y + 1 if self.turn == Color.WHITE else mv.dst_y - 1
+            capture = self.board.square_at(y, mv.dst_x)
+            self.board.place_piece_at(None, y, mv.dst_x)
+        else:
+            capture = self.board.square_at(mv.dst_y, mv.dst_x)
+
+        assert((capture is None) == (mv.capture is False))
+
+        if mv.promotion:
+            piece = colorize(mv.promotion, self.turn)
+
+        self.board.place_piece_at(piece, mv.dst_y, mv.dst_x)
+        self.board.place_piece_at(None, mv.src_y, mv.src_x)
+
+    def test_move_from_src(self, y, x, mv):
+        test_mv = copy.copy(mv)
+        test_mv.src_y, test_mv.src_x = y, x
+
+        test_game = Game(board=Board(repr(self.board)), turn=self.turn)
+        test_game.move_move(test_mv)
+
+        test_game.turn = test_game.turn.opponent()
+        print(test_game.board)
+        if not test_game.is_check():
+            mv.src_y, mv.src_x = y, x
+            return True
+
+        return False
+
+    def deduce_src_knight(self, mv):
+        p_src = colorize('N', self.turn)
+        offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
+        offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
+
+        for (offset_y, offset_x) in zip(offsets_y, offsets_x):
+            src_y, src_x = mv.dst_y + offset_y, mv.dst_x + offset_x
+
+            if (mv.src_y is not None and src_y != mv.src_y) or (mv.src_x is not None and src_x != mv.src_x):                        
+                continue
+
+            if src_y >= 0 and src_y < 8 and src_x >= 0 and src_x < 8:
+                if (p := self.board.square_at(src_y, src_x)) == p_src:
+                    logging.debug("deduce_src_knight(%r): yield (%s, %s)", mv, src_y, src_x)
+                    yield src_y, src_x
 
     def deduce_src(self, mv):
         """Given a partially constructed Move, deduce the src coordinates for the move.
@@ -192,20 +229,9 @@ class Game:
                             mv.src_y, mv.src_x = p[1:]
 
             case 'N':
-                p_src = colorize('N', self.turn)
-                offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
-                offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
-
-                for (offset_y, offset_x) in zip(offsets_y, offsets_x):
-                    src_y, src_x = mv.dst_y + offset_y, mv.dst_x + offset_x
-
-                    if (mv.src_y is not None and src_y != mv.src_y) or (mv.src_x is not None and src_x != mv.src_x):                        
-                        continue
-
-                    if src_y >= 0 and src_y < 8 and src_x >= 0 and src_x < 8:
-                        if (p := self.board.square_at(src_y, src_x)) == p_src:
-                            mv.src_y, mv.src_x = src_y, src_x                            
-                            break
+                for (y, x) in self.deduce_src_knight(mv):
+                    if self.test_move_from_src(y, x, mv):
+                        break
             case 'B':
                 deduce_src_moves_like_bishop(mv, self.board, colorize('B', self.turn))
             case 'Q':

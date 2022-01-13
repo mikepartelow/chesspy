@@ -409,6 +409,9 @@ class TestSanKnight(unittest.TestCase):
         # knight move disambiguated by "would expose check"
         self.game.board = board.Board("rnbq rk ppp  ppp    pn           b P      N  B  PPP  PPPR BQK NR")
         mv = san.parse("Ne2", game=self.game)
+
+        self.assertEqual("bishop", "gives check if wrong knight is moved")
+
         self.assertEqual(mv.src, (7, 6))
         self.assertEqual(mv.dst, (6, 4))
         self.assertEqual(mv.piece, 'N')
