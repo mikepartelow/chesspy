@@ -34,6 +34,18 @@ class Board:
     def __repr__(self):
         return ''.join(ch or ' ' for ch in self.squares)
 
+    def find_piece(self, piece):
+        """Returns (y, x) coordinates of requested piece, or None if the piece is not on the board.
+
+        If the piece is not unique, e.g. black rook at start of game, return (y, x) coordinates of one of them.
+        """
+        # FIXME: consider maintaining a dict of pieces to coordinate lists for O(1) piece finding
+        for y in range(0, 8):
+            for x in range(0, 8):
+                if self.squares[8*y + x] == piece:
+                    return (y, x)
+        return None
+
     def square_at(self, y, x):
         """Returns the Piece at the given coordinates, or None.
 

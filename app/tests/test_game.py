@@ -26,6 +26,79 @@ class TestTurns(unittest.TestCase):
 
         self.assertEqual(g.turn, Color.BLACK)
 
+class TestIsCheck(unittest.TestCase):
+    def setUp(self):
+        self.game = game.Game()
+
+    def test_not(self):
+        self.assertFalse(self.game.is_check())
+        self.game.turn = Color.BLACK
+        self.assertFalse(self.game.is_check())
+
+    def test_knight_0b(self):
+        self.game.board.place_piece_at(None, 7, 4)
+        self.game.board.place_piece_at('K', 3, 4)
+
+        self.game.board.place_piece_at('n', 5, 3)
+        self.assertTrue(self.game.is_check())
+
+        self.game.board.place_piece_at(None, 5, 3)
+        self.game.board.place_piece_at('n', 5, 5)
+        self.assertTrue(self.game.is_check())
+
+        self.game.board.place_piece_at(None, 5, 5)
+        self.game.board.place_piece_at('n', 1, 5)
+        self.assertTrue(self.game.is_check())
+
+        self.game.board.place_piece_at(None, 1, 5)
+        self.game.board.place_piece_at('n', 1, 3)
+        self.assertTrue(self.game.is_check())
+
+    def test_knight_0w(self):
+        self.game.turn = Color.BLACK
+        
+        self.game.board.place_piece_at(None, 0, 4)
+        self.game.board.place_piece_at('k', 3, 4)
+
+        self.game.board.place_piece_at('N', 5, 3)
+        self.assertTrue(self.game.is_check())
+
+        self.game.board.place_piece_at(None, 5, 3)
+        self.game.board.place_piece_at('N', 5, 5)
+        self.assertTrue(self.game.is_check())
+
+        self.game.board.place_piece_at(None, 5, 5)
+        self.game.board.place_piece_at('N', 1, 5)
+        self.assertTrue(self.game.is_check())
+
+        self.game.board.place_piece_at(None, 1, 5)
+        self.game.board.place_piece_at('N', 1, 3)
+        self.assertTrue(self.game.is_check())
+
+        self.game.board.place_piece_at('B', 1, 3)
+        self.assertFalse(self.game.is_check())
+
+        self.game.board.place_piece_at('n', 1, 3)
+        self.assertFalse(self.game.is_check())
+
+    def test_rook_0(self):
+        self.assertFalse("test both black and white")
+
+    def test_rook_0(self):
+        self.assertFalse("test both black and white")
+
+    def test_bishop_0(self):
+        self.assertFalse("test both black and white")
+
+    def test_queen_0(self):
+        self.assertFalse("test both black and white")
+
+    def test_pawn_0(self):
+        self.assertFalse("test both black and white")
+
+    def test_combo_0(self):
+        self.assertFalse("test both black and white")
+
 class TestGameOverMan(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()

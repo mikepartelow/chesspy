@@ -46,6 +46,25 @@ class Game:
         self.turn = Color.WHITE
         self.over = False
 
+    def is_check(self):
+        logging.debug("Game::is_check()")
+
+        king_pos = self.board.find_piece(colorize('K', self.turn))
+        assert(king_pos is not None)
+
+        offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
+        offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
+
+        opponent_knight = colorize('N', self.turn.opponent())
+
+        for (yo, xo) in zip(offsets_y, offsets_x):
+            y, x = king_pos[0] + yo, king_pos[1] + xo
+            if y >= 0 and y < 8 and x >= 0 and x < 8:
+                if self.board.square_at(y, x) == opponent_knight:
+                    return True
+
+        return False
+
     def move_san(self, sanstr):
         logging.debug("Game::move_san(%s)", sanstr)
 

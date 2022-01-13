@@ -412,7 +412,8 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.src, (7, 6))
         self.assertEqual(mv.dst, (6, 4))
         self.assertEqual(mv.piece, 'N')
-        self.assertFalse(mv.capture)        
+        self.assertFalse(mv.capture)    
+        self.assertEqual("other knight", "was not moved during is_check()")    
 
 class TestSanBishop(unittest.TestCase):
     def setUp(self):
