@@ -47,11 +47,12 @@ class Game:
         self.turn = turn or Color.WHITE
         self.over = False
 
-    def is_check(self):
-        logging.debug("Game::is_check()")
+    def is_in_check(self):
+        logging.debug("Game::is_in_check(%s)", self.turn)
 
         king_pos = self.board.find_piece(colorize('K', self.turn))
         assert(king_pos is not None)
+        logging.debug("Game::is_in_check() : king_pos = %r", king_pos)
 
         offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
         offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
@@ -62,25 +63,43 @@ class Game:
             y, x = king_pos[0] + yo, king_pos[1] + xo
             if y >= 0 and y < 8 and x >= 0 and x < 8:
                 if self.board.square_at(y, x) == opponent_knight:
-                    logging.debug("Game::is_check() -> True : Knight at (%s, %s)", y, x)
+                    logging.debug("Game::is_in_check() -> True : Knight at (%s, %s)", y, x)
                     return True
+
+        opponent_queen = colorize('Q', self.turn.opponent())
 
         opponent_bishop = colorize('B', self.turn.opponent())
 
-        if (p := self.board.find_first_on_diagonal(king_pos, -1, -1)) and p[0] == opponent_bishop:
-            logging.debug("Game::is_check() -> True : Bishop at (%s, %s)", *p[1:])
+        if (p := self.board.find_first_on_diagonal(king_pos, -1, -1)) and p[0] in (opponent_bishop, opponent_queen):
+            logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_diagonal(king_pos, 1, 1)) and p[0] == opponent_bishop:
-            logging.debug("Game::is_check() -> True : Bishop at (%s, %s)", *p[1:])
+        elif (p := self.board.find_first_on_diagonal(king_pos, 1, 1)) and p[0] in (opponent_bishop, opponent_queen):
+            logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_diagonal(king_pos, 1, -1)) and p[0] == opponent_bishop:
-            logging.debug("Game::is_check() -> True : Bishop at (%s, %s)", *p[1:])
+        elif (p := self.board.find_first_on_diagonal(king_pos, 1, -1)) and p[0] in (opponent_bishop, opponent_queen):
+            logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_diagonal(king_pos, -1, 1)) and p[0] == opponent_bishop:
-            logging.debug("Game::is_check() -> True : Bishop at (%s, %s)", *p[1:])
+        elif (p := self.board.find_first_on_diagonal(king_pos, -1, 1)) and p[0] in (opponent_bishop, opponent_queen):
+            logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
 
-        logging.debug("Game::is_check() -> False")
+        opponent_rook = colorize('R', self.turn.opponent())
+
+        if (p := self.board.find_first_on_h_or_v(king_pos, 0, -1)) and p[0] in (opponent_queen,):
+            logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
+            return True
+        elif (p := self.board.find_first_on_h_or_v(king_pos, 0, 1)) and p[0] in (opponent_queen,):
+            logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
+            return True
+        elif (p := self.board.find_first_on_h_or_v(king_pos, 1, 0)) and p[0] in (opponent_queen,):
+            logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
+            return True
+        elif (p := self.board.find_first_on_h_or_v(king_pos, -1, 0)) and p[0] in (opponent_queen,):
+            logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
+            return True
+
+
+        logging.debug("Game::is_in_check(%s) -> False", self.turn)
         return False
 
     def move_san(self, sanstr):
@@ -122,10 +141,12 @@ class Game:
         else:
             capture = self.move_move(mv)
 
+        self.turn = Color.toggle(self.turn)
+
         if mv.mate:
-            self.over = True
-        else:
-            self.turn = Color.toggle(self.turn)
+            self.over = True            
+        
+        assert(mv.check == self.is_in_check())
 
         return capture
 
@@ -157,7 +178,7 @@ class Game:
         test_game = Game(board=Board(repr(self.board)), turn=self.turn)
         test_game.move_move(test_mv)
 
-        if not test_game.is_check():
+        if not test_game.is_in_check():
             mv.src_y, mv.src_x = y, x
             return True
 

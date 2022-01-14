@@ -31,28 +31,28 @@ class TestIsCheck(unittest.TestCase):
         self.game = game.Game()
 
     def test_not(self):
-        self.assertFalse(self.game.is_check())
+        self.assertFalse(self.game.is_in_check())
         self.game.turn = Color.BLACK
-        self.assertFalse(self.game.is_check())
+        self.assertFalse(self.game.is_in_check())
 
     def test_knight_0b(self):
         self.game.board.place_piece_at(None, 7, 4)
         self.game.board.place_piece_at('K', 3, 4)
 
         self.game.board.place_piece_at('n', 5, 3)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 5, 3)
         self.game.board.place_piece_at('n', 5, 5)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 5, 5)
         self.game.board.place_piece_at('n', 1, 5)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 1, 5)
         self.game.board.place_piece_at('n', 1, 3)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
     def test_knight_0w(self):
         self.game.turn = Color.BLACK
@@ -61,25 +61,25 @@ class TestIsCheck(unittest.TestCase):
         self.game.board.place_piece_at('k', 3, 4)
 
         self.game.board.place_piece_at('N', 5, 3)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 5, 3)
         self.game.board.place_piece_at('N', 5, 5)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 5, 5)
         self.game.board.place_piece_at('N', 1, 5)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 1, 5)
         self.game.board.place_piece_at('N', 1, 3)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at('B', 1, 3)
-        self.assertFalse(self.game.is_check())
+        self.assertFalse(self.game.is_in_check())
 
         self.game.board.place_piece_at('n', 1, 3)
-        self.assertFalse(self.game.is_check())
+        self.assertFalse(self.game.is_in_check())
 
     @unittest.expectedFailure
     def test_rook_0(self):
@@ -94,19 +94,19 @@ class TestIsCheck(unittest.TestCase):
         self.game.board.place_piece_at('K', 3, 4)
 
         self.game.board.place_piece_at('b', 5, 2)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 5, 2)
         self.game.board.place_piece_at('b', 6, 7)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 6, 7)
         self.game.board.place_piece_at('b', 1, 2)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 1, 2)
         self.game.board.place_piece_at('b', 2, 5)
-        self.assertTrue(self.game.is_check())        
+        self.assertTrue(self.game.is_in_check())        
 
     def test_bishop_0w(self):
         self.game.turn = Color.BLACK
@@ -115,29 +115,119 @@ class TestIsCheck(unittest.TestCase):
         self.game.board.place_piece_at('k', 3, 4)
 
         self.game.board.place_piece_at('B', 5, 2)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 5, 2)
         self.game.board.place_piece_at('B', 6, 7)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 6, 7)
         self.game.board.place_piece_at('B', 1, 2)
-        self.assertTrue(self.game.is_check())
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at(None, 1, 2)
         self.game.board.place_piece_at('B', 2, 5)
-        self.assertTrue(self.game.is_check())        
+        self.assertTrue(self.game.is_in_check())        
 
         self.game.board.place_piece_at('R', 2, 5)
-        self.assertFalse(self.game.is_check())
+        self.assertFalse(self.game.is_in_check())
 
         self.game.board.place_piece_at('b', 2, 5)
-        self.assertFalse(self.game.is_check())
+        self.assertFalse(self.game.is_in_check())
 
-    @unittest.expectedFailure
-    def test_queen_0(self):
-        self.assertFalse("test both black and white")
+    def test_queen_diag_0b(self):
+        self.game.board.place_piece_at(None, 7, 4)
+        self.game.board.place_piece_at('K', 3, 4)
+
+        self.game.board.place_piece_at(None, 6, 1)
+        self.game.board.place_piece_at('q', 7, 0)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 7, 0)
+        self.game.board.place_piece_at('q', 6, 7)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 6, 7)
+        self.game.board.place_piece_at('q', 1, 2)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 1, 2)
+        self.game.board.place_piece_at('q', 2, 5)
+        self.assertTrue(self.game.is_in_check())        
+
+    def test_queen_diag_0w(self):
+        self.game.turn = Color.BLACK
+
+        self.game.board.place_piece_at(None, 0, 4)
+        self.game.board.place_piece_at('k', 3, 4)
+
+        self.game.board.place_piece_at('Q', 5, 2)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 5, 2)
+        self.game.board.place_piece_at('Q', 6, 7)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 6, 7)
+        self.game.board.place_piece_at('Q', 1, 2)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 1, 2)
+        self.game.board.place_piece_at('Q', 2, 5)
+        self.assertTrue(self.game.is_in_check())        
+
+        self.game.board.place_piece_at('R', 2, 5)
+        self.assertFalse(self.game.is_in_check())
+
+        self.game.board.place_piece_at('q', 2, 5)
+        self.assertFalse(self.game.is_in_check())
+
+    def test_queen_horiz_0b(self):
+        self.game.board.place_piece_at(None, 7, 4)
+        self.game.board.place_piece_at('K', 3, 4)
+
+        self.game.board.place_piece_at(None, 6, 1)
+        self.game.board.place_piece_at('q', 3, 0)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 3, 0)
+        self.game.board.place_piece_at('q', 3, 7)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 3, 7)
+        self.game.board.place_piece_at('q', 1, 4)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 1, 4)
+        self.game.board.place_piece_at('q', 4, 4)
+        self.assertTrue(self.game.is_in_check())        
+
+    def test_queen_horiz_0w(self):
+        self.game.turn = Color.BLACK
+
+        self.game.board.place_piece_at(None, 0, 4)
+        self.game.board.place_piece_at('k', 3, 4)
+
+        self.game.board.place_piece_at('Q', 3, 0)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 3, 0)
+        self.game.board.place_piece_at('Q', 3, 7)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 3, 7)
+        self.game.board.place_piece_at('Q', 1, 4)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 1, 4)
+        self.game.board.place_piece_at('Q', 4, 4)
+        self.assertTrue(self.game.is_in_check())        
+
+        self.game.board.place_piece_at('B', 4, 4)
+        self.assertFalse(self.game.is_in_check())
+
+        self.game.board.place_piece_at('q', 4, 4)
+        self.assertFalse(self.game.is_in_check())
 
     @unittest.expectedFailure
     def test_pawn_0(self):
