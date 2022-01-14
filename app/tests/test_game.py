@@ -81,13 +81,52 @@ class TestIsCheck(unittest.TestCase):
         self.game.board.place_piece_at('n', 1, 3)
         self.assertFalse(self.game.is_in_check())
 
-    @unittest.expectedFailure
-    def test_rook_0(self):
-        self.assertFalse("test both black and white")
+    def test_rook_0w(self):
+        self.game.board.place_piece_at(None, 7, 4)
+        self.game.board.place_piece_at('K', 3, 4)
 
-    @unittest.expectedFailure
-    def test_rook_0(self):
-        self.assertFalse("test both black and white")
+        self.game.board.place_piece_at(None, 6, 1)
+        self.game.board.place_piece_at('r', 3, 0)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 3, 0)
+        self.game.board.place_piece_at('r', 3, 7)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 3, 7)
+        self.game.board.place_piece_at('r', 1, 4)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 1, 4)
+        self.game.board.place_piece_at('r', 4, 4)
+        self.assertTrue(self.game.is_in_check())        
+
+    def test_rook_0b(self):
+        self.game.turn = Color.BLACK
+
+        self.game.board.place_piece_at(None, 0, 4)
+        self.game.board.place_piece_at('k', 3, 4)
+
+        self.game.board.place_piece_at('R', 3, 0)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 3, 0)
+        self.game.board.place_piece_at('R', 3, 7)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 3, 7)
+        self.game.board.place_piece_at('R', 1, 4)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 1, 4)
+        self.game.board.place_piece_at('R', 4, 4)
+        self.assertTrue(self.game.is_in_check())        
+
+        self.game.board.place_piece_at('B', 4, 4)
+        self.assertFalse(self.game.is_in_check())
+
+        self.game.board.place_piece_at('r', 4, 4)
+        self.assertFalse(self.game.is_in_check())
 
     def test_bishop_0b(self):
         self.game.board.place_piece_at(None, 7, 4)
@@ -229,9 +268,35 @@ class TestIsCheck(unittest.TestCase):
         self.game.board.place_piece_at('q', 4, 4)
         self.assertFalse(self.game.is_in_check())
 
-    @unittest.expectedFailure
-    def test_pawn_0(self):
-        self.assertFalse("test both black and white")
+    def test_pawn_0w(self):
+        self.game.board.place_piece_at(None, 7, 4)
+        self.game.board.place_piece_at('K', 3, 4)
+
+        self.game.board.place_piece_at('p', 2, 3)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 2, 3)
+        self.game.board.place_piece_at('p', 2, 5)
+        self.assertTrue(self.game.is_in_check())
+
+    def test_pawn_0b(self):
+        self.game.turn = Color.BLACK
+
+        self.game.board.place_piece_at(None, 0, 4)
+        self.game.board.place_piece_at('k', 3, 4)
+
+        self.game.board.place_piece_at('P', 4, 3)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at(None, 4, 3)
+        self.game.board.place_piece_at('P', 4, 5)
+        self.assertTrue(self.game.is_in_check())
+
+        self.game.board.place_piece_at('N', 4, 5)
+        self.assertFalse(self.game.is_in_check())
+
+        self.game.board.place_piece_at('p', 4, 5)
+        self.assertFalse(self.game.is_in_check())
 
     @unittest.expectedFailure
     def test_combo_0(self):

@@ -85,19 +85,31 @@ class Game:
 
         opponent_rook = colorize('R', self.turn.opponent())
 
-        if (p := self.board.find_first_on_h_or_v(king_pos, 0, -1)) and p[0] in (opponent_queen,):
+        if (p := self.board.find_first_on_h_or_v(king_pos, 0, -1)) and p[0] in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_h_or_v(king_pos, 0, 1)) and p[0] in (opponent_queen,):
+        elif (p := self.board.find_first_on_h_or_v(king_pos, 0, 1)) and p[0] in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_h_or_v(king_pos, 1, 0)) and p[0] in (opponent_queen,):
+        elif (p := self.board.find_first_on_h_or_v(king_pos, 1, 0)) and p[0] in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_h_or_v(king_pos, -1, 0)) and p[0] in (opponent_queen,):
+        elif (p := self.board.find_first_on_h_or_v(king_pos, -1, 0)) and p[0] in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
 
+        opponent_pawn = colorize('P', self.turn.opponent())
+
+        if self.turn == Color.WHITE:
+            pawn_maybes = (king_pos[0] - 1, king_pos[1] - 1), (king_pos[0] - 1, king_pos[1] + 1)
+        else:
+            pawn_maybes = (king_pos[0] + 1, king_pos[1] - 1), (king_pos[0] + 1, king_pos[1] + 1)
+
+        for pawn_maybe in pawn_maybes:
+            if pawn_maybe[0] >= 0 and pawn_maybe[0] < 8 and pawn_maybe[1] >= 0 and pawn_maybe[1] < 8:
+                if self.board.square_at(*pawn_maybe) == opponent_pawn:
+                    logging.debug("Game::is_in_check() -> True : Pawn at (%s, %s)", *pawn_maybe)
+                    return True
 
         logging.debug("Game::is_in_check(%s) -> False", self.turn)
         return False
