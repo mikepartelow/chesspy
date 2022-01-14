@@ -26,7 +26,7 @@ There exist better chess engines than this, but I didn't have the pleasure of wr
     python -m unittest tests.test_san.TestMove
     python -m unittest tests.test_san.TestMove.test_0
     
-> On Mac, running tests with Docker bind mounts slows the tests down by about 15x. 
+> On Mac, running tests with Docker bind mounts [slows the tests](https://github.com/docker/for-mac/issues/3677) down by about 15x. 
 > It's actually faster to rebuild the container and run the tests than to use bind mounts on a long-running container.
 
     docker build -t chesspy . && docker run -t chesspy bash -c 'python -m unittest tests'
