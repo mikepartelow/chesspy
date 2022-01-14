@@ -158,6 +158,9 @@ class Game:
         if mv.mate:
             self.over = True            
         
+        # FIXME: PERFORMANCE: this is a lovely sanity check but it slows us down by about 2.25x
+        #                     it's also slower on average when mv.check is False, which is most of the time.
+        #
         assert(mv.check == self.is_in_check())
 
         return capture
@@ -184,6 +187,8 @@ class Game:
         return capture
 
     def test_move_from_src(self, y, x, mv):
+        # FIXME: PERFORMANCE: this logically necessary but unoptimized check slows us down by about 2x
+        #
         test_mv = copy.copy(mv)
         test_mv.src_y, test_mv.src_x = y, x
 
