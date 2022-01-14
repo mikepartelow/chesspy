@@ -62,8 +62,23 @@ class Game:
             y, x = king_pos[0] + yo, king_pos[1] + xo
             if y >= 0 and y < 8 and x >= 0 and x < 8:
                 if self.board.square_at(y, x) == opponent_knight:
-                    logging.debug("Game::is_check() -> True")
+                    logging.debug("Game::is_check() -> True : Knight at (%s, %s)", y, x)
                     return True
+
+        opponent_bishop = colorize('B', self.turn.opponent())
+
+        if (p := self.board.find_first_on_diagonal(king_pos, -1, -1)) and p[0] == opponent_bishop:
+            logging.debug("Game::is_check() -> True : Bishop at (%s, %s)", *p[1:])
+            return True
+        elif (p := self.board.find_first_on_diagonal(king_pos, 1, 1)) and p[0] == opponent_bishop:
+            logging.debug("Game::is_check() -> True : Bishop at (%s, %s)", *p[1:])
+            return True
+        elif (p := self.board.find_first_on_diagonal(king_pos, 1, -1)) and p[0] == opponent_bishop:
+            logging.debug("Game::is_check() -> True : Bishop at (%s, %s)", *p[1:])
+            return True
+        elif (p := self.board.find_first_on_diagonal(king_pos, -1, 1)) and p[0] == opponent_bishop:
+            logging.debug("Game::is_check() -> True : Bishop at (%s, %s)", *p[1:])
+            return True
 
         logging.debug("Game::is_check() -> False")
         return False
@@ -105,7 +120,7 @@ class Game:
                     self.board.place_piece_at(None, 0, 4)
                     self.board.place_piece_at(None, 0, 0)
         else:
-            self.move_move(mv)
+            capture = self.move_move(mv)
 
         if mv.mate:
             self.over = True
@@ -133,6 +148,8 @@ class Game:
         self.board.place_piece_at(piece, mv.dst_y, mv.dst_x)
         self.board.place_piece_at(None, mv.src_y, mv.src_x)
 
+        return capture
+
     def test_move_from_src(self, y, x, mv):
         test_mv = copy.copy(mv)
         test_mv.src_y, test_mv.src_x = y, x
@@ -140,8 +157,6 @@ class Game:
         test_game = Game(board=Board(repr(self.board)), turn=self.turn)
         test_game.move_move(test_mv)
 
-        test_game.turn = test_game.turn.opponent()
-        print(test_game.board)
         if not test_game.is_check():
             mv.src_y, mv.src_x = y, x
             return True
