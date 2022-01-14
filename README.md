@@ -15,17 +15,22 @@ There exist better chess engines than this, but I didn't have the pleasure of wr
 
 ### Run chesspy
 
-    docker run -ti -v `PWD`/app:/chesspy -ti chesspy bash
+    docker run -v `pwd`/app:/chesspy -ti chesspy bash                   
     python main.py board # display a chess board with pieces
     python main.py       # display a playthrough of The Immortal Game
 
-### Test chesspy
+### Test chesspy    
     
     python -m unittest tests
     python -m unittest tests.test_san
     python -m unittest tests.test_san.TestMove
     python -m unittest tests.test_san.TestMove.test_0
     
+> On Mac, running tests with Docker bind mounts slows the tests down by about 15x. 
+> It's actually faster to rebuild the container and run the tests than to use bind mounts on a long-running container.
+
+    docker build -t chesspy . && docker run -t chesspy bash -c 'python -m unittest tests'
+
 
 ## One way to write a software Chess Engine
 
