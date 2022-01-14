@@ -17,30 +17,6 @@ def colorize(ch, color):
     else:
         return ch.lower()
 
-def deduce_src_moves_like_rook(mv, board, p_target):
-    if (p := board.find_first_on_h_or_v(mv.dst, 0, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
-        mv.src_y, mv.src_x = p[1:]
-    elif (p := board.find_first_on_h_or_v(mv.dst, 0, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
-        mv.src_y, mv.src_x = p[1:]
-    elif (p := board.find_first_on_h_or_v(mv.dst, 1, 0, mv.src_y, mv.src_x)) and p[0] == p_target:
-        mv.src_y, mv.src_x = p[1:]
-    elif (p := board.find_first_on_h_or_v(mv.dst, -1, 0, mv.src_y, mv.src_x)) and p[0] == p_target:
-        mv.src_y, mv.src_x = p[1:]
-
-    return mv.src_y is not None and mv.src_x is not None
-
-def deduce_src_moves_like_bishop(mv, board, p_target):
-    if (p := board.find_first_on_diagonal(mv.dst, -1, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
-        mv.src_y, mv.src_x = p[1:]
-    elif (p := board.find_first_on_diagonal(mv.dst, 1, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
-        mv.src_y, mv.src_x = p[1:]
-    elif (p := board.find_first_on_diagonal(mv.dst, 1, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
-        mv.src_y, mv.src_x = p[1:]
-    elif (p := board.find_first_on_diagonal(mv.dst, -1, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
-        mv.src_y, mv.src_x = p[1:]
-
-    return mv.src_y is not None and mv.src_x is not None
-
 class Game:
     def __init__(self, board=None, turn=None):
         self.board = board or Board()
@@ -156,11 +132,12 @@ class Game:
         self.turn = Color.toggle(self.turn)
 
         if mv.mate:
-            self.over = True            
-        
+            self.over = True
+
         # FIXME: PERFORMANCE: this is a lovely sanity check but it slows us down by about 2.25x
         #                     it's also slower on average when mv.check is False, which is most of the time.
         #
+        logging.debug("assert(mv.check == self.is_in_check())")
         assert(mv.check == self.is_in_check())
 
         return capture
@@ -189,16 +166,20 @@ class Game:
     def test_move_from_src(self, y, x, mv):
         # FIXME: PERFORMANCE: this logically necessary but unoptimized check slows us down by about 2x
         #
+        logging.debug("test_move_from_src(%s, %s, %r)", y, x, mv)
         test_mv = copy.copy(mv)
         test_mv.src_y, test_mv.src_x = y, x
 
         test_game = Game(board=Board(repr(self.board)), turn=self.turn)
         test_game.move_move(test_mv)
 
+        logging.debug("if not test_game.is_in_check():")
         if not test_game.is_in_check():
             mv.src_y, mv.src_x = y, x
+            logging.debug("test_move_from_src() -> True")
             return True
 
+        logging.debug("test_move_from_src() -> False")
         return False
 
     def deduce_src_knight(self, mv):
@@ -209,13 +190,41 @@ class Game:
         for (offset_y, offset_x) in zip(offsets_y, offsets_x):
             src_y, src_x = mv.dst_y + offset_y, mv.dst_x + offset_x
 
-            if (mv.src_y is not None and src_y != mv.src_y) or (mv.src_x is not None and src_x != mv.src_x):                        
+            if (mv.src_y is not None and src_y != mv.src_y) or (mv.src_x is not None and src_x != mv.src_x):
                 continue
 
             if src_y >= 0 and src_y < 8 and src_x >= 0 and src_x < 8:
                 if (p := self.board.square_at(src_y, src_x)) == p_src:
                     logging.debug("deduce_src_knight(%r): yield (%s, %s)", mv, src_y, src_x)
                     yield src_y, src_x
+
+    def deduce_src_moves_like_rook(self, mv, p_target):
+        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
+            yield p[1:]
+        
+        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
+            yield p[1:]
+        
+        if (p := self.board.find_first_on_h_or_v(mv.dst, 1, 0, mv.src_y, mv.src_x)) and p[0] == p_target:
+            yield p[1:]
+        
+        if (p := self.board.find_first_on_h_or_v(mv.dst, -1, 0, mv.src_y, mv.src_x)) and p[0] == p_target:
+            yield p[1:]        
+
+    def deduce_src_moves_like_bishop(self, mv, p_target):
+        if (p := self.board.find_first_on_diagonal(mv.dst, -1, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
+            yield p[1:]
+
+        if (p := self.board.find_first_on_diagonal(mv.dst, 1, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
+            yield p[1:]
+
+        if (p := self.board.find_first_on_diagonal(mv.dst, 1, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
+            yield p[1:]
+
+        if (p := self.board.find_first_on_diagonal(mv.dst, -1, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
+            yield p[1:]
+
+        return mv.src_y is not None and mv.src_x is not None
 
     def deduce_src(self, mv):
         """Given a partially constructed Move, deduce the src coordinates for the move.
@@ -247,15 +256,15 @@ class Game:
                         elif mv.dst_x < 7 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x + 1) == p_src:
                             mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x + 1
                     elif p_dst is None: # en passant?
-                        
-                        logging.debug("%s : %s : %s : %s : %s", 
-                                        behind(mv.dst_y), 
+
+                        logging.debug("%s : %s : %s : %s : %s",
+                                        behind(mv.dst_y),
                                         self.board.square_at(behind(mv.dst_y), mv.dst_x),
                                         colorize('P', self.turn.opponent),
                                         self.board.square_at(ahead_of(mv.dst_y), mv.dst_x),
                                         self.turn.opponent(),
                                      )
-                        
+
                         if (p := self.board.square_at(ahead_of(mv.dst_y), mv.dst_x)) and \
                                 p == colorize('P', self.turn.opponent()) and \
                                 self.board.square_at(behind(mv.dst_y), mv.dst_x) is None and \
@@ -286,12 +295,24 @@ class Game:
                     if self.test_move_from_src(y, x, mv):
                         break
             case 'B':
-                deduce_src_moves_like_bishop(mv, self.board, colorize('B', self.turn))
+                for (y, x) in self.deduce_src_moves_like_bishop(mv, colorize('B', self.turn)):
+                    if self.test_move_from_src(y, x, mv):
+                        break
             case 'Q':
-                p_target = colorize('Q', self.turn)
-                deduce_src_moves_like_rook(mv, self.board, p_target) or deduce_src_moves_like_bishop(mv, self.board, p_target)
+                done = False
+                for (y, x) in self.deduce_src_moves_like_rook(mv, colorize('Q', self.turn)):
+                    if self.test_move_from_src(y, x, mv):
+                        done = True
+                        break
+
+                if not done:
+                    for (y, x) in self.deduce_src_moves_like_bishop(mv, colorize('Q', self.turn)):
+                        if self.test_move_from_src(y, x, mv):
+                            break
             case 'R':
-                deduce_src_moves_like_rook(mv, self.board, colorize('R', self.turn))
+                for (y, x) in self.deduce_src_moves_like_rook(mv, colorize('R', self.turn)):
+                    if self.test_move_from_src(y, x, mv):
+                        break
             case 'K':
                 p_src = colorize('K', self.turn)
                 for y in range(mv.dst_y-1, mv.dst_y+2):

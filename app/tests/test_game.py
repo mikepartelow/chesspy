@@ -26,6 +26,21 @@ class TestTurns(unittest.TestCase):
 
         self.assertEqual(g.turn, Color.BLACK)
 
+class TestMoveSan(unittest.TestCase):
+    def setUp(self):
+        self.game = game.Game()
+
+    def test_pinned_0(self):        
+        # SAN is disambiguated because one rook is pinned
+        #
+        self.game.board = board.Board("       kp         p   R    b         q        RP     PPK        ")        
+        self.assertEqual('R', self.game.board.square_at(2, 6)) # this one should move
+        self.assertEqual('R', self.game.board.square_at(5, 6)) # this one is pinned
+        self.game.move_san("Rg5")
+        self.assertEqual('R', self.game.board.square_at(3, 6))
+        self.assertEqual(None, self.game.board.square_at(2, 6))
+        self.assertEqual('R', self.game.board.square_at(5, 6))        
+
 class TestIsCheck(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()
@@ -330,22 +345,6 @@ class TestGameOverMan(unittest.TestCase):
         self.game.move_san('1/2-1/2')
         self.assertTrue(self.game.over)        
                 
-class TestMoveSan(unittest.TestCase):
-    def setUp(self):
-        self.game = game.Game()
-
-    @unittest.expectedFailure
-    def test_0(self):
-        self.assertTrue(False)
-
-    @unittest.expectedFailure
-    def test_1(self):
-        self.assertTrue(False)
-
-    @unittest.expectedFailure
-    def test_2(self):
-        self.assertTrue(False)
-
 class TestPromotion(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()

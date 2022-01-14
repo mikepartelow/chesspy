@@ -816,7 +816,7 @@ class TestSanRook(unittest.TestCase):
     def test_3(self):
         # one rook could move vertically, one could move horizontally, both to same square, but first choice would expose check.
         # so move second done
-        self.assertFalse(True)
+        self.assertFalse(True)        
 
 class TestSanDeluxe1(unittest.TestCase):
     @unittest.expectedFailure
