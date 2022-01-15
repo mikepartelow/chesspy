@@ -26,8 +26,7 @@ class Game:
     def is_in_check(self):
         logging.debug("Game::is_in_check(%s)", self.turn)
 
-        king_pos = self.board.find_piece(colorize('K', self.turn))
-        assert(king_pos is not None)
+        king_pos = self.board.king_position(self.turn)        
         logging.debug("Game::is_in_check() : king_pos = %r", king_pos)
 
         offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)

@@ -1,5 +1,6 @@
 import logging
 import itertools
+from .color import Color
 
 class Board:
     def __init__(self, reprstr=None):
@@ -16,6 +17,19 @@ class Board:
                               'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 
                               'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R',
                             ]
+
+        self.piece_positions = {
+            Color.WHITE: {},
+            Color.BLACK: {},
+        }
+
+        for y in range(8):
+            for x in range(8):
+                if p := self.squares[8*y + x]:
+                    if p == 'k':
+                        self.piece_positions[Color.BLACK]['K'] = (y, x)
+                    elif p == 'K':
+                        self.piece_positions[Color.WHITE]['K'] = (y, x)
 
     def __str__(self):
         s = []
@@ -34,17 +48,10 @@ class Board:
     def __repr__(self):
         return ''.join(ch or ' ' for ch in self.squares)
 
-    def find_piece(self, piece):
-        """Returns (y, x) coordinates of requested piece, or None if the piece is not on the board.
-
-        If the piece is not unique, e.g. black rook at start of game, return (y, x) coordinates of one of them.
+    def king_position(self, color):
+        """Returns (y, x) coordinates of color's king.
         """
-        # FIXME: consider maintaining a dict of pieces to coordinate lists for O(1) piece finding
-        for y in range(0, 8):
-            for x in range(0, 8):
-                if self.squares[8*y + x] == piece:
-                    return (y, x)
-        return None
+        return self.piece_positions[color]['K']
 
     def square_at(self, y, x):
         """Returns the Piece at the given coordinates, or None.
@@ -76,6 +83,12 @@ class Board:
             raise IndexError
 
         self.squares[8*y+x] = piece
+
+        match piece:
+            case 'k':
+                self.piece_positions[Color.BLACK]['K'] = (y, x)
+            case 'K':
+                self.piece_positions[Color.WHITE]['K'] = (y, x)
 
     def find_first(self, squares, src_y=None, src_x=None):
         """Find the first piece encountered in the list of squares. 
