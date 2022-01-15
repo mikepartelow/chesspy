@@ -37,64 +37,36 @@ class TestMagnusLichess(unittest.TestCase):
     # downlaod the file at: https://lichess.org/@/DrNykterstein/download
     # could use any lichess pgn file
 
-    def test_pgn(self):
+    def exec_test_pgn(self, basename, do_print=False):
         g = game.Game()
 
-        pgnfile = 'tests/games/lichess_DrNykterstein_2022-01-04.pgn'
+        pgnfile = f"tests/games/{basename}.pgn"
 
         if os.path.exists(pgnfile):
             for sanstr in pgn.moves(pgnfile):
-                # print('"{}"'.format(repr(g.board)))
-                # print(sanstr)
+                if do_print:
+                    print(g.board)
+                    print('"{}"'.format(repr(g.board)))
+                    print(f"{g.turn}: {sanstr}")
 
                 g.move_san(sanstr)          
                 if g.over:
                     g = game.Game()
                     continue
           
+    def test_DrNykterstein(self):
+        self.exec_test_pgn('lichess_DrNykterstein_2022-01-04', do_print=True)
 
     def test_n7ZjoKNR(self):
-        g = game.Game()
-
-        pgnfile = 'tests/games/n7ZjoKNR.pgn'
-
-        for idx, sanstr in enumerate(pgn.moves(pgnfile)):
-            turn = g.turn
-            # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
-            g.move_san(sanstr)
-            if g.over:
-                break
-            # print(g.board)
-            # print("")
+        self.exec_test_pgn('n7ZjoKNR')
 
     def test_ZVWsf95x(self):
-        g = game.Game()
-
-        pgnfile = 'tests/games/ZVWsf95x.pgn'
-
-        for idx, sanstr in enumerate(pgn.moves(pgnfile)):
-            turn = g.turn
-            # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
-            g.move_san(sanstr)
-            if g.over:
-                break
-            # print(g.board)
-            # print("'{}'".format(repr(g.board)))
-            # print("")
+        self.exec_test_pgn('ZVWsf95x')
 
     def test_YXOWlp4b(self):
-        g = game.Game()
+        self.exec_test_pgn('YXOWlp4b')
 
-        pgnfile = 'tests/games/YXOWlp4b.pgn'
-
-        for idx, sanstr in enumerate(pgn.moves(pgnfile)):
-            turn = g.turn
-            # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
-            g.move_san(sanstr)
-            if g.over:
-                break
-            # print(g.board)
-            # print('"{}"'.format(repr(g.board)))
-            # print("")
+    def test_1Ot7nMcK(self):
+        self.exec_test_pgn('1Ot7nMcK')
 
         
