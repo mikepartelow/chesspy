@@ -1,11 +1,7 @@
 import logging
+from chesspy import game
 
-def moves(path):
-    tokens = []
-
-    with open(path) as f:
-        tokens = [ t for t in f.read().split() ]
-
+def moveg(tokens):
     idx, end = 0, len(tokens)
 
     while idx < end:
@@ -53,6 +49,35 @@ def moves(path):
                 logging.debug("yielding [%s]", token)
                 yield token                
                 if token.endswith('#') or token in ('1-0', '0-1', '1/2-1/2',):                    
-                    logging.debug("breaking due to endgame")
+                    logging.debug("break due to endgame")
                     break
+
+class Moves:
+    def __init__(self, move_generator):
+        self.idx = -1
+        self.move_generator = move_generator
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        sanstr = next(self.move_generator)
+        
+        self.idx += 1
+        
+        return (sanstr, self.idx)
+
+        # raise StopIteration
+
+class Gamefile:
+    def __init__(self, path):
+        self.game_count = 0
+
+        with open(path) as f:
+            tokens = [ t for t in f.read().split() ]
+
+        self.move_generator = moveg(tokens)
+
+    def games(self):
+        yield game.Game(), Moves(self.move_generator)
 

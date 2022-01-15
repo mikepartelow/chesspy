@@ -1,7 +1,7 @@
 import os
 import unittest
 import itertools
-from chesspy import game, pgn
+from chesspy import pgn
 
 def board_reprs(path):
     with open(path, 'r') as f:
@@ -9,27 +9,22 @@ def board_reprs(path):
             yield line.replace("\n", '') # can't strip because space at EOL is OK!
 
 class TestPgnBasic(unittest.TestCase):
-    def test_immortal(self):        
-        g = game.Game()
+    def exec_test_pgn(self, basename, do_print=False):
+        gamefile = pgn.Gamefile(f"tests/games/{basename}.pgn")     
+        reprspath = f"tests/games/{basename}.boardreprs.txt"
+        for game, moves in gamefile.games():
+            for move, boardrepr in itertools.zip_longest(moves, board_reprs(reprspath)):
+                print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")  
+                game.move_san(move.sanstr)  
+                print(game.board)
+                print("")
+                self.assertEqual(repr(game.board), boardrepr, idx)
 
-        for idx, (sanstr, boardrepr) in enumerate(itertools.zip_longest(pgn.moves('tests/games/immortal.pgn'), board_reprs('tests/games/immortal.boardreprs.txt'))):
-            turn = g.turn
-            # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
-            g.move_san(sanstr)
-            # print(g.board)
-            # print("")
-            self.assertEqual(repr(g.board), boardrepr, idx)
+    def test_immortal(self): 
+        self.exec_test_pgn('immortal', do_print=True)
 
     def test_evergreen(self):
-        g = game.Game()
-
-        for idx, (sanstr, boardrepr) in enumerate(itertools.zip_longest(pgn.moves('tests/games/evergreen.pgn'), board_reprs('tests/games/evergreen.boardreprs.txt'))):
-            turn = g.turn
-            # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
-            g.move_san(sanstr)
-            # print(g.board)
-            # print("")
-            self.assertEqual(repr(g.board), boardrepr, idx)
+        self.exec_test_pgn('evergreen', do_print=True)
 
 class TestMagnusLichess(unittest.TestCase):
     # indirect correctness check. with enough sample games, bugs compound and reveal themselves.
