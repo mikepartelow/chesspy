@@ -58,6 +58,19 @@ class TestPgnBasic(unittest.TestCase):
     def test_multi(self):
         self.exec_test_pgn('multi', game_count=3)
 
+    def test_metadata(self):
+        gamefile = pgn.Gamefile("tests/games/immortal.pgn")
+        game = next(gamefile)
+
+        self.assertEqual(game.metadata.event, "London")
+        self.assertEqual(game.metadata.site, "London ENG")
+        self.assertEqual(game.metadata.date, datetime.datetime.date(1851, 6, 21))
+        self.assertEqual(game.metadata.white, "Adolf Anderssen")
+        self.assertEqual(game.metadata.black, "Lionel Adalbert Bagration Felix Kieseritzky")
+        self.assertEqual(game.metadata.result, "1-0")
+        self.assertEqual(game.metadata.opening, "King's Gambit Accepted: Bishop's Gambit, Bryan Countergambit")
+        self.assertEqual(game.metadata.annotator, "https://lichess.org/@/Chess_Poems")
+
 class TestMagnusLichess(unittest.TestCase):
     # indirect correctness check. with enough sample games, bugs compound and reveal themselves.
     #
