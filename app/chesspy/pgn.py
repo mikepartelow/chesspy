@@ -1,11 +1,14 @@
 import logging
-from chesspy import game
 
-def moveg(tokens):
+NEW_GAME_TOKEN = 42
+GAME_OVER_TOKEN = 19860718
+
+def tokenizer(tokens):
     idx, end = 0, len(tokens)
 
     while idx < end:
         move_idx = 1
+        new_game = True
 
         logging.debug("consuming until first move.")
         while idx < end and tokens[idx] != '1.':
@@ -14,7 +17,7 @@ def moveg(tokens):
 
         while idx < end:
             token = tokens[idx]
-            idx += 1
+            idx += 1            
 
             if token.startswith("{"):
                 # PGN comments do not nest
@@ -46,28 +49,36 @@ def moveg(tokens):
                 logging.debug("consuming [%s]", token)
                 pass
             else:
-                logging.debug("yielding [%s]", token)
+                if new_game:
+                    new_game = False
+                    logging.debug("yielding NEW_GAME_TOKEN")
+                    yield NEW_GAME_TOKEN
+                logging.debug("yielding [%s] for %d", token, move_idx)
                 yield token                
                 if token.endswith('#') or token in ('1-0', '0-1', '1/2-1/2',):                    
+                    yield GAME_OVER_TOKEN
                     logging.debug("break due to endgame")
                     break
 
-class Moves:
-    def __init__(self, move_generator):
+class Move:
+    def __init__(self, idx, sanstr):
+        self.idx, self.sanstr = idx, sanstr
+
+class Game:
+    def __init__(self, tokenizer):
+        self.tokenizer = tokenizer
         self.idx = -1
-        self.move_generator = move_generator
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        sanstr = next(self.move_generator)
-        
-        self.idx += 1
-        
-        return (sanstr, self.idx)
-
-        # raise StopIteration
+        token = next(self.tokenizer)
+        if token == GAME_OVER_TOKEN:
+            raise StopIteration
+        else:
+            self.idx += 1
+            return Move(self.idx, token)
 
 class Gamefile:
     def __init__(self, path):
@@ -76,8 +87,16 @@ class Gamefile:
         with open(path) as f:
             tokens = [ t for t in f.read().split() ]
 
-        self.move_generator = moveg(tokens)
+        self.tokenizer = tokenizer(tokens)
 
-    def games(self):
-        yield game.Game(), Moves(self.move_generator)
+    def __iter__(self):
+        return self
 
+    def __next__(self):
+        while True:
+            token = next(self.tokenizer)
+            if token == NEW_GAME_TOKEN:
+                self.game_count += 1
+                return Game(self.tokenizer)                    
+            elif token is None:
+                break
