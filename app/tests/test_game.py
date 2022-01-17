@@ -313,7 +313,7 @@ class TestIsCheck(unittest.TestCase):
         self.game.board.place_piece_at('p', 4, 5)
         self.assertFalse(self.game.is_in_check())
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_combo_0(self):
         self.assertFalse("test both black and white")
 
@@ -395,24 +395,24 @@ class TestCastle(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_illegal_0(self):
         self.assertEqual("rook has", "already moved")
         self.assertEqual("Now", "Do It For Black")
         self.assertEqual("works ok for white", "after first moving non-castling rook")
         self.assertEqual("works ok for black", "after first moving non-castling rook")
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_illegal_1(self):
         self.assertEqual("king has", "already moved")
         self.assertEqual("Now", "Do It For Black")
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_illegal_2(self):
         self.assertEqual("king moves", "through check")
         self.assertEqual("Now", "Do It For Black")
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_illegal_3(self):
         self.assertEqual("king moves", "into check")
         self.assertEqual("Now", "Do It For Black")

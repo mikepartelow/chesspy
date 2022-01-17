@@ -1,4 +1,4 @@
-name: Build and Test
+name: Unit Tests
 
 on: push
 
@@ -10,5 +10,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build
-      run: docker build . -t chesspy && docker run -t chesspy bash -c 'python -m unittest tests'
+    - name: Unit Tests
+      run: docker build . -qt chesspy && docker run -t chesspy bash -c 'python -m unittest -q tests'
