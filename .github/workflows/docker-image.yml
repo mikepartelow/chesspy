@@ -1,0 +1,14 @@
+name: Unit Tests
+
+on: push
+
+jobs:
+
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Unit Tests
+      run: docker build . -qt chesspy && docker run -t chesspy bash -c 'python -m unittest -q tests'

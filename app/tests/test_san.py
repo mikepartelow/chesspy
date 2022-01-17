@@ -124,7 +124,7 @@ class TestSanBasic(unittest.TestCase):
         self.assertTrue(mv.check)
         self.assertFalse(mv.mate)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_friendly_fire(self):
         # don't allow capture of own piece
         # don't allow it with 'x' in the san
@@ -132,7 +132,7 @@ class TestSanBasic(unittest.TestCase):
         # don't allow it, san i am
         self.assertEqual(False, True)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_invalid_syntax(self):
         baddies = ('e33', 'e3++', 'e3#+', 'e3+#', 'xe3', 'x3e', 'xe3+#', 'xRe3', 'R3dxe3', 'O', 'O-', 'bxa8=',
                    'b=xa8Q', 'bxa4=Q+', 'bxa1=K+', 'O-O-)#', 'O-O-O-O', 'O-OxO-O-O')
@@ -230,7 +230,7 @@ class TestSanPawn(unittest.TestCase):
         with self.assertRaises(IndexError):
             san.parse('e3', game=self.game)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_4(self):
         # test 'e6' with black pawn on e7 and white pawn on e5
         #   game.turn == black returns src==e7
@@ -339,7 +339,7 @@ class TestSanPawn(unittest.TestCase):
         self.assertTrue(mv.capture)
         self.assertTrue(mv.en_passant)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_en_passant_trust_no_one_0(self):
         self.assertEqual("do like test_en_passant_honor_system_0 but check all the en passant rules", "especially: did white's captured pawn just move 2 spaces?")
 
@@ -473,7 +473,7 @@ class TestSanBishop(unittest.TestCase):
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_1(self):
         # illegal moves: interposition
         mv = san.parse('Nf3', game=self.game)
@@ -500,7 +500,7 @@ class TestSanBishop(unittest.TestCase):
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_2(self):
         # capture
         mv = san.parse('Nf3', game=self.game)
@@ -595,7 +595,7 @@ class TestSanKing(unittest.TestCase):
         self.assertEqual(mv.piece, 'K')
         self.assertFalse(mv.capture)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_2a(self):
         # various kinds of illegal moves. > 1 square, into check, etc.
         self.assertFalse(True)
@@ -754,7 +754,7 @@ class TestSanRook(unittest.TestCase):
         with self.assertRaises(IndexError):
             san.parse('Rh1', game=self.game) # v
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_ef(self):
         # illegal moves: diagonal move
         mv = san.parse('Rf3', game=self.game)
@@ -783,7 +783,7 @@ class TestSanRook(unittest.TestCase):
 
         self.assertFalse(True)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_2(self):
         # capture
         mv = san.parse('Nf3', game=self.game)
@@ -812,14 +812,14 @@ class TestSanRook(unittest.TestCase):
 
         self.assertFalse(True)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_3(self):
         # one rook could move vertically, one could move horizontally, both to same square, but first choice would expose check.
         # so move second done
         self.assertFalse(True)        
 
 class TestSanDeluxe1(unittest.TestCase):
-    @unittest.expectedFailure
+    @unittest.skip
     def test_0(self):
         # if 'x' in san then mv.capture is True
         self.assertTrue(False)

@@ -86,22 +86,22 @@ class TestBoardFindFrom(unittest.TestCase):
         self.assertEqual(self.board.find_first_on_h_or_v((2, 3), 0, 1), ('Q', 2, 7))
         self.assertEqual(self.board.find_first_on_h_or_v((2, 7), 0, 1), None)  
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_1a(self): # ^ ->
         self.assertTrue(False)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_1b(self): # v ->
         self.assertTrue(False)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_1c(self): # ^ <-
         self.assertTrue(False)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_1d(self): # v <-
         self.assertTrue(False)
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_2a(self): # specifies src_y/src_x to disambiguate
         self.assertTrue(False)
