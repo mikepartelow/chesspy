@@ -1,8 +1,9 @@
 import os
+import datetime
 import unittest
 import itertools
-from chesspy import pgn
 import chesspy.game
+from chesspy import pgn
 
 def board_reprs(path):
     with open(path, 'r') as f:
@@ -62,9 +63,11 @@ class TestPgnBasic(unittest.TestCase):
         gamefile = pgn.Gamefile("tests/games/immortal.pgn")
         game = next(gamefile)
 
+        # Caution: metadata parsing is based on test data (lichess output), not a careful read of PGN spec.
+        #
         self.assertEqual(game.metadata.event, "London")
         self.assertEqual(game.metadata.site, "London ENG")
-        self.assertEqual(game.metadata.date, datetime.datetime.date(1851, 6, 21))
+        self.assertEqual(game.metadata.date, datetime.date(1851, 6, 21))
         self.assertEqual(game.metadata.white, "Adolf Anderssen")
         self.assertEqual(game.metadata.black, "Lionel Adalbert Bagration Felix Kieseritzky")
         self.assertEqual(game.metadata.result, "1-0")
