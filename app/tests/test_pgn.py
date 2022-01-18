@@ -82,22 +82,25 @@ class TestMagnusLichess(unittest.TestCase):
 
     def exec_test_pgn(self, basename, game_count=1, do_print=False):
         pgnfile = f"tests/games/{basename}.pgn"
+        metadata_file = f"tests/games/ignore.metadata.{basename}.pgn"
 
         if os.path.exists(pgnfile):
-            game_count_actual = 0
+            with open(metadata_file, "w") as metadata_f:                
+                game_count_actual = 0
 
-            for pgn_game in pgn.Gamefile(pgnfile):
-                game = chesspy.game.Game()
-                game_count_actual += 1
-                for move in pgn_game:
-                    if do_print:
-                        print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")  
+                for pgn_game in pgn.Gamefile(pgnfile):
+                    game = chesspy.game.Game()
+                    metadata_f.write('[Site "{}"]\n'.format(pgn_game.metadata.site))
+                    game_count_actual += 1
+                    for move in pgn_game:
+                        if do_print:
+                            print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")  
 
-                    game.move_san(move.sanstr)  
+                        game.move_san(move.sanstr)  
 
-                    if do_print:
-                        print(game.board)
-                        print("")
+                        if do_print:
+                            print(game.board)
+                            print("")
 
             self.assertEqual(game_count, game_count_actual)
                                   
@@ -105,6 +108,20 @@ class TestMagnusLichess(unittest.TestCase):
         # AssertionError: 9667 != 9662
         # FIXME: cat lichess_DrNykterstein_2022-01-04 | grep UTCDate | wc -l == 9667, but pgn.Gamefile counts 9662
         #        discover discrepancy by parsing metadata like UTCDate, recording to file, diffing vs .pgn file
+        #
+        # !!! [Variant "From Position"]
+        #
+        #
+        # root@685f86ed6743:/chesspy# cat tests/games/lichess_DrNykterstein_2022-01-04.pgn | grep '\[Site ' > blap
+        #  root@685f86ed6743:/chesspy# diff blap tests/games/ignore.metadata.lichess_DrNykterstein_2022-01-04.pgn
+        # 2443,2445d2442
+        # < [Site "https://lichess.org/lit8Alwh"]
+        # < [Site "https://lichess.org/6beKx9bR"]
+        # < [Site "https://lichess.org/B8kAuxEO"]
+        # 2662d2658
+        # < [Site "https://lichess.org/TR35WuMW"]
+        # 8869d8864
+        # < [Site "https://lichess.org/CWefAkiK"]
         #
         self.exec_test_pgn('lichess_DrNykterstein_2022-01-04', game_count=9667, do_print=True)
 
