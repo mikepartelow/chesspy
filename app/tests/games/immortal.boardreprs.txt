@@ -43,3 +43,4 @@ r bk  nrp  p pNpn  B     p NP  P      P    P Q  P P K   q     b
 r bk  nrp  p pNpn  B Q   p NP  P      P    P    P P K   q     b 
 r bk   rp  p pNpn  B n   p NP  P      P    P    P P K   q     b 
 r bk   rp  pBpNpn    n   p NP  P      P    P    P P K   q     b 
+r bk   rp  pBpNpn    n   p NP  P      P    P    P P K   q     b 

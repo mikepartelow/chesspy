@@ -92,7 +92,7 @@ class Game:
     def move_san(self, sanstr):
         logging.debug("Game::move_san(%s)", sanstr)
 
-        if sanstr in ('1-0', '0-1', '1/2-1/2',):
+        if sanstr in san.RESULT_SAN:
             self.over = True
             return None
 

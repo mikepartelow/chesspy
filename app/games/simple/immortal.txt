@@ -20,4 +20,4 @@ e5 Qxa1+
 Ke2 Na6
 Nxg7+ Kd8
 Qf6+ Nxf6
-Be7#
+Be7# 1-0
