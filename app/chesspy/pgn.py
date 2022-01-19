@@ -1,5 +1,6 @@
 import logging
 import datetime
+from . import san
 
 NEW_GAME_TOKEN = 42
 GAME_OVER_TOKEN = 19860718
@@ -15,8 +16,8 @@ def parser(tokens):
 
         logging.debug("consuming until first move.")
 
-        while idx < end and tokens[idx] != '1.':
-            logging.debug(" consuming: |%s|", tokens[idx])
+        while idx < end and tokens[idx] != '1.' and tokens[idx] not in san.RESULT_SAN:
+            logging.debug(" consuming: |%s| (%s)", tokens[idx], metadata_line)
             if tokens[idx].startswith('['):
                 metadata_line = tokens[idx]
             elif metadata_line and tokens[idx].endswith(']'):
@@ -72,10 +73,12 @@ def parser(tokens):
                     logging.debug("metadata: %r", metadata)
                     yield NEW_GAME_TOKEN
                     yield metadata
+
                 logging.debug("yielding [%s] for %d", token, move_idx)
                 yield token                
-                if token.endswith('#') or token in ('1-0', '0-1', '1/2-1/2',):                    
+                if token in san.RESULT_SAN:     
                     yield GAME_OVER_TOKEN
+
                     logging.debug("break due to endgame")
                     break
 

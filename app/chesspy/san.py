@@ -2,6 +2,8 @@ import logging
 import collections
 from .move import Move
 
+RESULT_SAN = ('1-0', '0-1', '1/2-1/2')
+
 def char_to_y(ch):
     logging.debug("char_to_y(%s)", ch)
     return ord('8') - ord(ch)

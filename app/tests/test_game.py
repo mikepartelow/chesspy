@@ -444,8 +444,7 @@ class TestFamousGames(unittest.TestCase):
         g = game.Game()
 
         for idx, (sanstr, boardrepr) in enumerate(itertools.zip_longest(simple_moves('tests/games/gotc.txt'), board_reprs('tests/games/gotc.boardreprs.txt'))):
-            turn = g.turn
-            # print(f"{int(idx/2+1)}. {turn}: {sanstr}")
+            # print(f"{int(idx/2+1)}. {g.turn}: {sanstr}")
             g.move_san(sanstr)
             # print(g.board)
             # print("")
@@ -455,8 +454,7 @@ class TestFamousGames(unittest.TestCase):
         g = game.Game()
 
         for idx, (sanstr, boardrepr) in enumerate(itertools.zip_longest(simple_moves('tests/games/immortal.txt'), board_reprs('tests/games/immortal.boardreprs.txt'))):
-            turn = g.turn
-            # print(f"{int( idx/2+1)}. {turn}: {sanstr}")
+            # print(f"{int( idx/2+1)}. {g.turn}: {sanstr}")
             g.move_san(sanstr)
             # print(g.board)
             # print("")

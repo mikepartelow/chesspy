@@ -12,16 +12,16 @@ def board_reprs(path):
 
 class TestPgnVsReprs(unittest.TestCase):
     def exec_test_pgn(self, basename, do_print=False):
-        
+
         reprspath = f"tests/games/{basename}.boardreprs.txt"
 
         for pgn_game in pgn.Gamefile(f"tests/games/{basename}.pgn"):
             game = chesspy.game.Game()
             for move, boardrepr in itertools.zip_longest(pgn_game, board_reprs(reprspath)):
                 if do_print:
-                    print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")  
+                    print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")
 
-                game.move_san(move.sanstr)  
+                game.move_san(move.sanstr)
 
                 if do_print:
                     print(game.board)
@@ -29,7 +29,7 @@ class TestPgnVsReprs(unittest.TestCase):
 
                 self.assertEqual(repr(game.board), boardrepr, move.idx)
 
-    def test_immortal(self): 
+    def test_immortal(self):
         self.exec_test_pgn('immortal', do_print=False)
 
     def test_evergreen(self):
@@ -46,9 +46,9 @@ class TestPgnBasic(unittest.TestCase):
             game_count_actual += 1
             for move in pgn_game:
                 if do_print:
-                    print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")  
+                    print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")
 
-                game.move_san(move.sanstr)  
+                game.move_san(move.sanstr)
 
                 if do_print:
                     print(game.board)
@@ -85,7 +85,7 @@ class TestMagnusLichess(unittest.TestCase):
         metadata_file = f"tests/games/ignore.metadata.{basename}.pgn"
 
         if os.path.exists(pgnfile):
-            with open(metadata_file, "w") as metadata_f:                
+            with open(metadata_file, "w") as metadata_f:
                 game_count_actual = 0
 
                 for pgn_game in pgn.Gamefile(pgnfile):
@@ -94,36 +94,18 @@ class TestMagnusLichess(unittest.TestCase):
                     game_count_actual += 1
                     for move in pgn_game:
                         if do_print:
-                            print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")  
+                            print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")
 
-                        game.move_san(move.sanstr)  
+                        game.move_san(move.sanstr)
 
                         if do_print:
                             print(game.board)
                             print("")
 
             self.assertEqual(game_count, game_count_actual)
-                                  
+
     def test_DrNykterstein(self):
-        # AssertionError: 9667 != 9662
-        # FIXME: cat lichess_DrNykterstein_2022-01-04 | grep UTCDate | wc -l == 9667, but pgn.Gamefile counts 9662
-        #        discover discrepancy by parsing metadata like UTCDate, recording to file, diffing vs .pgn file
-        #
-        # !!! [Variant "From Position"]
-        #
-        #
-        # root@685f86ed6743:/chesspy# cat tests/games/lichess_DrNykterstein_2022-01-04.pgn | grep '\[Site ' > blap
-        #  root@685f86ed6743:/chesspy# diff blap tests/games/ignore.metadata.lichess_DrNykterstein_2022-01-04.pgn
-        # 2443,2445d2442
-        # < [Site "https://lichess.org/lit8Alwh"]
-        # < [Site "https://lichess.org/6beKx9bR"]
-        # < [Site "https://lichess.org/B8kAuxEO"]
-        # 2662d2658
-        # < [Site "https://lichess.org/TR35WuMW"]
-        # 8869d8864
-        # < [Site "https://lichess.org/CWefAkiK"]
-        #
-        self.exec_test_pgn('lichess_DrNykterstein_2022-01-04', game_count=9667, do_print=True)
+        self.exec_test_pgn('lichess_DrNykterstein_2022-01-04', game_count=9664, do_print=False)
 
     def test_n7ZjoKNR(self):
         self.exec_test_pgn('n7ZjoKNR')
@@ -137,4 +119,5 @@ class TestMagnusLichess(unittest.TestCase):
     def test_1Ot7nMcK(self):
         self.exec_test_pgn('1Ot7nMcK')
 
-        
+    def test_CWefAkiK(self):
+        self.exec_test_pgn('CWefAkiK')
