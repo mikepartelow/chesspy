@@ -4,13 +4,16 @@ from .move import Move
 
 RESULT_SAN = ('1-0', '0-1', '1/2-1/2')
 
+
 def char_to_y(ch):
     logging.debug("char_to_y(%s)", ch)
     return ord('8') - ord(ch)
 
+
 def char_to_x(ch):
     logging.debug("char_to_x(%s)", ch)
     return ord(ch) - ord('a')
+
 
 def parse(sanstr, game=None):
     """Parse a SAN formatted string and return a populated Move object.

@@ -5,7 +5,7 @@
 ## Chess Engines
 
 A chess engine examines chess board positions and suggests good moves. I decided to build a chess engine
-because programming is fun, chess is fun, and I want to work with newer Python features and standard libraries.  
+because programming is fun, chess is fun, and I want to work with newer Python features and standard libraries.
 
 There exist better chess engines than this, but I didn't have the pleasure of writing those from scratch.
 
@@ -15,18 +15,18 @@ There exist better chess engines than this, but I didn't have the pleasure of wr
 
 ### Run chesspy
 
-    docker run -v `pwd`/app:/chesspy -ti chesspy bash                   
+    docker run -v `pwd`/app:/chesspy -ti chesspy bash
     python main.py board # display a chess board with pieces
     python main.py       # display a playthrough of The Immortal Game
 
-### Test chesspy    
-    
+### Test chesspy
+
     python -m unittest tests
     python -m unittest tests.test_san
     python -m unittest tests.test_san.TestMove
     python -m unittest tests.test_san.TestMove.test_0
-    
-> On Mac, running tests with Docker bind mounts [slows the tests](https://github.com/docker/for-mac/issues/3677) down by about 15x. 
+
+> On Mac, running tests with Docker bind mounts [slows the tests](https://github.com/docker/for-mac/issues/3677) down by about 15x.
 > It's actually faster to rebuild the container and run the tests than to use bind mounts on a long-running container.
 
     docker build -qt chesspy . && docker run -t chesspy bash -c 'python -m unittest tests'
@@ -35,7 +35,7 @@ There exist better chess engines than this, but I didn't have the pleasure of wr
 ## One way to write a software Chess Engine
 
 Although the definition of a Chess Engine is "software that generates good chess moves", it's useful
-for any Chess Engine to also understand some chess move notation. Then we can build a fully featured 
+for any Chess Engine to also understand some chess move notation. Then we can build a fully featured
 game for human vs. computer, and we can use historical games as training material for our engine.
 
 Standard Algebraic Notation (SAN) is a widely used, standardized chess move notation. It is used by all
@@ -47,7 +47,7 @@ complicated code to implement in software.
 
 Consider the following board position, with Black's Queen on e4, and White's Knights on c3 and e3.
 
-```       
+```
       [r][n][b][ ][k][b][n][r] 8
       [p][p][p][p][p][p][p][p] 7
       [ ][ ][ ][ ][ ][ ][ ][ ] 6
@@ -62,20 +62,20 @@ Consider the following board position, with Black's Queen on e4, and White's Kni
 What does the SAN move "Nd5" mean? It means "Knight to d5". Both of white's knights can reach d5 in one move,
 but if you are familiar with the rules of chess, it is clear that only the knight on c3 can legally move.
 
-The rules of chess state that a piece cannot be moved if moving it would expose the King to check. If 
-White moves her e3 Knight, Black's Queen gives check. Therefore, the move "Nd5" unambiguously means to 
+The rules of chess state that a piece cannot be moved if moving it would expose the King to check. If
+White moves her e3 Knight, Black's Queen gives check. Therefore, the move "Nd5" unambiguously means to
 move the Knight from c3, not the one from e3.
 
-For a Chess Engine to reliably parse a simple looking SAN move like "Nd5", it must know all the rules of chess, and it must 
+For a Chess Engine to reliably parse a simple looking SAN move like "Nd5", it must know all the rules of chess, and it must
 also know the state of the current game. Given "Nd5", a Chess Engine can't necessarily
-figure out exactly which piece to move just by processing the text of a three character string. 
+figure out exactly which piece to move just by processing the text of a three character string.
 
-This is not simply a matter of forbidding illegal moves. Many SAN strings (like "Nd5") specify only 
-the kind of piece to move and the destination square. 
+This is not simply a matter of forbidding illegal moves. Many SAN strings (like "Nd5") specify only
+the kind of piece to move and the destination square.
 
 Consider this board position.
 
-```       
+```
       [r][n][b][q][k][b][n][r] 8
       [p][p][p][p][p][p][p][p] 7
       [ ][ ][ ][ ][ ][ ][ ][ ] 6
@@ -88,7 +88,7 @@ Consider this board position.
 ```
 
 If Black moves "Nf6", the Chess Engine needs more information than is provided in the 3 character string
-to conclude the Knight to move is currently on g8. It has to know the current board state and how Knights move, 
+to conclude the Knight to move is currently on g8. It has to know the current board state and how Knights move,
 among other details.
 
 ## The Testing Problem
@@ -120,13 +120,13 @@ is wrong.
 
 I populated a simple text file with the SAN formatted moves from these games.
 
-I fed the moves to my SAN parser. For each move, I wrote the code to execute the move, and printed out 
+I fed the moves to my SAN parser. For each move, I wrote the code to execute the move, and printed out
 a 64 (8x8) character text representation of the board state, and a visual representation of the board state.
 
-I manually (visually!) verified that my engine made the right move, and then added the 64 character 
+I manually (visually!) verified that my engine made the right move, and then added the 64 character
 text representation of the board state to a "known good" file.
 
-The next time I ran my tests, the tests compared manually verified "known good" board states to what the 
+The next time I ran my tests, the tests compared manually verified "known good" board states to what the
 engine did with each move. This way I could catch any bugs that I introduced after verifying prior
 move implementations.
 
@@ -142,19 +142,19 @@ that were already validated by some other chess engine. I downloaded PGN formatt
 games and some PGN files for other lichess users.
 
 Parsing the PGN files and running the moves through the engine would not directly test the correctness
-of the engine, but it could flush out unimplemented cases and bugs. For example, The Immortal Game and 
-The Game Of The Century contain neither "pawn promotion" nor "en passant". 
+of the engine, but it could flush out unimplemented cases and bugs. For example, The Immortal Game and
+The Game Of The Century contain neither "pawn promotion" nor "en passant".
 
 In both cases the engine did not catch any error directly, but a few moves after the engine made a mistake,
 it could not execute a move it normally could have handled.
 
-For example, when executing pawn promotion like "h8=Q", the engine simply ignored the promotion to Queen 
+For example, when executing pawn promotion like "h8=Q", the engine simply ignored the promotion to Queen
 and moved the pawn to h8. A few moves later, the player moved their Queen, but my engine could find no
 Queen on the board! So it raised an exception, I looked at the move history, and added tests specifically
-for Pawn Promotion, in TDD style.
+for Pawn Promotion.
 
 With a large dataset of less-famous games, I can flush out many cases that I would miss if I tried to imagine
-individual TDD tests myself.
+individual test tests myself.
 
 [FGDD Light](app/tests/test_pgn.py#L34)
 

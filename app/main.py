@@ -1,10 +1,9 @@
-import os
 import sys
 import logging
 import chesspy.game
 
-logging.basicConfig(filename='logs/chesspy.log', 
-                    encoding='utf-8', 
+logging.basicConfig(filename='logs/chesspy.log',
+                    encoding='utf-8',
                     format='[%(asctime)s]::[%(levelname).1s]::[%(filename)s:%(lineno)d]::[%(message)s]',
                     datefmt='%Y-%m-%d:%H:%M:%S',
                     level=logging.DEBUG)
@@ -27,10 +26,10 @@ if __name__ == "__main__":
             g.move_san(sanstr_white)
             print(g.board)
             print("")
-            
+
             if sanstr_black:
                 sanstr_black = sanstr_black[0]
                 print(f"{move_num+1}... {sanstr_black}")
                 g.move_san(sanstr_black)
-                print(g.board)                
+                print(g.board)
                 print("")

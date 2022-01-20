@@ -1,7 +1,6 @@
 from .board import Board
 from .color import Color
 from . import san
-import itertools
 import logging
 import copy
 
@@ -26,7 +25,7 @@ class Game:
     def is_in_check(self):
         logging.debug("Game::is_in_check(%s)", self.turn)
 
-        king_pos = self.board.king_position(self.turn)        
+        king_pos = self.board.king_position(self.turn)
         logging.debug("Game::is_in_check() : king_pos = %r", king_pos)
 
         offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
@@ -200,15 +199,15 @@ class Game:
     def deduce_src_moves_like_rook(self, mv, p_target):
         if (p := self.board.find_first_on_h_or_v(mv.dst, 0, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
             yield p[1:]
-        
+
         if (p := self.board.find_first_on_h_or_v(mv.dst, 0, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
             yield p[1:]
-        
+
         if (p := self.board.find_first_on_h_or_v(mv.dst, 1, 0, mv.src_y, mv.src_x)) and p[0] == p_target:
             yield p[1:]
-        
+
         if (p := self.board.find_first_on_h_or_v(mv.dst, -1, 0, mv.src_y, mv.src_x)) and p[0] == p_target:
-            yield p[1:]        
+            yield p[1:]
 
     def deduce_src_moves_like_bishop(self, mv, p_target):
         if (p := self.board.find_first_on_diagonal(mv.dst, -1, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
