@@ -6,7 +6,7 @@ from .color import Color
 class Board:
     def __init__(self, reprstr=None):
         if reprstr is not None:
-            assert(len(reprstr) == 8*8)
+            assert len(reprstr) == 8*8
             self.squares = [None if ch == ' ' else ch for ch in reprstr]
         else:
             self.squares = ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
@@ -32,18 +32,18 @@ class Board:
                         self.piece_positions[Color.WHITE]['K'] = (y, x)
 
     def __str__(self):
-        s = []
+        boardstr = []
 
-        s.extend(['   0 ', ' 1 ', ' 2 ', ' 3 ', ' 4 ', ' 5 ', ' 6 ', ' 7 ', '\n'])
+        boardstr.extend(['   0 ', ' 1 ', ' 2 ', ' 3 ', ' 4 ', ' 5 ', ' 6 ', ' 7 ', '\n'])
         for y in range(0, 8):
-            s.append(f"{y} ")
+            boardstr.append(f"{y} ")
             for x in range(0, 8):
                 square = self.squares[8*y + x]
-                s.append(f"[{square or ' '}]")
-            s.append(f" {8-y}\n")
-        s.extend(['   a ', ' b ', ' c ', ' d ', ' e ', ' f ', ' g ', ' h '])
+                boardstr.append(f"[{square or ' '}]")
+            boardstr.append(f" {8-y}\n")
+        boardstr.extend(['   a ', ' b ', ' c ', ' d ', ' e ', ' f ', ' g ', ' h '])
 
-        return ''.join(s)
+        return ''.join(boardstr)
 
     def __repr__(self):
         return ''.join(ch or ' ' for ch in self.squares)
@@ -101,16 +101,15 @@ class Board:
 
         for y, x in squares:
             logging.debug("(%s, %s)", y, x)
-            if y < 0 or y > 7 or x < 0 or x > 7:
-                # FIXME: this should never happen if we computed things correctly above.
-                raise IndexError
+            assert 0 <= y < 8 and 0 <= x < 8
 
             if (p := self.squares[8*y + x]) is not None:
                 if src_y in (None, y) and src_x in (None, x):
                     return (p, y, x)
+        return None
 
     def find_first_on_h_or_v(self, start, inc_y, inc_x, src_y=None, src_x=None):
-        """Find the first piece encountered horizontally or vertically starting from (start_y, start_x) while incrementing (y, x) by (inc_y, inc_x)
+        """Find first piece horizontally or vertically starting from (start_y, start_x incrementing by (inc_y, inc_x)
 
         Either inc_y or inc_x must == 0.
         If src_y or src_x are not None, return only coords that include them.

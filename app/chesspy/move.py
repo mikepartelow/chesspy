@@ -1,7 +1,7 @@
 import logging
 
 
-# FIXME: unit test Move
+# pylint: disable=too-many-instance-attributes
 class Move:
     src_y = None
     src_x = None
@@ -21,15 +21,14 @@ class Move:
         if name in ['check', 'mate', 'capture', 'castle', 'en_passant']:
             if getattr(self, name) is not False:
                 raise IndexError
-            else:
-                return super().__setattr__(name, value)
+            return super().__setattr__(name, value)
 
         if getattr(self, name) not in (None, value):
             if getattr(self, name):
                 logging.debug("%s != %s", getattr(self, name), value)
             raise IndexError
-        else:
-            return super().__setattr__(name, value)
+
+        return super().__setattr__(name, value)
 
     def __repr__(self):
         return("Move({"

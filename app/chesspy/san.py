@@ -1,5 +1,4 @@
 import logging
-import collections
 from .move import Move
 
 RESULT_SAN = ('1-0', '0-1', '1/2-1/2')
@@ -13,6 +12,10 @@ def char_to_y(ch):
 def char_to_x(ch):
     logging.debug("char_to_x(%s)", ch)
     return ord(ch) - ord('a')
+
+
+def out_of_bounds(coords):
+    return coords[0] < 0 or coords[0] > 7 or coords[1] < 0 or coords[1] > 7
 
 
 def parse(sanstr, game=None):
@@ -31,10 +34,10 @@ def parse(sanstr, game=None):
             mv.check, mv.mate = True, True
         return mv
 
-    dq = collections.deque(sanstr)
+    sanchars = list(sanstr)
 
     while mv.dst_y is None:
-        match dq.pop():
+        match sanchars.pop():
             case '!' | '?':
                 # annotations: ignore them
                 pass
@@ -50,10 +53,10 @@ def parse(sanstr, game=None):
             case _ as ch:
                 mv.dst_y = char_to_y(ch)
 
-    mv.dst_x = char_to_x(dq.pop())
+    mv.dst_x = char_to_x(sanchars.pop())
 
-    while len(dq):
-        match dq.pop():
+    while sanchars:
+        match sanchars.pop():
             case 'x':
                 mv.capture = True
             case ('a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h') as src_file:
@@ -74,7 +77,7 @@ def parse(sanstr, game=None):
             # failed to fully deduce src
             raise IndexError("Failed to deduce_src()")
 
-    if mv.dst_y is None or mv.dst_x is None or mv.dst_y < 0 or mv.dst_y > 7 or mv.dst_x < 0 or mv.dst_x > 7:
+    if mv.dst_y is None or mv.dst_x is None or out_of_bounds(mv.dst):
         # invalid SAN like "33"
         raise IndexError
 

@@ -6,7 +6,7 @@ NEW_GAME_TOKEN = 42
 GAME_OVER_TOKEN = 19860718
 
 
-def parser(tokens):
+def pgn_parser(tokens):
     idx, end = 0, len(tokens)
 
     while idx < end:
@@ -66,7 +66,6 @@ def parser(tokens):
                 move_idx += 1
             elif token == f"{move_idx-1}...":
                 logging.debug("consuming [%s]", token)
-                pass
             else:
                 if new_game:
                     new_game = False
@@ -84,17 +83,20 @@ def parser(tokens):
                     break
 
 
+# pylint: disable=too-few-public-methods,too-many-instance-attributes
 class Metadata:
     def __init__(self, m_dict):
         self.event = m_dict['Event']
         self.site = m_dict['Site']
+
         try:
             self.date = datetime.date(*map(int, m_dict['Date'].split('.')))
-        except Exception:
+        except (TypeError, ValueError):
             try:
                 self.date = datetime.date(*map(int, m_dict['UTCDate'].split('.')))
-            except Exception:
+            except (TypeError, ValueError):
                 self.date = None
+
         self.white = m_dict['White']
         self.black = m_dict['Black']
         self.result = m_dict['Result']
@@ -120,19 +122,18 @@ class Game:
         token = next(self.parser)
         if token == GAME_OVER_TOKEN:
             raise StopIteration
-        else:
-            self.idx += 1
-            return Move(self.idx, token)
+        self.idx += 1
+        return Move(self.idx, token)
 
 
 class Gamefile:
     def __init__(self, path):
         self.game_count = 0
 
-        with open(path) as f:
-            tokens = [t for t in f.read().split()]
+        with open(path, encoding='utf-8') as pgn_f:
+            tokens = list(pgn_f.read().split())
 
-        self.parser = parser(tokens)
+        self.parser = pgn_parser(tokens)
 
     def __iter__(self):
         return self
@@ -144,5 +145,6 @@ class Gamefile:
                 self.game_count += 1
                 metadata = next(self.parser)
                 return Game(self.parser, Metadata(metadata))
-            elif token is None:
+
+            if token is None:
                 break

@@ -8,15 +8,13 @@ import copy
 def color_of(ch):
     if ch.isupper():
         return Color.WHITE
-    else:
-        return Color.BLACK
+    return Color.BLACK
 
 
 def colorize(ch, color):
     if color == Color.WHITE:
         return ch.upper()
-    else:
-        return ch.lower()
+    return ch.lower()
 
 
 class Game:
@@ -36,9 +34,9 @@ class Game:
 
         opponent_knight = colorize('N', self.turn.opponent())
 
-        for (yo, xo) in zip(offsets_y, offsets_x):
-            y, x = king_pos[0] + yo, king_pos[1] + xo
-            if y >= 0 and y < 8 and x >= 0 and x < 8:
+        for (y_offset, x_offset) in zip(offsets_y, offsets_x):
+            y, x = king_pos[0] + y_offset, king_pos[1] + x_offset
+            if 0 <= y < 8 and 0 <= x < 8:
                 if self.board.square_at(y, x) == opponent_knight:
                     logging.debug("Game::is_in_check() -> True : Knight at (%s, %s)", y, x)
                     return True
@@ -50,13 +48,13 @@ class Game:
         if (p := self.board.find_first_on_diagonal(king_pos, -1, -1)) and p[0] in (opponent_bishop, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_diagonal(king_pos, 1, 1)) and p[0] in (opponent_bishop, opponent_queen):
+        if (p := self.board.find_first_on_diagonal(king_pos, 1, 1)) and p[0] in (opponent_bishop, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_diagonal(king_pos, 1, -1)) and p[0] in (opponent_bishop, opponent_queen):
+        if (p := self.board.find_first_on_diagonal(king_pos, 1, -1)) and p[0] in (opponent_bishop, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_diagonal(king_pos, -1, 1)) and p[0] in (opponent_bishop, opponent_queen):
+        if (p := self.board.find_first_on_diagonal(king_pos, -1, 1)) and p[0] in (opponent_bishop, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
 
@@ -65,13 +63,13 @@ class Game:
         if (p := self.board.find_first_on_h_or_v(king_pos, 0, -1)) and p[0] in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_h_or_v(king_pos, 0, 1)) and p[0] in (opponent_rook, opponent_queen):
+        if (p := self.board.find_first_on_h_or_v(king_pos, 0, 1)) and p[0] in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_h_or_v(king_pos, 1, 0)) and p[0] in (opponent_rook, opponent_queen):
+        if (p := self.board.find_first_on_h_or_v(king_pos, 1, 0)) and p[0] in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
-        elif (p := self.board.find_first_on_h_or_v(king_pos, -1, 0)) and p[0] in (opponent_rook, opponent_queen):
+        if (p := self.board.find_first_on_h_or_v(king_pos, -1, 0)) and p[0] in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
 
@@ -139,13 +137,13 @@ class Game:
         #                     it's also slower on average when mv.check is False, which is most of the time.
         #
         logging.debug("assert(mv.check == self.is_in_check())")
-        assert(mv.check == self.is_in_check())
+        assert mv.check == self.is_in_check()
 
         return capture
 
     def move_move(self, mv):
         piece = self.board.square_at(mv.src_y, mv.src_x)
-        assert(piece is not None)
+        assert piece is not None
 
         if mv.en_passant:
             y = mv.dst_y + 1 if self.turn == Color.WHITE else mv.dst_y - 1
@@ -154,7 +152,7 @@ class Game:
         else:
             capture = self.board.square_at(mv.dst_y, mv.dst_x)
 
-        assert((capture is None) == (mv.capture is False))
+        assert (capture is None) == (mv.capture is False)
 
         if mv.promotion:
             piece = colorize(mv.promotion, self.turn)
@@ -194,7 +192,7 @@ class Game:
             if (mv.src_y is not None and src_y != mv.src_y) or (mv.src_x is not None and src_x != mv.src_x):
                 continue
 
-            if src_y >= 0 and src_y < 8 and src_x >= 0 and src_x < 8:
+            if 0 <= src_y < 8 and 0 <= src_x < 8:
                 if self.board.square_at(src_y, src_x) == p_src:
                     logging.debug("deduce_src_knight(%r): yield (%s, %s)", mv, src_y, src_x)
                     yield src_y, src_x
@@ -239,11 +237,11 @@ class Game:
         match mv.piece:
             case 'P':
                 if self.turn == Color.WHITE:
-                    def ahead_of(y): return y + 1
-                    def behind(y): return y - 1
+                    def ahead_of(y): return y + 1  # pylint: disable=multiple-statements
+                    def behind(y): return y - 1  # pylint: disable=multiple-statements
                 else:
-                    def ahead_of(y): return y - 1
-                    def behind(y): return y + 1
+                    def ahead_of(y): return y - 1  # pylint: disable=multiple-statements
+                    def behind(y): return y + 1  # pylint: disable=multiple-statements
 
                 if mv.capture:
                     p_src = colorize('P', self.turn)
@@ -317,7 +315,7 @@ class Game:
                 p_src = colorize('K', self.turn)
                 for y in range(mv.dst_y-1, mv.dst_y+2):
                     for x in range(mv.dst_x-1, mv.dst_x+2):
-                        if (y, x) != (mv.dst_y, mv.dst_x) and y >= 0 and y < 8 and x >= 0 and x < 8:
+                        if (y, x) != (mv.dst_y, mv.dst_x) and 0 <= y < 8 and 0 <= x < 8:
                             if self.board.square_at(y, x) == p_src:
                                 mv.src_y, mv.src_x = y, x
                                 break
