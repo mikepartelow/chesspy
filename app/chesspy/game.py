@@ -4,17 +4,20 @@ from . import san
 import logging
 import copy
 
+
 def color_of(ch):
     if ch.isupper():
         return Color.WHITE
     else:
         return Color.BLACK
 
+
 def colorize(ch, color):
     if color == Color.WHITE:
         return ch.upper()
     else:
         return ch.lower()
+
 
 class Game:
     def __init__(self, board=None, turn=None):
@@ -104,7 +107,7 @@ class Game:
             # FIXME: enum
             if mv.castle == 'kingside':
                 if self.turn == Color.WHITE:
-                    self.board.place_piece_at('K', 7 , 6)
+                    self.board.place_piece_at('K', 7, 6)
                     self.board.place_piece_at('R', 7, 5)
                     self.board.place_piece_at(None, 7, 4)
                     self.board.place_piece_at(None, 7, 7)
@@ -120,7 +123,7 @@ class Game:
                     self.board.place_piece_at(None, 7, 4)
                     self.board.place_piece_at(None, 7, 0)
                 else:
-                    self.board.place_piece_at('k', 0 , 2)
+                    self.board.place_piece_at('k', 0, 2)
                     self.board.place_piece_at('r', 0, 3)
                     self.board.place_piece_at(None, 0, 4)
                     self.board.place_piece_at(None, 0, 0)
@@ -192,7 +195,7 @@ class Game:
                 continue
 
             if src_y >= 0 and src_y < 8 and src_x >= 0 and src_x < 8:
-                if (p := self.board.square_at(src_y, src_x)) == p_src:
+                if self.board.square_at(src_y, src_x) == p_src:
                     logging.debug("deduce_src_knight(%r): yield (%s, %s)", mv, src_y, src_x)
                     yield src_y, src_x
 
@@ -237,36 +240,35 @@ class Game:
             case 'P':
                 if self.turn == Color.WHITE:
                     def ahead_of(y): return y + 1
-                    def behind(y):   return y - 1
+                    def behind(y): return y - 1
                 else:
                     def ahead_of(y): return y - 1
-                    def behind(y):   return y + 1
+                    def behind(y): return y + 1
 
                 if mv.capture:
                     p_src = colorize('P', self.turn)
                     p_dst = self.board.square_at(mv.dst_y, mv.dst_x)
 
-                    if p_dst and color_of(p_dst) != color_of(p_src): # regular capture?
+                    if p_dst and color_of(p_dst) != color_of(p_src):  # regular capture?
                         if mv.src_x and self.board.square_at(ahead_of(mv.dst_y), mv.src_x) == p_src:
                             mv.src_y = ahead_of(mv.dst_y)
                         elif mv.dst_x > 0 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x - 1) == p_src:
                             mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x - 1
                         elif mv.dst_x < 7 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x + 1) == p_src:
                             mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x + 1
-                    elif p_dst is None: # en passant?
+                    elif p_dst is None:  # en passant?
 
                         logging.debug("%s : %s : %s : %s : %s",
-                                        behind(mv.dst_y),
-                                        self.board.square_at(behind(mv.dst_y), mv.dst_x),
-                                        colorize('P', self.turn.opponent),
-                                        self.board.square_at(ahead_of(mv.dst_y), mv.dst_x),
-                                        self.turn.opponent(),
-                                     )
+                                      behind(mv.dst_y),
+                                      self.board.square_at(behind(mv.dst_y), mv.dst_x),
+                                      colorize('P', self.turn.opponent),
+                                      self.board.square_at(ahead_of(mv.dst_y), mv.dst_x),
+                                      self.turn.opponent())
 
                         if (p := self.board.square_at(ahead_of(mv.dst_y), mv.dst_x)) and \
                                 p == colorize('P', self.turn.opponent()) and \
                                 self.board.square_at(behind(mv.dst_y), mv.dst_x) is None and \
-                                True: # FIXME: not "True" but "was opponent's previous move that pawn"
+                                True:  # FIXME: not "True" but "was opponent's previous move that pawn"
                             logging.debug("ep-0")
                             if mv.src_x and self.board.square_at(ahead_of(mv.dst_y), mv.src_x) == p_src:
                                 mv.src_y = ahead_of(mv.dst_y)
