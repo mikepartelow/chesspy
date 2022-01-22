@@ -1,8 +1,11 @@
+"""Implements a class representing chess moves."""
+
 import logging
 
 
 # pylint: disable=too-many-instance-attributes
 class Move:
+    """Represents a chess move, including piece to move, source coordinates, destination coordinates, etc."""
     src_y = None
     src_x = None
     dst_y = None
@@ -16,8 +19,7 @@ class Move:
     en_passant = False
 
     def __setattr__(self, name, value):
-        """Forbid setting attributes twice, unless to same value after initialization.
-        """
+        """Forbid setting attributes twice, unless to same value after initialization."""
         if name in ['check', 'mate', 'capture', 'castle', 'en_passant']:
             if getattr(self, name) is not False:
                 raise IndexError
@@ -46,8 +48,10 @@ class Move:
 
     @property
     def dst(self):
+        """Returns (y, x) coordinates for move destination."""
         return (self.dst_y, self.dst_x)
 
     @property
     def src(self):
+        """Returns (y, x) coordinates for move source."""
         return (self.src_y, self.src_x)

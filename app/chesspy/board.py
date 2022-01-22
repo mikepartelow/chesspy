@@ -1,10 +1,13 @@
+"""Impments a class representing a chess Board."""
 import logging
 import itertools
 from .color import Color
 
 
 class Board:
+    """Represents a chess board, with utility methods for moving and locating pieces."""
     def __init__(self, reprstr=None):
+        """Initialize a chess board to the default starting position, or to the given repr string."""
         if reprstr is not None:
             assert len(reprstr) == 8*8
             self.squares = [None if ch == ' ' else ch for ch in reprstr]
@@ -32,6 +35,7 @@ class Board:
                         self.piece_positions[Color.WHITE]['K'] = (y, x)
 
     def __str__(self):
+        """Returns a string for printing the chess board with two coordinate systems."""
         boardstr = []
 
         boardstr.extend(['   0 ', ' 1 ', ' 2 ', ' 3 ', ' 4 ', ' 5 ', ' 6 ', ' 7 ', '\n'])
@@ -46,6 +50,7 @@ class Board:
         return ''.join(boardstr)
 
     def __repr__(self):
+        """Returns a string compactly representing current board state. Suitable for initializing new Board objects."""
         return ''.join(ch or ' ' for ch in self.squares)
 
     def king_position(self, color):

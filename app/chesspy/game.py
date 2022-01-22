@@ -1,29 +1,45 @@
-from .board import Board
-from .color import Color
-from . import san
-import logging
+"""Implements a Game class encapsulating a Board object and a move engine for the rules of standard chess."""
 import copy
+import logging
+from . import san
+from .color import Color
+from .board import Board
+from .castle import Castle
 
 
 def color_of(ch):
+    """Returns Color.WHITE if given piece character is White, otherwise Color.BLACK.
+
+    Performs no validation."""
     if ch.isupper():
         return Color.WHITE
     return Color.BLACK
 
 
 def colorize(ch, color):
+    """Returns the given piece, ch, altered to represent the given color.
+
+    Performs no validation."""
     if color == Color.WHITE:
         return ch.upper()
     return ch.lower()
 
 
 class Game:
+    """Represents a game of standard chess. Tracks turns, validates moves, analyzes positions.
+
+    game = Game()
+    game.move_san("e4")  # move White's pawn
+    game.move_san("e5")  # move Black's pawn
+    game.move_san("Ke4") # illegal move, raises IndexError
+    """
     def __init__(self, board=None, turn=None):
         self.board = board or Board()
         self.turn = turn or Color.WHITE
         self.over = False
 
-    def is_in_check(self):
+    def is_in_check(self):  # pylint: disable=too-many-return-statements,too-many-branches
+        """Returns True if the current turn's player is in check, False otherwise."""
         logging.debug("Game::is_in_check(%s)", self.turn)
 
         king_pos = self.board.king_position(self.turn)
@@ -89,7 +105,41 @@ class Game:
         logging.debug("Game::is_in_check(%s) -> False", self.turn)
         return False
 
+    def move_castle(self, mv):
+        """Given a mv for Castling, execute the move on self.board."""
+        assert mv.castle
+        if mv.castle == Castle.KINGSIDE:
+            if self.turn == Color.WHITE:
+                self.board.place_piece_at('K', 7, 6)
+                self.board.place_piece_at('R', 7, 5)
+                self.board.place_piece_at(None, 7, 4)
+                self.board.place_piece_at(None, 7, 7)
+            else:
+                self.board.place_piece_at('k', 0, 6)
+                self.board.place_piece_at('r', 0, 5)
+                self.board.place_piece_at(None, 0, 4)
+                self.board.place_piece_at(None, 0, 7)
+        elif mv.castle == Castle.QUEENSIDE:
+            if self.turn == Color.WHITE:
+                self.board.place_piece_at('K', 7, 2)
+                self.board.place_piece_at('R', 7, 3)
+                self.board.place_piece_at(None, 7, 4)
+                self.board.place_piece_at(None, 7, 0)
+            else:
+                self.board.place_piece_at('k', 0, 2)
+                self.board.place_piece_at('r', 0, 3)
+                self.board.place_piece_at(None, 0, 4)
+                self.board.place_piece_at(None, 0, 0)
+
     def move_san(self, sanstr):
+        """Executes the given SAN move on self.board if move is legal in standard chess.
+
+        captured_piece = game.move_san("Bxe4")
+
+        Toggles self.turn. Sets self.over in case of checkmate.
+
+        Returns the opponent's captured piece, or None if no piece was captured.
+        Raises IndexError if the move is illegal."""
         logging.debug("Game::move_san(%s)", sanstr)
 
         if sanstr in san.RESULT_SAN:
@@ -101,30 +151,7 @@ class Game:
         mv = san.parse(sanstr, self)
 
         if mv.castle:
-            # FIXME: refactor to do_castle()
-            # FIXME: enum
-            if mv.castle == 'kingside':
-                if self.turn == Color.WHITE:
-                    self.board.place_piece_at('K', 7, 6)
-                    self.board.place_piece_at('R', 7, 5)
-                    self.board.place_piece_at(None, 7, 4)
-                    self.board.place_piece_at(None, 7, 7)
-                else:
-                    self.board.place_piece_at('k', 0, 6)
-                    self.board.place_piece_at('r', 0, 5)
-                    self.board.place_piece_at(None, 0, 4)
-                    self.board.place_piece_at(None, 0, 7)
-            elif mv.castle == 'queenside':
-                if self.turn == Color.WHITE:
-                    self.board.place_piece_at('K', 7, 2)
-                    self.board.place_piece_at('R', 7, 3)
-                    self.board.place_piece_at(None, 7, 4)
-                    self.board.place_piece_at(None, 7, 0)
-                else:
-                    self.board.place_piece_at('k', 0, 2)
-                    self.board.place_piece_at('r', 0, 3)
-                    self.board.place_piece_at(None, 0, 4)
-                    self.board.place_piece_at(None, 0, 0)
+            self.move_castle(mv)
         else:
             capture = self.move_move(mv)
 
@@ -133,8 +160,8 @@ class Game:
         if mv.mate:
             self.over = True
 
-        # FIXME: PERFORMANCE: this is a lovely sanity check but it slows us down by about 2.25x
-        #                     it's also slower on average when mv.check is False, which is most of the time.
+        # this is a lovely sanity check but it slows us down by about 2.25x
+        # it's also slower on average when mv.check is False, which is most of the time.
         #
         logging.debug("assert(mv.check == self.is_in_check())")
         assert mv.check == self.is_in_check()
@@ -142,6 +169,9 @@ class Game:
         return capture
 
     def move_move(self, mv):
+        """Execute the given move. Return captured piece, or None.
+
+        No rules checking applied, move is assumed to be legal."""
         piece = self.board.square_at(mv.src_y, mv.src_x)
         assert piece is not None
 
@@ -163,7 +193,13 @@ class Game:
         return capture
 
     def test_move_from_src(self, y, x, mv):
-        # FIXME: PERFORMANCE: this logically necessary but unoptimized check slows us down by about 2x
+        """Validates move of piece at (y, x) to (mv.dst_y, mv.dst_x) against rules of standard chess.
+
+        If move is legal, intializes (mv.src_y, mv.src_x) and returns True
+        If move is illegal, returns False.
+
+        self.board is unaltered upon return but may be altered during test_move_from_src() execution."""
+        # this logically necessary but unoptimized check slows us down by about 2x
         #
         logging.debug("test_move_from_src(%s, %s, %r)", y, x, mv)
         test_mv = copy.copy(mv)
@@ -182,6 +218,9 @@ class Game:
         return False
 
     def deduce_src_knight(self, mv):
+        """Yields "potentially legal" (src_y, src_x) of knight moves to (mv.dst_y, mv.dst_x), if any are found.
+
+        Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
         p_src = colorize('N', self.turn)
         offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
         offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
@@ -198,6 +237,9 @@ class Game:
                     yield src_y, src_x
 
     def deduce_src_moves_like_rook(self, mv, p_target):
+        """Yields "potentially legal" (src_y, src_x) of rook/queen moves to (mv.dst_y, mv.dst_x), if any are found.
+
+        Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
         if (p := self.board.find_first_on_h_or_v(mv.dst, 0, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
             yield p[1:]
 
@@ -211,6 +253,9 @@ class Game:
             yield p[1:]
 
     def deduce_src_moves_like_bishop(self, mv, p_target):
+        """Yields "potentially legal" (src_y, src_x) of bishop/queen moves to (mv.dst_y, mv.dst_x), if any are found.
+
+        Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
         if (p := self.board.find_first_on_diagonal(mv.dst, -1, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
             yield p[1:]
 
@@ -225,69 +270,73 @@ class Game:
 
         return mv.src_y is not None and mv.src_x is not None
 
-    def deduce_src(self, mv):
-        """Given a partially constructed Move, deduce the src coordinates for the move.
-        """
-        # FIXME: this is well tested through test_san but deserves its own unit test.
+    def deduce_src_pawn(self, mv):  # pylint: disable=too-many-return-statements,too-many-branches
+        """Initializes (mv.src_y, mv.src_x) with coordinates of pawn that can legally move to (mv.dst_y, mv.dst_x)"""
+        if self.turn == Color.WHITE:
+            def ahead_of(y): return y + 1  # pylint: disable=multiple-statements
+            def behind(y): return y - 1  # pylint: disable=multiple-statements
+        else:
+            def ahead_of(y): return y - 1  # pylint: disable=multiple-statements
+            def behind(y): return y + 1  # pylint: disable=multiple-statements
 
+        if mv.capture:
+            p_src = colorize('P', self.turn)
+            p_dst = self.board.square_at(mv.dst_y, mv.dst_x)
+
+            if p_dst and color_of(p_dst) != color_of(p_src):  # regular capture?
+                if mv.src_x and self.board.square_at(ahead_of(mv.dst_y), mv.src_x) == p_src:
+                    mv.src_y = ahead_of(mv.dst_y)
+                elif mv.dst_x > 0 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x - 1) == p_src:
+                    mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x - 1
+                elif mv.dst_x < 7 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x + 1) == p_src:
+                    mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x + 1
+            elif p_dst is None:  # en passant?
+
+                logging.debug("%s : %s : %s : %s : %s",
+                              behind(mv.dst_y),
+                              self.board.square_at(behind(mv.dst_y), mv.dst_x),
+                              colorize('P', self.turn.opponent),
+                              self.board.square_at(ahead_of(mv.dst_y), mv.dst_x),
+                              self.turn.opponent())
+
+                if (p := self.board.square_at(ahead_of(mv.dst_y), mv.dst_x)) and \
+                        p == colorize('P', self.turn.opponent()) and \
+                        self.board.square_at(behind(mv.dst_y), mv.dst_x) is None:
+                    logging.debug("ep-0")
+                    if mv.src_x and self.board.square_at(ahead_of(mv.dst_y), mv.src_x) == p_src:
+                        mv.src_y = ahead_of(mv.dst_y)
+                        mv.en_passant = True
+                    elif mv.dst_x > 0 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x - 1) == p_src:
+                        mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x - 1
+                        mv.en_passant = True
+                    elif mv.dst_x < 7 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x + 1) == p_src:
+                        mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x + 1
+                        mv.en_passant = True
+
+        elif self.board.square_at(mv.dst_y, mv.dst_x) is None:
+            if self.turn == Color.WHITE:
+                idx, pawn, origin = 1, 'P', 6
+            else:
+                idx, pawn, origin = -1, 'p', 1
+
+            if (p := self.board.find_first_on_h_or_v(mv.dst, idx, 0)) and p[0] == pawn:
+                if (abs(mv.dst_y - p[1]) == 2 and p[1] == origin) or abs(mv.dst_y - p[1]) == 1:
+                    mv.src_y, mv.src_x = p[1:]
+
+    def deduce_src(self, mv):  # pylint: disable=too-many-return-statements,too-many-branches
+        """Given a partially constructed Move, deduce src coordinates.
+
+        Given initialized and valid .dst_y, .dst_x, .piece, and .capture fields, initialize
+        .src_y and src_x with the coordinates of a given piece that can legally move to the given
+        coordinates. Performs (expensive) sanity checks.
+        """
         if (p := self.board.square_at(mv.dst_y, mv.dst_x)) and color_of(p) == self.turn:
             # can't land on our own piece
             raise IndexError
 
         match mv.piece:
             case 'P':
-                if self.turn == Color.WHITE:
-                    def ahead_of(y): return y + 1  # pylint: disable=multiple-statements
-                    def behind(y): return y - 1  # pylint: disable=multiple-statements
-                else:
-                    def ahead_of(y): return y - 1  # pylint: disable=multiple-statements
-                    def behind(y): return y + 1  # pylint: disable=multiple-statements
-
-                if mv.capture:
-                    p_src = colorize('P', self.turn)
-                    p_dst = self.board.square_at(mv.dst_y, mv.dst_x)
-
-                    if p_dst and color_of(p_dst) != color_of(p_src):  # regular capture?
-                        if mv.src_x and self.board.square_at(ahead_of(mv.dst_y), mv.src_x) == p_src:
-                            mv.src_y = ahead_of(mv.dst_y)
-                        elif mv.dst_x > 0 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x - 1) == p_src:
-                            mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x - 1
-                        elif mv.dst_x < 7 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x + 1) == p_src:
-                            mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x + 1
-                    elif p_dst is None:  # en passant?
-
-                        logging.debug("%s : %s : %s : %s : %s",
-                                      behind(mv.dst_y),
-                                      self.board.square_at(behind(mv.dst_y), mv.dst_x),
-                                      colorize('P', self.turn.opponent),
-                                      self.board.square_at(ahead_of(mv.dst_y), mv.dst_x),
-                                      self.turn.opponent())
-
-                        if (p := self.board.square_at(ahead_of(mv.dst_y), mv.dst_x)) and \
-                                p == colorize('P', self.turn.opponent()) and \
-                                self.board.square_at(behind(mv.dst_y), mv.dst_x) is None and \
-                                True:  # FIXME: not "True" but "was opponent's previous move that pawn"
-                            logging.debug("ep-0")
-                            if mv.src_x and self.board.square_at(ahead_of(mv.dst_y), mv.src_x) == p_src:
-                                mv.src_y = ahead_of(mv.dst_y)
-                                mv.en_passant = True
-                            elif mv.dst_x > 0 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x - 1) == p_src:
-                                mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x - 1
-                                mv.en_passant = True
-                            elif mv.dst_x < 7 and self.board.square_at(ahead_of(mv.dst_y), mv.dst_x + 1) == p_src:
-                                mv.src_y, mv.src_x = ahead_of(mv.dst_y), mv.dst_x + 1
-                                mv.en_passant = True
-
-                elif self.board.square_at(mv.dst_y, mv.dst_x) is None:
-                    if self.turn == Color.WHITE:
-                        idx, pawn, origin = 1, 'P', 6
-                    else:
-                        idx, pawn, origin = -1, 'p', 1
-
-                    if (p := self.board.find_first_on_h_or_v(mv.dst, idx, 0)) and p[0] == pawn:
-                        if (abs(mv.dst_y - p[1]) == 2 and p[1] == origin) or abs(mv.dst_y - p[1]) == 1:
-                            mv.src_y, mv.src_x = p[1:]
-
+                self.deduce_src_pawn(mv)
             case 'N':
                 for (y, x) in self.deduce_src_knight(mv):
                     if self.test_move_from_src(y, x, mv):

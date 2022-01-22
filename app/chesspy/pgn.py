@@ -1,3 +1,4 @@
+"""Simple parser for PGN files."""
 import logging
 import datetime
 from . import san
@@ -6,7 +7,10 @@ NEW_GAME_TOKEN = 42
 GAME_OVER_TOKEN = 19860718
 
 
-def pgn_parser(tokens):
+def pgn_parser(tokens):  # pylint: disable=too-many-branches,too-many-statements
+    """Generator that yields SAN strings and special markers given a list of PGN file tokens.
+
+    Yields NEW_GAME_TOKEN at the beginning of a game, GAME_OVER_TOKEN at the end, otherwise SAN strings."""
     idx, end = 0, len(tokens)
 
     while idx < end:
@@ -85,6 +89,7 @@ def pgn_parser(tokens):
 
 # pylint: disable=too-few-public-methods,too-many-instance-attributes
 class Metadata:
+    """A subset of PGN metadata."""
     def __init__(self, m_dict):
         self.event = m_dict['Event']
         self.site = m_dict['Site']
@@ -105,11 +110,17 @@ class Metadata:
 
 
 class Move:
+    """Trivial utility class for a SAN move."""
     def __init__(self, idx, sanstr):
         self.idx, self.sanstr = idx, sanstr
 
 
 class Game:
+    """Iterator for a game of chess encoded in PGN. Don't use this directly, use Gamefile().
+
+    for move in Game(parser, metadata)
+       print(move.sanstr)
+    """
     def __init__(self, parser, metadata):
         self.parser = parser
         self.idx = -1
@@ -127,6 +138,12 @@ class Game:
 
 
 class Gamefile:
+    """Iterator over a PGN file. Yields a Game() object for each game in the PGN file.
+
+    for game in Gamefile("/path/to/my.pgn"):
+        for move in game:
+            print(move.idx, move.sanstr)
+    """
     def __init__(self, path):
         self.game_count = 0
 

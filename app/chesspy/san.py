@@ -1,20 +1,26 @@
+"""Parser for Standard Algebraic Notation"""
+
 import logging
 from .move import Move
+from .castle import Castle
 
 RESULT_SAN = ('1-0', '0-1', '1/2-1/2')
 
 
 def char_to_y(ch):
+    """Given a chess file a-h return a y coordinate 0-7"""
     logging.debug("char_to_y(%s)", ch)
     return ord('8') - ord(ch)
 
 
 def char_to_x(ch):
+    """Given a chess rank 1-8 return a y coordinate 7-0"""
     logging.debug("char_to_x(%s)", ch)
     return ord(ch) - ord('a')
 
 
 def out_of_bounds(coords):
+    """Given coordinates (y, x) return True if the coordinates are valid for 0-indexed 8x8 grid."""
     return coords[0] < 0 or coords[0] > 7 or coords[1] < 0 or coords[1] > 7
 
 
@@ -27,7 +33,7 @@ def parse(sanstr, game=None):
     mv = Move()
 
     if sanstr.startswith('O-O'):
-        mv.castle = 'queenside' if 'O-O-O' in sanstr else 'kingside'
+        mv.castle = Castle.QUEENSIDE if 'O-O-O' in sanstr else Castle.KINGSIDE
         if sanstr.endswith('+'):
             mv.check = True
         elif sanstr.endswith('#'):
