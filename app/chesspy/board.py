@@ -1,22 +1,25 @@
+"""Impments a class representing a chess Board."""
 import logging
 import itertools
 from .color import Color
 
+
 class Board:
+    """Represents a chess board, with utility methods for moving and locating pieces."""
     def __init__(self, reprstr=None):
+        """Initialize a chess board to the default starting position, or to the given repr string."""
         if reprstr is not None:
-            assert(len(reprstr) == 8*8)
-            self.squares = [ None if ch == ' ' else ch for ch in reprstr ]
+            assert len(reprstr) == 8*8
+            self.squares = [None if ch == ' ' else ch for ch in reprstr]
         else:
-            self.squares = [ 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
-                             'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p', 
-                              None, None, None, None, None, None, None, None,
-                              None, None, None, None, None, None, None, None,
-                              None, None, None, None, None, None, None, None,
-                              None, None, None, None, None, None, None, None,
-                              'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 
-                              'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R',
-                            ]
+            self.squares = ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
+                            'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
+                            None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None, None,
+                            'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
+                            'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
 
         self.piece_positions = {
             Color.WHITE: {},
@@ -32,20 +35,22 @@ class Board:
                         self.piece_positions[Color.WHITE]['K'] = (y, x)
 
     def __str__(self):
-        s = []
+        """Returns a string for printing the chess board with two coordinate systems."""
+        boardstr = []
 
-        s.extend(['   0 ', ' 1 ', ' 2 ', ' 3 ', ' 4 ', ' 5 ', ' 6 ', ' 7 ', '\n'])
-        for y in range(0, 8):    
-            s.append(f"{y} ")        
-            for x in range(0, 8):                                
+        boardstr.extend(['   0 ', ' 1 ', ' 2 ', ' 3 ', ' 4 ', ' 5 ', ' 6 ', ' 7 ', '\n'])
+        for y in range(0, 8):
+            boardstr.append(f"{y} ")
+            for x in range(0, 8):
                 square = self.squares[8*y + x]
-                s.append(f"[{square or ' '}]")
-            s.append(f" {8-y}\n")                        
-        s.extend(['   a ', ' b ', ' c ', ' d ', ' e ', ' f ', ' g ', ' h '])
+                boardstr.append(f"[{square or ' '}]")
+            boardstr.append(f" {8-y}\n")
+        boardstr.extend(['   a ', ' b ', ' c ', ' d ', ' e ', ' f ', ' g ', ' h '])
 
-        return ''.join(s)
+        return ''.join(boardstr)
 
     def __repr__(self):
+        """Returns a string compactly representing current board state. Suitable for initializing new Board objects."""
         return ''.join(ch or ' ' for ch in self.squares)
 
     def king_position(self, color):
@@ -91,7 +96,7 @@ class Board:
                 self.piece_positions[Color.WHITE]['K'] = (y, x)
 
     def find_first(self, squares, src_y=None, src_x=None):
-        """Find the first piece encountered in the list of squares. 
+        """Find the first piece encountered in the list of squares.
 
         If src_y or src_x are not None, return only coords that include them.
 
@@ -101,16 +106,15 @@ class Board:
 
         for y, x in squares:
             logging.debug("(%s, %s)", y, x)
-            if y < 0 or y > 7 or x < 0 or x > 7:
-                # FIXME: this should never happen if we computed things correctly above.
-                raise IndexError
+            assert 0 <= y < 8 and 0 <= x < 8
 
             if (p := self.squares[8*y + x]) is not None:
                 if src_y in (None, y) and src_x in (None, x):
                     return (p, y, x)
+        return None
 
     def find_first_on_h_or_v(self, start, inc_y, inc_x, src_y=None, src_x=None):
-        """Find the first piece encountered horizontally or vertically starting from (start_y, start_x) while incrementing (y, x) by (inc_y, inc_x)
+        """Find first piece horizontally or vertically starting from (start_y, start_x incrementing by (inc_y, inc_x)
 
         Either inc_y or inc_x must == 0.
         If src_y or src_x are not None, return only coords that include them.
@@ -148,7 +152,7 @@ class Board:
         start_y, start_x = start
         logging.debug("find_first_on_diagonal(%s, %s, %s, %s, %s, %s)", start_y, start_x, inc_y, inc_x, src_y, src_x)
 
-        assert(inc_y in [-1, 1] and inc_x in [-1, 1])        
+        assert(inc_y in [-1, 1] and inc_x in [-1, 1])
 
         dst_y = -1 if inc_y < 0 else 8
         logging.debug(" dst_y=%d, start_y+inc_y=%d, dst_y=%d, inc_y=%d", dst_y, start_y+inc_y, dst_y, inc_y)

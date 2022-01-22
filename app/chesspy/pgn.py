@@ -1,3 +1,4 @@
+"""Simple parser for PGN files."""
 import logging
 import datetime
 from . import san
@@ -5,7 +6,11 @@ from . import san
 NEW_GAME_TOKEN = 42
 GAME_OVER_TOKEN = 19860718
 
-def parser(tokens):
+
+def pgn_parser(tokens):  # pylint: disable=too-many-branches,too-many-statements
+    """Generator that yields SAN strings and special markers given a list of PGN file tokens.
+
+    Yields NEW_GAME_TOKEN at the beginning of a game, GAME_OVER_TOKEN at the end, otherwise SAN strings."""
     idx, end = 0, len(tokens)
 
     while idx < end:
@@ -35,7 +40,7 @@ def parser(tokens):
 
         while idx < end:
             token = tokens[idx]
-            idx += 1            
+            idx += 1
 
             if token.startswith("{"):
                 # PGN comments do not nest
@@ -44,9 +49,9 @@ def parser(tokens):
                     # logging.debug("  nom: |%s|", tokens[idx])
                     idx += 1
                 idx += 1
-                continue # let the while condition check if we're done
-            
-            if token.startswith("("):        
+                continue  # let the while condition check if we're done
+
+            if token.startswith("("):
                 # nobody says PGN annotations can't nest, so they apparently can and do
                 count = 1
                 logging.debug("consuming annotation from |%s| |%s|", token, tokens[idx])
@@ -56,7 +61,7 @@ def parser(tokens):
                     elif tokens[idx].endswith(')'):
                         count -= 1
                     idx += 1
-                continue # let the while condition check if we're done
+                continue  # let the while condition check if we're done
 
             logging.debug("move_idx: %d", move_idx)
 
@@ -65,7 +70,6 @@ def parser(tokens):
                 move_idx += 1
             elif token == f"{move_idx-1}...":
                 logging.debug("consuming [%s]", token)
-                pass
             else:
                 if new_game:
                     new_game = False
@@ -75,35 +79,48 @@ def parser(tokens):
                     yield metadata
 
                 logging.debug("yielding [%s] for %d", token, move_idx)
-                yield token                
-                if token in san.RESULT_SAN:     
+                yield token
+                if token in san.RESULT_SAN:
                     yield GAME_OVER_TOKEN
 
                     logging.debug("break due to endgame")
                     break
 
+
+# pylint: disable=too-few-public-methods,too-many-instance-attributes
 class Metadata:
+    """A subset of PGN metadata."""
     def __init__(self, m_dict):
-        self.event      = m_dict['Event']
-        self.site       = m_dict['Site']
+        self.event = m_dict['Event']
+        self.site = m_dict['Site']
+
         try:
-            self.date     = datetime.date(*map(int, m_dict['Date'].split('.')))
-        except:
+            self.date = datetime.date(*map(int, m_dict['Date'].split('.')))
+        except (TypeError, ValueError):
             try:
                 self.date = datetime.date(*map(int, m_dict['UTCDate'].split('.')))
-            except:
-                self.date = None 
-        self.white      = m_dict['White']
-        self.black      = m_dict['Black']
-        self.result     = m_dict['Result']
-        self.opening    = m_dict.get('Opening', None)
-        self.annotator  = m_dict.get('Annotator', None)
+            except (TypeError, ValueError):
+                self.date = None
+
+        self.white = m_dict['White']
+        self.black = m_dict['Black']
+        self.result = m_dict['Result']
+        self.opening = m_dict.get('Opening', None)
+        self.annotator = m_dict.get('Annotator', None)
+
 
 class Move:
+    """Trivial utility class for a SAN move."""
     def __init__(self, idx, sanstr):
         self.idx, self.sanstr = idx, sanstr
 
+
 class Game:
+    """Iterator for a game of chess encoded in PGN. Don't use this directly, use Gamefile().
+
+    for move in Game(parser, metadata)
+       print(move.sanstr)
+    """
     def __init__(self, parser, metadata):
         self.parser = parser
         self.idx = -1
@@ -116,18 +133,24 @@ class Game:
         token = next(self.parser)
         if token == GAME_OVER_TOKEN:
             raise StopIteration
-        else:
-            self.idx += 1
-            return Move(self.idx, token)
+        self.idx += 1
+        return Move(self.idx, token)
+
 
 class Gamefile:
+    """Iterator over a PGN file. Yields a Game() object for each game in the PGN file.
+
+    for game in Gamefile("/path/to/my.pgn"):
+        for move in game:
+            print(move.idx, move.sanstr)
+    """
     def __init__(self, path):
         self.game_count = 0
 
-        with open(path) as f:
-            tokens = [ t for t in f.read().split() ]
+        with open(path, encoding='utf-8') as pgn_f:
+            tokens = list(pgn_f.read().split())
 
-        self.parser = parser(tokens)
+        self.parser = pgn_parser(tokens)
 
     def __iter__(self):
         return self
@@ -138,6 +161,7 @@ class Gamefile:
             if token == NEW_GAME_TOKEN:
                 self.game_count += 1
                 metadata = next(self.parser)
-                return Game(self.parser, Metadata(metadata))                    
-            elif token is None:
+                return Game(self.parser, Metadata(metadata))
+
+            if token is None:
                 break

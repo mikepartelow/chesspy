@@ -1,10 +1,10 @@
-import os
+"""Print a chess board if run with argument 'board', otherwise, print all moves of The Immortal Game."""
 import sys
 import logging
 import chesspy.game
 
-logging.basicConfig(filename='logs/chesspy.log', 
-                    encoding='utf-8', 
+logging.basicConfig(filename='logs/chesspy.log',
+                    encoding='utf-8',
                     format='[%(asctime)s]::[%(levelname).1s]::[%(filename)s:%(lineno)d]::[%(message)s]',
                     datefmt='%Y-%m-%d:%H:%M:%S',
                     level=logging.DEBUG)
@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     # The Immortal Game:  Adolf Anderssen vs Lionel Kieseritzky, 21 June 1851.
     #
-    with open('games/simple/immortal.txt') as f:
+    with open('games/simple/immortal.txt', encoding="utf-8") as f:
         g = chesspy.game.Game()
 
         for move_num, line in enumerate(f.readlines()):
@@ -27,10 +27,10 @@ if __name__ == "__main__":
             g.move_san(sanstr_white)
             print(g.board)
             print("")
-            
+
             if sanstr_black:
                 sanstr_black = sanstr_black[0]
                 print(f"{move_num+1}... {sanstr_black}")
                 g.move_san(sanstr_black)
-                print(g.board)                
+                print(g.board)
                 print("")

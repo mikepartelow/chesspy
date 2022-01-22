@@ -1,6 +1,7 @@
 import unittest
 from chesspy import san, game, board
 from chesspy.color import Color
+from chesspy.castle import Castle
 
 class TestMove(unittest.TestCase):
     def test_0(self):
@@ -81,26 +82,26 @@ class TestSanBasic(unittest.TestCase):
 
     def test_8(self):
         mv = san.parse('O-O')
-        self.assertEqual(mv.castle, 'kingside')
+        self.assertEqual(mv.castle, Castle.KINGSIDE)
 
         mv = san.parse('O-O-O')
-        self.assertEqual(mv.castle, 'queenside')
+        self.assertEqual(mv.castle, Castle.QUEENSIDE)
 
         mv = san.parse('O-O+')
-        self.assertEqual(mv.castle, 'kingside')
+        self.assertEqual(mv.castle, Castle.KINGSIDE)
         self.assertTrue(mv.check)
 
         mv = san.parse('O-O#')
-        self.assertEqual(mv.castle, 'kingside')
+        self.assertEqual(mv.castle, Castle.KINGSIDE)
         self.assertTrue(mv.check)
         self.assertTrue(mv.mate)
 
         mv = san.parse('O-O-O+')
-        self.assertEqual(mv.castle, 'queenside')
+        self.assertEqual(mv.castle, Castle.QUEENSIDE)
         self.assertTrue(mv.check)
 
         mv = san.parse('O-O-O#')
-        self.assertEqual(mv.castle, 'queenside')
+        self.assertEqual(mv.castle, Castle.QUEENSIDE)
         self.assertTrue(mv.check)
         self.assertTrue(mv.mate)
 
@@ -403,18 +404,18 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.src, (2, 0))
         self.assertEqual(mv.dst, (4, 1))
         self.assertEqual(mv.piece, 'N')
-        self.assertFalse(mv.capture)        
-    
+        self.assertFalse(mv.capture)
+
     def test_4(self):
         # knight move disambiguated by "would expose check"
         board_repr = "rnbq rk ppp  ppp    pn           b P      N  B  PPP  PPPR BQK NR"
         self.game.board = board.Board(board_repr)
-        mv = san.parse("Ne2", game=self.game)        
+        mv = san.parse("Ne2", game=self.game)
 
         self.assertEqual(mv.src, (7, 6))
         self.assertEqual(mv.dst, (6, 4))
         self.assertEqual(mv.piece, 'N')
-        self.assertFalse(mv.capture)  
+        self.assertFalse(mv.capture)
 
         self.assertEqual(repr(self.game.board), board_repr)
 
@@ -816,7 +817,7 @@ class TestSanRook(unittest.TestCase):
     def test_3(self):
         # one rook could move vertically, one could move horizontally, both to same square, but first choice would expose check.
         # so move second done
-        self.assertFalse(True)        
+        self.assertFalse(True)
 
 class TestSanDeluxe1(unittest.TestCase):
     @unittest.skip
