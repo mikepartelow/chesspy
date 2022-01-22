@@ -30,16 +30,16 @@ class TestMoveSan(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()
 
-    def test_pinned_0(self):        
+    def test_pinned_0(self):
         # SAN is disambiguated because one rook is pinned
         #
-        self.game.board = board.Board("       kp         p   R    b         q        RP     PPK        ")        
+        self.game.board = board.Board("       kp         p   R    b         q        RP     PPK        ")
         self.assertEqual('R', self.game.board.square_at(2, 6)) # this one should move
         self.assertEqual('R', self.game.board.square_at(5, 6)) # this one is pinned
         self.game.move_san("Rg5")
         self.assertEqual('R', self.game.board.square_at(3, 6))
         self.assertEqual(None, self.game.board.square_at(2, 6))
-        self.assertEqual('R', self.game.board.square_at(5, 6))        
+        self.assertEqual('R', self.game.board.square_at(5, 6))
 
 class TestIsCheck(unittest.TestCase):
     def setUp(self):
@@ -71,7 +71,7 @@ class TestIsCheck(unittest.TestCase):
 
     def test_knight_0w(self):
         self.game.turn = Color.BLACK
-        
+
         self.game.board.place_piece_at(None, 0, 4)
         self.game.board.place_piece_at('k', 3, 4)
 
@@ -114,7 +114,7 @@ class TestIsCheck(unittest.TestCase):
 
         self.game.board.place_piece_at(None, 1, 4)
         self.game.board.place_piece_at('r', 4, 4)
-        self.assertTrue(self.game.is_in_check())        
+        self.assertTrue(self.game.is_in_check())
 
     def test_rook_0b(self):
         self.game.turn = Color.BLACK
@@ -135,7 +135,7 @@ class TestIsCheck(unittest.TestCase):
 
         self.game.board.place_piece_at(None, 1, 4)
         self.game.board.place_piece_at('R', 4, 4)
-        self.assertTrue(self.game.is_in_check())        
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at('B', 4, 4)
         self.assertFalse(self.game.is_in_check())
@@ -160,7 +160,7 @@ class TestIsCheck(unittest.TestCase):
 
         self.game.board.place_piece_at(None, 1, 2)
         self.game.board.place_piece_at('b', 2, 5)
-        self.assertTrue(self.game.is_in_check())        
+        self.assertTrue(self.game.is_in_check())
 
     def test_bishop_0w(self):
         self.game.turn = Color.BLACK
@@ -181,7 +181,7 @@ class TestIsCheck(unittest.TestCase):
 
         self.game.board.place_piece_at(None, 1, 2)
         self.game.board.place_piece_at('B', 2, 5)
-        self.assertTrue(self.game.is_in_check())        
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at('R', 2, 5)
         self.assertFalse(self.game.is_in_check())
@@ -207,7 +207,7 @@ class TestIsCheck(unittest.TestCase):
 
         self.game.board.place_piece_at(None, 1, 2)
         self.game.board.place_piece_at('q', 2, 5)
-        self.assertTrue(self.game.is_in_check())        
+        self.assertTrue(self.game.is_in_check())
 
     def test_queen_diag_0w(self):
         self.game.turn = Color.BLACK
@@ -228,7 +228,7 @@ class TestIsCheck(unittest.TestCase):
 
         self.game.board.place_piece_at(None, 1, 2)
         self.game.board.place_piece_at('Q', 2, 5)
-        self.assertTrue(self.game.is_in_check())        
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at('R', 2, 5)
         self.assertFalse(self.game.is_in_check())
@@ -254,7 +254,7 @@ class TestIsCheck(unittest.TestCase):
 
         self.game.board.place_piece_at(None, 1, 4)
         self.game.board.place_piece_at('q', 4, 4)
-        self.assertTrue(self.game.is_in_check())        
+        self.assertTrue(self.game.is_in_check())
 
     def test_queen_horiz_0w(self):
         self.game.turn = Color.BLACK
@@ -275,7 +275,7 @@ class TestIsCheck(unittest.TestCase):
 
         self.game.board.place_piece_at(None, 1, 4)
         self.game.board.place_piece_at('Q', 4, 4)
-        self.assertTrue(self.game.is_in_check())        
+        self.assertTrue(self.game.is_in_check())
 
         self.game.board.place_piece_at('B', 4, 4)
         self.assertFalse(self.game.is_in_check())
@@ -326,25 +326,51 @@ class TestGameOverMan(unittest.TestCase):
         self.game.turn = Color.BLACK
         self.assertFalse(self.game.over)
         self.game.move_san('Qd4#')
-        self.assertTrue(self.game.over)        
+        self.assertTrue(self.game.over)
 
     def test_1(self):
         self.game.board = board.Board("           bk         p   KPp       q                           ")
         self.game.turn = Color.BLACK
         self.assertFalse(self.game.over)
         self.game.move_san('1-0')
-        self.assertTrue(self.game.over)        
+        self.assertTrue(self.game.over)
 
     def test_2(self):
         self.assertFalse(self.game.over)
         self.game.move_san('0-1')
-        self.assertTrue(self.game.over)        
+        self.assertTrue(self.game.over)
 
     def test_3(self):
         self.assertFalse(self.game.over)
         self.game.move_san('1/2-1/2')
-        self.assertTrue(self.game.over)        
-                
+        self.assertTrue(self.game.over)
+
+class TestIsMate(unittest.TestCase):
+    def setUp(self):
+        self.game = game.Game()
+
+    def test_immortal(self):
+        self.game.board = board.Board("r bk   rp  pBpNpn    n   p NP  P      P    P    P P K   q     b ")
+        self.assertTrue(self.game.is_in_mate())
+        self.assertTrue(self.game.over)
+
+        self.game.board = board.Board("r bk   rp  p pNpn  B n   p NP  P      P    P    P P K   q     b ")
+        self.game.move_san("Be7#")
+        self.assertTrue(self.game.is_in_mate())
+        self.assertTrue(self.game.over)
+
+    def test_gotc(self):
+        self.game.board = board.Board(" Q           pk   p   p  p  N  p b     P bn       r   P   K     ")
+        self.game.turn = Color.BLACK
+        self.assertTrue(self.game.is_in_mate())
+        self.assertTrue(self.game.over)
+
+        self.game.board = board.Board("Q           pk   p   p  p  N  p b     P bn     r     P   K     ")
+        self.game.turn = Color.BLACK
+        self.game.move_san("Rc2#")
+        self.assertTrue(self.game.is_in_mate())
+        self.assertTrue(self.game.over)
+
 class TestPromotion(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()
@@ -417,9 +443,9 @@ class TestCastle(unittest.TestCase):
         self.assertEqual("king moves", "into check")
         self.assertEqual("Now", "Do It For Black")
 
-    def test_king_side_castle(self):        
+    def test_king_side_castle(self):
         self.game.board = board.Board("rnbqk  rpppppppp                                PPPPPPPPRNBQK  R")
-        
+
         self.game.move_san('O-O')
         self.assertEqual(repr(self.game.board), "rnbqk  rpppppppp                                PPPPPPPPRNBQ RK ")
 
@@ -429,7 +455,7 @@ class TestCastle(unittest.TestCase):
     def test_queen_side_castle(self):
         g = game.Game()
         g.board = board.Board("r   kbnrpppppppp                                PPPPPPPPR   KBNR")
-        
+
         g.move_san('O-O-O')
         self.assertEqual(repr(g.board), "r   kbnrpppppppp                                PPPPPPPP  KR BNR")
 
