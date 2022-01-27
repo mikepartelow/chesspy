@@ -45,56 +45,40 @@ class Game:
         king_pos = self.board.king_position(self.turn)
         logging.debug("Game::is_in_check() : king_pos = %r", king_pos)
 
-        offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
-        offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
-
         opponent_knight = colorize('N', self.turn.opponent())
 
+        offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
+        offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
         for (y_offset, x_offset) in zip(offsets_y, offsets_x):
-            y, x = king_pos[0] + y_offset, king_pos[1] + x_offset
+            y, x = king_pos.y + y_offset, king_pos.x + x_offset
             if 0 <= y < 8 and 0 <= x < 8:
                 if self.board.square_at(y, x) == opponent_knight:
                     logging.debug("Game::is_in_check() -> True : Knight at (%s, %s)", y, x)
                     return True
 
         opponent_queen = colorize('Q', self.turn.opponent())
-
         opponent_bishop = colorize('B', self.turn.opponent())
 
-        if (p := self.board.find_first_on_diagonal(king_pos, -1, -1)) and p.piece in (opponent_bishop, opponent_queen):
-            logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
-            return True
-        if (p := self.board.find_first_on_diagonal(king_pos, 1, 1)) and p.piece in (opponent_bishop, opponent_queen):
-            logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
-            return True
-        if (p := self.board.find_first_on_diagonal(king_pos, 1, -1)) and p.piece in (opponent_bishop, opponent_queen):
-            logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
-            return True
-        if (p := self.board.find_first_on_diagonal(king_pos, -1, 1)) and p.piece in (opponent_bishop, opponent_queen):
-            logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
-            return True
+        incrementors = ( (-1, -1), (1, 1), (1, -1), (-1, 1), )
+        for increments in incrementors:
+            if (p := self.board.find_first_on_diagonal(king_pos, *increments)) and p.piece in (opponent_bishop, opponent_queen):
+                logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
+                return True
 
         opponent_rook = colorize('R', self.turn.opponent())
 
-        if (p := self.board.find_first_on_h_or_v(king_pos, 0, -1)) and p.piece in (opponent_rook, opponent_queen):
-            logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
-            return True
-        if (p := self.board.find_first_on_h_or_v(king_pos, 0, 1)) and p.piece in (opponent_rook, opponent_queen):
-            logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
-            return True
-        if (p := self.board.find_first_on_h_or_v(king_pos, 1, 0)) and p.piece in (opponent_rook, opponent_queen):
-            logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
-            return True
-        if (p := self.board.find_first_on_h_or_v(king_pos, -1, 0)) and p.piece in (opponent_rook, opponent_queen):
-            logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
-            return True
+        incrementors = ( (0, -1), (0, 1), (1, 0), (-1, 0), )
+        for increments in incrementors:
+            if (p := self.board.find_first_on_h_or_v(king_pos, *increments)) and p.piece in (opponent_rook, opponent_queen):
+                logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
+                return True
 
         opponent_pawn = colorize('P', self.turn.opponent())
 
         if self.turn == Color.WHITE:
-            pawn_maybes = (king_pos[0] - 1, king_pos[1] - 1), (king_pos[0] - 1, king_pos[1] + 1)
+            pawn_maybes = (king_pos.y - 1, king_pos.x - 1), (king_pos.y - 1, king_pos.x + 1)
         else:
-            pawn_maybes = (king_pos[0] + 1, king_pos[1] - 1), (king_pos[0] + 1, king_pos[1] + 1)
+            pawn_maybes = (king_pos.y + 1, king_pos.x - 1), (king_pos.y + 1, king_pos.x + 1)
 
         for pawn_maybe in pawn_maybes:
             if pawn_maybe[0] >= 0 and pawn_maybe[0] < 8 and pawn_maybe[1] >= 0 and pawn_maybe[1] < 8:

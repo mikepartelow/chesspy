@@ -2,11 +2,7 @@
 
 import logging
 import collections
-
-
-# I did not just copy/paste this from literally every Python tutorial ever. Really, I typed it out.
-Point = collections.namedtuple("Point", "y x")
-
+from .board import Pos
 
 # pylint: disable=too-many-instance-attributes
 class Move:
@@ -53,10 +49,10 @@ class Move:
 
     @property
     def dst(self):
-        """Returns Point(y, x) coordinates for move destination."""
-        return Point(self.dst_y, self.dst_x)
+        """Returns Pos(y, x) coordinates for move destination."""
+        return Pos(self.dst_y, self.dst_x)
 
     @property
     def src(self):
-        """Returns Point(y, x) coordinates for move source."""
-        return Point(self.src_y, self.src_x)
+        """Returns Pos(y, x) coordinates for move source."""
+        return Pos(self.src_y, self.src_x)

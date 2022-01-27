@@ -6,6 +6,8 @@ from .color import Color
 
 
 PieceAtPos = collections.namedtuple('PieceAtPos', 'piece y x')
+# I did not just copy/paste this from literally every Python tutorial ever. Really, I typed it out.
+Pos = collections.namedtuple("Pos", "y x")
 
 class Board:
     """Represents a chess board, with utility methods for moving and locating pieces."""
@@ -59,7 +61,7 @@ class Board:
     def king_position(self, color):
         """Returns (y, x) coordinates of color's king.
         """
-        return self.piece_positions[color]['K']
+        return Pos(*self.piece_positions[color]['K'])
 
     def square_at(self, y, x):
         """Returns the Piece at the given coordinates, or None.
