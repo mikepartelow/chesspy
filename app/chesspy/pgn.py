@@ -2,6 +2,7 @@
 import logging
 import datetime
 from . import san
+import collections
 
 NEW_GAME_TOKEN = 42
 GAME_OVER_TOKEN = 19860718
@@ -108,19 +109,16 @@ class Metadata:
         self.opening = m_dict.get('Opening', None)
         self.annotator = m_dict.get('Annotator', None)
 
-
-class Move:
-    """Trivial utility class for a SAN move."""
-    def __init__(self, idx, sanstr):
-        self.idx, self.sanstr = idx, sanstr
-
-
 class Game:
     """Iterator for a game of chess encoded in PGN. Don't use this directly, use Gamefile().
 
     for move in Game(parser, metadata)
        print(move.sanstr)
     """
+
+    # Named Tuple representing a move's index in the game, and the move's SAN string
+    Move = collections.namedtuple('Move', 'idx sanstr')
+
     def __init__(self, parser, metadata):
         self.parser = parser
         self.idx = -1
@@ -134,7 +132,7 @@ class Game:
         if token == GAME_OVER_TOKEN:
             raise StopIteration
         self.idx += 1
-        return Move(self.idx, token)
+        return self.Move(self.idx, token)
 
 
 class Gamefile:
