@@ -1,6 +1,11 @@
 """Implements a class representing chess moves."""
 
 import logging
+import collections
+
+
+# I did not just copy/paste this from literally every Python tutorial ever. Really, I typed it out.
+Point = collections.namedtuple("Point", "y x")
 
 
 # pylint: disable=too-many-instance-attributes
@@ -48,10 +53,10 @@ class Move:
 
     @property
     def dst(self):
-        """Returns (y, x) coordinates for move destination."""
-        return (self.dst_y, self.dst_x)
+        """Returns Point(y, x) coordinates for move destination."""
+        return Point(self.dst_y, self.dst_x)
 
     @property
     def src(self):
-        """Returns (y, x) coordinates for move source."""
-        return (self.src_y, self.src_x)
+        """Returns Point(y, x) coordinates for move source."""
+        return Point(self.src_y, self.src_x)

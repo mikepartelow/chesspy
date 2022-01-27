@@ -240,35 +240,33 @@ class Game:
         """Yields "potentially legal" (src_y, src_x) of rook/queen moves to (mv.dst_y, mv.dst_x), if any are found.
 
         Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
-        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, -1, mv.src_y, mv.src_x)) and p.piece == p_target:
+        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, -1, mv.src)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, 1, mv.src_y, mv.src_x)) and p.piece == p_target:
+        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, 1, mv.src)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_h_or_v(mv.dst, 1, 0, mv.src_y, mv.src_x)) and p.piece == p_target:
+        if (p := self.board.find_first_on_h_or_v(mv.dst, 1, 0, mv.src)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_h_or_v(mv.dst, -1, 0, mv.src_y, mv.src_x)) and p.piece == p_target:
+        if (p := self.board.find_first_on_h_or_v(mv.dst, -1, 0, mv.src)) and p.piece == p_target:
             yield p[1:]
 
     def deduce_src_moves_like_bishop(self, mv, p_target):
         """Yields "potentially legal" (src_y, src_x) of bishop/queen moves to (mv.dst_y, mv.dst_x), if any are found.
 
         Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
-        if (p := self.board.find_first_on_diagonal(mv.dst, -1, -1, mv.src_y, mv.src_x)) and p.piece == p_target:
+        if (p := self.board.find_first_on_diagonal(mv.dst, -1, -1, mv.src)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_diagonal(mv.dst, 1, 1, mv.src_y, mv.src_x)) and p.piece == p_target:
+        if (p := self.board.find_first_on_diagonal(mv.dst, 1, 1, mv.src)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_diagonal(mv.dst, 1, -1, mv.src_y, mv.src_x)) and p.piece == p_target:
+        if (p := self.board.find_first_on_diagonal(mv.dst, 1, -1, mv.src)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_diagonal(mv.dst, -1, 1, mv.src_y, mv.src_x)) and p.piece == p_target:
+        if (p := self.board.find_first_on_diagonal(mv.dst, -1, 1, mv.src)) and p.piece == p_target:
             yield p[1:]
-
-        return mv.src_y is not None and mv.src_x is not None
 
     def deduce_src_pawn(self, mv):  # pylint: disable=too-many-return-statements,too-many-branches
         """Initializes (mv.src_y, mv.src_x) with coordinates of pawn that can legally move to (mv.dst_y, mv.dst_x)"""
