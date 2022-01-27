@@ -61,31 +61,31 @@ class Game:
 
         opponent_bishop = colorize('B', self.turn.opponent())
 
-        if (p := self.board.find_first_on_diagonal(king_pos, -1, -1)) and p[0] in (opponent_bishop, opponent_queen):
+        if (p := self.board.find_first_on_diagonal(king_pos, -1, -1)) and p.piece in (opponent_bishop, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
-        if (p := self.board.find_first_on_diagonal(king_pos, 1, 1)) and p[0] in (opponent_bishop, opponent_queen):
+        if (p := self.board.find_first_on_diagonal(king_pos, 1, 1)) and p.piece in (opponent_bishop, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
-        if (p := self.board.find_first_on_diagonal(king_pos, 1, -1)) and p[0] in (opponent_bishop, opponent_queen):
+        if (p := self.board.find_first_on_diagonal(king_pos, 1, -1)) and p.piece in (opponent_bishop, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
-        if (p := self.board.find_first_on_diagonal(king_pos, -1, 1)) and p[0] in (opponent_bishop, opponent_queen):
+        if (p := self.board.find_first_on_diagonal(king_pos, -1, 1)) and p.piece in (opponent_bishop, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
             return True
 
         opponent_rook = colorize('R', self.turn.opponent())
 
-        if (p := self.board.find_first_on_h_or_v(king_pos, 0, -1)) and p[0] in (opponent_rook, opponent_queen):
+        if (p := self.board.find_first_on_h_or_v(king_pos, 0, -1)) and p.piece in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
-        if (p := self.board.find_first_on_h_or_v(king_pos, 0, 1)) and p[0] in (opponent_rook, opponent_queen):
+        if (p := self.board.find_first_on_h_or_v(king_pos, 0, 1)) and p.piece in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
-        if (p := self.board.find_first_on_h_or_v(king_pos, 1, 0)) and p[0] in (opponent_rook, opponent_queen):
+        if (p := self.board.find_first_on_h_or_v(king_pos, 1, 0)) and p.piece in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
-        if (p := self.board.find_first_on_h_or_v(king_pos, -1, 0)) and p[0] in (opponent_rook, opponent_queen):
+        if (p := self.board.find_first_on_h_or_v(king_pos, -1, 0)) and p.piece in (opponent_rook, opponent_queen):
             logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
             return True
 
@@ -240,32 +240,32 @@ class Game:
         """Yields "potentially legal" (src_y, src_x) of rook/queen moves to (mv.dst_y, mv.dst_x), if any are found.
 
         Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
-        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, -1, mv.src_y, mv.src_x)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, 1, mv.src_y, mv.src_x)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_h_or_v(mv.dst, 1, 0, mv.src_y, mv.src_x)) and p[0] == p_target:
+        if (p := self.board.find_first_on_h_or_v(mv.dst, 1, 0, mv.src_y, mv.src_x)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_h_or_v(mv.dst, -1, 0, mv.src_y, mv.src_x)) and p[0] == p_target:
+        if (p := self.board.find_first_on_h_or_v(mv.dst, -1, 0, mv.src_y, mv.src_x)) and p.piece == p_target:
             yield p[1:]
 
     def deduce_src_moves_like_bishop(self, mv, p_target):
         """Yields "potentially legal" (src_y, src_x) of bishop/queen moves to (mv.dst_y, mv.dst_x), if any are found.
 
         Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
-        if (p := self.board.find_first_on_diagonal(mv.dst, -1, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        if (p := self.board.find_first_on_diagonal(mv.dst, -1, -1, mv.src_y, mv.src_x)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_diagonal(mv.dst, 1, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        if (p := self.board.find_first_on_diagonal(mv.dst, 1, 1, mv.src_y, mv.src_x)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_diagonal(mv.dst, 1, -1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        if (p := self.board.find_first_on_diagonal(mv.dst, 1, -1, mv.src_y, mv.src_x)) and p.piece == p_target:
             yield p[1:]
 
-        if (p := self.board.find_first_on_diagonal(mv.dst, -1, 1, mv.src_y, mv.src_x)) and p[0] == p_target:
+        if (p := self.board.find_first_on_diagonal(mv.dst, -1, 1, mv.src_y, mv.src_x)) and p.piece == p_target:
             yield p[1:]
 
         return mv.src_y is not None and mv.src_x is not None
@@ -319,7 +319,7 @@ class Game:
             else:
                 idx, pawn, origin = -1, 'p', 1
 
-            if (p := self.board.find_first_on_h_or_v(mv.dst, idx, 0)) and p[0] == pawn:
+            if (p := self.board.find_first_on_h_or_v(mv.dst, idx, 0)) and p.piece == pawn:
                 if (abs(mv.dst_y - p[1]) == 2 and p[1] == origin) or abs(mv.dst_y - p[1]) == 1:
                     mv.src_y, mv.src_x = p[1:]
 

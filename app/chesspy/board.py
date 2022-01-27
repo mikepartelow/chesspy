@@ -1,8 +1,11 @@
 """Impments a class representing a chess Board."""
 import logging
 import itertools
+import collections
 from .color import Color
 
+
+PieceAtPos = collections.namedtuple('PieceAtPos', 'piece y x')
 
 class Board:
     """Represents a chess board, with utility methods for moving and locating pieces."""
@@ -100,7 +103,7 @@ class Board:
 
         If src_y or src_x are not None, return only coords that include them.
 
-        Returns (piece, y, x) or None.
+        Returns PieceAtPos(piece, y, x) or None.
         """
         logging.debug("find_first(%r, %r, %r)", squares, src_y, src_x)
 
@@ -110,7 +113,7 @@ class Board:
 
             if (p := self.squares[8*y + x]) is not None:
                 if src_y in (None, y) and src_x in (None, x):
-                    return (p, y, x)
+                    return PieceAtPos(p, y, x)
         return None
 
     def find_first_on_h_or_v(self, start, inc_y, inc_x, src_y=None, src_x=None):
@@ -119,7 +122,7 @@ class Board:
         Either inc_y or inc_x must == 0.
         If src_y or src_x are not None, return only coords that include them.
 
-        Returns tuple (p, y, x) where p is the first piece encountered, (y, x) are coordinates of p, or None if no piece is found.
+        Returns PieceAtPos(p, y, x) where p is the first piece encountered, (y, x) are coordinates of p, or None if no piece is found.
         """
         start_y, start_x = start
         logging.debug("find_first_on_h_or_v(%s, %s, %s, %s, %s, %s)", start_y, start_x, inc_y, inc_x, src_y, src_x)
@@ -147,7 +150,7 @@ class Board:
 
         If src_y or src_x are not None, return only coords that include them.
 
-        Returns tuple (p, y, x) where p is the first piece encountered, (y, x) are coordinates of p, or None if no piece is found.
+        Returns PieceAtPos(p, y, x) where p is the first piece encountered, (y, x) are coordinates of p, or None if no piece is found.
         """
         start_y, start_x = start
         logging.debug("find_first_on_diagonal(%s, %s, %s, %s, %s, %s)", start_y, start_x, inc_y, inc_x, src_y, src_x)
