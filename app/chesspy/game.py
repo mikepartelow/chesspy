@@ -38,7 +38,7 @@ class Game:
         self.turn = turn or Color.WHITE
         self.over = False
 
-    def is_in_check(self):  # pylint: disable=too-many-return-statements,too-many-branches
+    def is_in_check(self):  # pylint: disable=too-many-return-statements,too-many-branches,too-many-locals
         """Returns True if the current turn's player is in check, False otherwise."""
         logging.debug("Game::is_in_check(%s)", self.turn)
 
@@ -59,7 +59,7 @@ class Game:
         opponent_queen = colorize('Q', self.turn.opponent())
         opponent_bishop = colorize('B', self.turn.opponent())
 
-        incrementors = ( (-1, -1), (1, 1), (1, -1), (-1, 1), )
+        incrementors = ((-1, -1), (1, 1), (1, -1), (-1, 1),)
         for increments in incrementors:
             if (p := self.board.find_first_on_diagonal(king_pos, *increments)) and p.piece in (opponent_bishop, opponent_queen):
                 logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
@@ -67,7 +67,7 @@ class Game:
 
         opponent_rook = colorize('R', self.turn.opponent())
 
-        incrementors = ( (0, -1), (0, 1), (1, 0), (-1, 0), )
+        incrementors = ((0, -1), (0, 1), (1, 0), (-1, 0),)
         for increments in incrementors:
             if (p := self.board.find_first_on_h_or_v(king_pos, *increments)) and p.piece in (opponent_rook, opponent_queen):
                 logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])

@@ -2,7 +2,7 @@
 import logging
 import datetime
 from . import san
-import collections
+import collections  # pylint: disable=wrong-import-order
 
 NEW_GAME_TOKEN = 42
 GAME_OVER_TOKEN = 19860718
@@ -108,6 +108,7 @@ class Metadata:
         self.result = m_dict['Result']
         self.opening = m_dict.get('Opening', None)
         self.annotator = m_dict.get('Annotator', None)
+
 
 class Game:
     """Iterator for a game of chess encoded in PGN. Don't use this directly, use Gamefile().

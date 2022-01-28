@@ -9,6 +9,7 @@ PieceAtPos = collections.namedtuple('PieceAtPos', 'piece y x')
 # I did not just copy/paste this from literally every Python tutorial ever. Really, I typed it out.
 Pos = collections.namedtuple("Pos", "y x")
 
+
 class Board:
     """Represents a chess board, with utility methods for moving and locating pieces."""
     def __init__(self, reprstr=None):

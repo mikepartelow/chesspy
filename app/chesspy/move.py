@@ -1,8 +1,7 @@
 """Implements a class representing chess moves."""
-
 import logging
-import collections
 from .board import Pos
+
 
 # pylint: disable=too-many-instance-attributes
 class Move:
