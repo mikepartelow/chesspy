@@ -134,58 +134,74 @@ class Game:
         return False
 
     def deduce_src_knight(self, mv):
-        """Yields "potentially legal" (src_y, src_x) of knight moves to (mv.dst_y, mv.dst_x), if any are found.
+        """Initializes mv.src with coordinates of Knight that can legally move to mv.dst, if such Knight exists."""
+        def knight_sources():
+            """Yields "potentially legal" (src_y, src_x) of knight moves to mv.dst, if any are found.
 
-        Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
-        p_src = colorize('N', self.turn)
-        offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
-        offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
+            Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
+            p_src = colorize('N', self.turn)
+            offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
+            offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
 
-        for (offset_y, offset_x) in zip(offsets_y, offsets_x):
-            src_y, src_x = mv.dst_y + offset_y, mv.dst_x + offset_x
+            for (offset_y, offset_x) in zip(offsets_y, offsets_x):
+                src_y, src_x = mv.dst_y + offset_y, mv.dst_x + offset_x
 
-            if (mv.src_y is not None and src_y != mv.src_y) or (mv.src_x is not None and src_x != mv.src_x):
-                continue
+                if (mv.src_y is not None and src_y != mv.src_y) or (mv.src_x is not None and src_x != mv.src_x):
+                    continue
 
-            if 0 <= src_y < 8 and 0 <= src_x < 8:
-                if self.board.square_at(src_y, src_x) == p_src:
-                    logging.debug("deduce_src_knight(%r): yield (%s, %s)", mv, src_y, src_x)
-                    yield src_y, src_x
+                if 0 <= src_y < 8 and 0 <= src_x < 8:
+                    if self.board.square_at(src_y, src_x) == p_src:
+                        logging.debug("deduce_src_knight(%r): yield (%s, %s)", mv, src_y, src_x)
+                        yield src_y, src_x
+
+        for (y, x) in knight_sources():
+            if self.test_move_from_src(y, x, mv):
+                break
 
     def deduce_src_moves_like_rook(self, mv, p_target):
-        """Yields "potentially legal" (src_y, src_x) of rook/queen moves to (mv.dst_y, mv.dst_x), if any are found.
+        """Initializes mv.src with coordinates of p_target (rook/queen) that can legally move to mv.dst, if such Piece exists."""
+        def piece_sources():
+            """Yields "potentially legal" (src_y, src_x) of rook/queen moves to mv.dst, if any are found.
 
-        Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
-        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, -1, mv.src)) and p.piece == p_target:
-            yield p[1:]
+            Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
+            incrementors = ((0, -1), (0, 1), (1, 0), (-1, 0),)
+            for inc in incrementors:
+                if (p := self.board.find_first_on_h_or_v(mv.dst, inc[0], inc[1], mv.src)) and p.piece == p_target:
+                    yield p[1:]
 
-        if (p := self.board.find_first_on_h_or_v(mv.dst, 0, 1, mv.src)) and p.piece == p_target:
-            yield p[1:]
-
-        if (p := self.board.find_first_on_h_or_v(mv.dst, 1, 0, mv.src)) and p.piece == p_target:
-            yield p[1:]
-
-        if (p := self.board.find_first_on_h_or_v(mv.dst, -1, 0, mv.src)) and p.piece == p_target:
-            yield p[1:]
+        for (y, x) in piece_sources():
+            if self.test_move_from_src(y, x, mv):
+                break
 
     def deduce_src_moves_like_bishop(self, mv, p_target):
-        """Yields "potentially legal" (src_y, src_x) of bishop/queen moves to (mv.dst_y, mv.dst_x), if any are found.
+        """Initializes mv.src with coordinates of p_target (bishop/queen) that can legally move to mv.dst, if such Piece exists."""
+        def piece_sources():
+            """Yields "potentially legal" (src_y, src_x) of bishop/queen moves to (mv.dst_y, mv.dst_x), if any are found.
 
-        Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
-        if (p := self.board.find_first_on_diagonal(mv.dst, -1, -1, mv.src)) and p.piece == p_target:
-            yield p[1:]
+            Caller must determine if yielded move exposes player to check (and is therefore illegal)."""
+            incrementors = ((-1, -1), (1, 1), (1, -1), (-1, 1),)
+            for inc in incrementors:
+                if (p := self.board.find_first_on_diagonal(mv.dst, inc[0], inc[1], mv.src)) and p.piece == p_target:
+                    yield p[1:]
 
-        if (p := self.board.find_first_on_diagonal(mv.dst, 1, 1, mv.src)) and p.piece == p_target:
-            yield p[1:]
+        for (y, x) in piece_sources():
+            if self.test_move_from_src(y, x, mv):
+                break
 
-        if (p := self.board.find_first_on_diagonal(mv.dst, 1, -1, mv.src)) and p.piece == p_target:
-            yield p[1:]
-
-        if (p := self.board.find_first_on_diagonal(mv.dst, -1, 1, mv.src)) and p.piece == p_target:
-            yield p[1:]
+    def deduce_src_king(self, mv):
+        """Initializes mv.src with coordinates of King that can legally move to mv.dst, if such Piece exists."""
+        kingpos = self.board.king_position(self.turn)
+        for y in range(mv.dst_y-1, mv.dst_y+2):
+            for x in range(mv.dst_x-1, mv.dst_x+2):
+                if (y, x) != (mv.dst_y, mv.dst_x) and 0 <= y < 8 and 0 <= x < 8:
+                    if (y, x) == kingpos:
+                        mv.src_y, mv.src_x = y, x
+                        break
+            if mv.src_y and mv.src_x:
+                break
 
     def deduce_src_pawn(self, mv):  # pylint: disable=too-many-return-statements,too-many-branches
-        """Initializes (mv.src_y, mv.src_x) with coordinates of pawn that can legally move to (mv.dst_y, mv.dst_x)"""
+        """Initializes (mv.src_y, mv.src_x) with coordinates of Pawn that can legally move to (mv.dst_y, mv.dst_x), if such Pawn exists."""
         if self.turn == Color.WHITE:
             def ahead_of(y): return y + 1  # pylint: disable=multiple-statements
             def behind(y): return y - 1  # pylint: disable=multiple-statements
@@ -237,7 +253,9 @@ class Game:
                 if (abs(mv.dst_y - p[1]) == 2 and p[1] == origin) or abs(mv.dst_y - p[1]) == 1:
                     mv.src_y, mv.src_x = p[1:]
 
-    def deduce_src(self, mv):  # pylint: disable=too-many-return-statements,too-many-branches
+        return mv.src_y is not None and mv.src_x is not None
+
+    def deduce_src(self, mv):
         """Given a partially constructed Move, deduce src coordinates.
 
         Given initialized and valid .dst_y, .dst_x, .piece, and .capture fields, initialize
@@ -252,39 +270,17 @@ class Game:
             case 'P':
                 self.deduce_src_pawn(mv)
             case 'N':
-                for (y, x) in self.deduce_src_knight(mv):
-                    if self.test_move_from_src(y, x, mv):
-                        break
+                self.deduce_src_knight(mv)
             case 'B':
-                for (y, x) in self.deduce_src_moves_like_bishop(mv, colorize('B', self.turn)):
-                    if self.test_move_from_src(y, x, mv):
-                        break
+                self.deduce_src_moves_like_bishop(mv, colorize('B', self.turn))
             case 'Q':
-                done = False
-                for (y, x) in self.deduce_src_moves_like_rook(mv, colorize('Q', self.turn)):
-                    if self.test_move_from_src(y, x, mv):
-                        done = True
-                        break
-
-                if not done:
-                    for (y, x) in self.deduce_src_moves_like_bishop(mv, colorize('Q', self.turn)):
-                        if self.test_move_from_src(y, x, mv):
-                            break
+                self.deduce_src_moves_like_rook(mv, colorize('Q', self.turn))
+                if None in mv.src:
+                    self.deduce_src_moves_like_bishop(mv, colorize('Q', self.turn))
             case 'R':
-                for (y, x) in self.deduce_src_moves_like_rook(mv, colorize('R', self.turn)):
-                    if self.test_move_from_src(y, x, mv):
-                        break
+                self.deduce_src_moves_like_rook(mv, colorize('R', self.turn))
             case 'K':
-                p_src = colorize('K', self.turn)
-                for y in range(mv.dst_y-1, mv.dst_y+2):
-                    for x in range(mv.dst_x-1, mv.dst_x+2):
-                        if (y, x) != (mv.dst_y, mv.dst_x) and 0 <= y < 8 and 0 <= x < 8:
-                            if self.board.square_at(y, x) == p_src:
-                                mv.src_y, mv.src_x = y, x
-                                break
-                    if mv.src_y and mv.src_x:
-                        break
-
+                self.deduce_src_king(mv)
             case _:
                 raise IndexError
 
