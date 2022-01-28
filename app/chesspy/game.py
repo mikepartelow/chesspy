@@ -2,27 +2,10 @@
 import copy
 import logging
 from . import san
-from .color import Color
+from .color import Color, colorize, color_of
 from .board import Board
 from .castle import Castle
-
-
-def color_of(ch):
-    """Returns Color.WHITE if given piece character is White, otherwise Color.BLACK.
-
-    Performs no validation."""
-    if ch.isupper():
-        return Color.WHITE
-    return Color.BLACK
-
-
-def colorize(ch, color):
-    """Returns the given piece, ch, altered to represent the given color.
-
-    Performs no validation."""
-    if color == Color.WHITE:
-        return ch.upper()
-    return ch.lower()
+from .analyzers import is_in_check
 
 
 class Game:
@@ -37,57 +20,6 @@ class Game:
         self.board = board or Board()
         self.turn = turn or Color.WHITE
         self.over = False
-
-    def is_in_check(self):  # pylint: disable=too-many-return-statements,too-many-branches,too-many-locals
-        """Returns True if the current turn's player is in check, False otherwise."""
-        logging.debug("Game::is_in_check(%s)", self.turn)
-
-        king_pos = self.board.king_position(self.turn)
-        logging.debug("Game::is_in_check() : king_pos = %r", king_pos)
-
-        opponent_knight = colorize('N', self.turn.opponent())
-
-        offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
-        offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
-        for (y_offset, x_offset) in zip(offsets_y, offsets_x):
-            y, x = king_pos.y + y_offset, king_pos.x + x_offset
-            if 0 <= y < 8 and 0 <= x < 8:
-                if self.board.square_at(y, x) == opponent_knight:
-                    logging.debug("Game::is_in_check() -> True : Knight at (%s, %s)", y, x)
-                    return True
-
-        opponent_queen = colorize('Q', self.turn.opponent())
-        opponent_bishop = colorize('B', self.turn.opponent())
-
-        incrementors = ((-1, -1), (1, 1), (1, -1), (-1, 1),)
-        for increments in incrementors:
-            if (p := self.board.find_first_on_diagonal(king_pos, *increments)) and p.piece in (opponent_bishop, opponent_queen):
-                logging.debug("Game::is_in_check() -> True : Bishop at (%s, %s)", *p[1:])
-                return True
-
-        opponent_rook = colorize('R', self.turn.opponent())
-
-        incrementors = ((0, -1), (0, 1), (1, 0), (-1, 0),)
-        for increments in incrementors:
-            if (p := self.board.find_first_on_h_or_v(king_pos, *increments)) and p.piece in (opponent_rook, opponent_queen):
-                logging.debug("Game::is_in_check() -> True : Rook at (%s, %s)", *p[1:])
-                return True
-
-        opponent_pawn = colorize('P', self.turn.opponent())
-
-        if self.turn == Color.WHITE:
-            pawn_maybes = (king_pos.y - 1, king_pos.x - 1), (king_pos.y - 1, king_pos.x + 1)
-        else:
-            pawn_maybes = (king_pos.y + 1, king_pos.x - 1), (king_pos.y + 1, king_pos.x + 1)
-
-        for pawn_maybe in pawn_maybes:
-            if pawn_maybe[0] >= 0 and pawn_maybe[0] < 8 and pawn_maybe[1] >= 0 and pawn_maybe[1] < 8:
-                if self.board.square_at(*pawn_maybe) == opponent_pawn:
-                    logging.debug("Game::is_in_check() -> True : Pawn at (%s, %s)", *pawn_maybe)
-                    return True
-
-        logging.debug("Game::is_in_check(%s) -> False", self.turn)
-        return False
 
     def move_castle(self, mv):
         """Given a mv for Castling, execute the move on self.board."""
@@ -147,8 +79,8 @@ class Game:
         # this is a lovely sanity check but it slows us down by about 2.25x
         # it's also slower on average when mv.check is False, which is most of the time.
         #
-        logging.debug("assert(mv.check == self.is_in_check())")
-        assert mv.check == self.is_in_check()
+        logging.debug("assert(mv.check == is_in_check(self.board, self.turn))")
+        assert mv.check == is_in_check(self.board, self.turn)
 
         return capture
 
@@ -192,8 +124,8 @@ class Game:
         test_game = Game(board=Board(repr(self.board)), turn=self.turn)
         test_game.move_move(test_mv)
 
-        logging.debug("if not test_game.is_in_check():")
-        if not test_game.is_in_check():
+        logging.debug("if not is_in_check(test_game.board, test_game.turn):")
+        if not is_in_check(test_game.board, test_game.turn):
             mv.src_y, mv.src_x = y, x
             logging.debug("test_move_from_src() -> True")
             return True
