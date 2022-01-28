@@ -2,6 +2,7 @@
 import logging
 import datetime
 from . import san
+import collections  # pylint: disable=wrong-import-order
 
 NEW_GAME_TOKEN = 42
 GAME_OVER_TOKEN = 19860718
@@ -87,32 +88,26 @@ def pgn_parser(tokens):  # pylint: disable=too-many-branches,too-many-statements
                     break
 
 
-# pylint: disable=too-few-public-methods,too-many-instance-attributes
-class Metadata:
-    """A subset of PGN metadata."""
-    def __init__(self, m_dict):
-        self.event = m_dict['Event']
-        self.site = m_dict['Site']
-
+def normalize_metadata(meta_dict):
+    """Returns a namedtuple of metadata initializes from raw PGN metadata fields. Parses dates into datetime.date()."""
+    try:
+        date = datetime.date(*map(int, meta_dict['Date'].split('.')))
+    except (TypeError, ValueError):
         try:
-            self.date = datetime.date(*map(int, m_dict['Date'].split('.')))
+            date = datetime.date(*map(int, meta_dict['UTCDate'].split('.')))
         except (TypeError, ValueError):
-            try:
-                self.date = datetime.date(*map(int, m_dict['UTCDate'].split('.')))
-            except (TypeError, ValueError):
-                self.date = None
+            date = None
 
-        self.white = m_dict['White']
-        self.black = m_dict['Black']
-        self.result = m_dict['Result']
-        self.opening = m_dict.get('Opening', None)
-        self.annotator = m_dict.get('Annotator', None)
+    Metadata = collections.namedtuple("Metadata", "event site date white black result opening annotator")
 
-
-class Move:
-    """Trivial utility class for a SAN move."""
-    def __init__(self, idx, sanstr):
-        self.idx, self.sanstr = idx, sanstr
+    return Metadata(event=meta_dict['Event'],
+                    site=meta_dict['Site'],
+                    date=date,
+                    white=meta_dict['White'],
+                    black=meta_dict['Black'],
+                    result=meta_dict['Result'],
+                    opening=meta_dict.get('Opening', None),
+                    annotator=meta_dict.get('Annotator', None))
 
 
 class Game:
@@ -121,6 +116,10 @@ class Game:
     for move in Game(parser, metadata)
        print(move.sanstr)
     """
+
+    # Named Tuple representing a move's index in the game, and the move's SAN string
+    Move = collections.namedtuple('Move', 'idx sanstr')
+
     def __init__(self, parser, metadata):
         self.parser = parser
         self.idx = -1
@@ -134,7 +133,7 @@ class Game:
         if token == GAME_OVER_TOKEN:
             raise StopIteration
         self.idx += 1
-        return Move(self.idx, token)
+        return self.Move(self.idx, token)
 
 
 class Gamefile:
@@ -160,8 +159,8 @@ class Gamefile:
             token = next(self.parser)
             if token == NEW_GAME_TOKEN:
                 self.game_count += 1
-                metadata = next(self.parser)
-                return Game(self.parser, Metadata(metadata))
+                metadata = normalize_metadata(next(self.parser))
+                return Game(self.parser, metadata)
 
             if token is None:
                 break
