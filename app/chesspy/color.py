@@ -18,3 +18,21 @@ class Color(Enum):
     def toggle(color):
         """Returns Black if the given color is White, returns White if the given color is Black."""
         return Color.BLACK if color == Color.WHITE else Color.WHITE
+
+
+def color_of(ch):
+    """Returns Color.WHITE if given piece character is White, otherwise Color.BLACK.
+
+    Performs no validation."""
+    if ch.isupper():
+        return Color.WHITE
+    return Color.BLACK
+
+
+def colorize(ch, color):
+    """Returns the given piece, ch, altered to represent the given color.
+
+    Performs no validation."""
+    if color == Color.WHITE:
+        return ch.upper()
+    return ch.lower()

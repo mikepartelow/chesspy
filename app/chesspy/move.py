@@ -1,6 +1,6 @@
 """Implements a class representing chess moves."""
-
 import logging
+from .board import Pos
 
 
 # pylint: disable=too-many-instance-attributes
@@ -48,10 +48,10 @@ class Move:
 
     @property
     def dst(self):
-        """Returns (y, x) coordinates for move destination."""
-        return (self.dst_y, self.dst_x)
+        """Returns Pos(y, x) coordinates for move destination."""
+        return Pos(self.dst_y, self.dst_x)
 
     @property
     def src(self):
-        """Returns (y, x) coordinates for move source."""
-        return (self.src_y, self.src_x)
+        """Returns Pos(y, x) coordinates for move source."""
+        return Pos(self.src_y, self.src_x)
