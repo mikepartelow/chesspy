@@ -1,0 +1,39 @@
+"""Move Generators generate lists of legal moves for pieces on a Board."""
+import logging
+from .color import Color, color_of
+
+
+def moves_for(y, x, board):
+    """Return a list of legal moves for the piece at (y, x) on the given board.
+
+    Raises IndexError if no piece exists at (y, x).
+    """
+    match board.square_at(y, x):
+        case 'P' | 'p':
+            return pawn_moves_for(y, x, board)
+
+    raise IndexError
+
+
+def pawn_moves_for(y, x, board):
+    """Return a list of legal moves for the piece at (y, x) on the given board."""
+    pawn = board.square_at(y, x)
+    assert pawn in ('p', 'P')
+
+    if color_of(pawn) == Color.BLACK:
+        # FIXME: DRY, copied from game.py
+        def ahead_of(y, inc=1): return y + inc
+        starting_row = 1
+    else:
+        # FIXME: DRY, copied from game.py
+        def ahead_of(y, inc=1): return y - inc
+        starting_row = 6
+
+    moves = [(ahead_of(y), x)]
+
+    if y == starting_row:
+        moves.append((ahead_of(y, 2), x))
+
+    return moves
+
+
