@@ -26,6 +26,19 @@ def moves_for(y, x, board):
     raise IndexError
 
 
+def move_seems_ok(y, x, piece, board):
+    """Returns True if (y, x) seems like an OK move for piece on board.
+
+    Checks some but not all conditions which might preclude the move."""
+    if not in_bounds(y, x):
+        return False
+
+    if (p := board.square_at(y, x)) and color_of(p) == color_of(piece):
+        return False
+
+    return True
+
+
 def pawn_moves_for(y, x, board):
     """Return a list of legal moves for the Pawn at (y, x) on the given board."""
     pawn = board.square_at(y, x)
@@ -59,7 +72,9 @@ def knight_moves_for(y, x, board):
     moves = []
 
     for (offset_y, offset_x) in zip(offsets_y, offsets_x):
-        moves.append((y+offset_y, x+offset_x))
+        dst_y, dst_x = y+offset_y, x+offset_x
+        if in_bounds(dst_y, dst_x):
+            moves.append((dst_y, dst_x))
 
     return moves
 
@@ -73,7 +88,7 @@ def king_moves_for(y, x, board):
 
     for dst_y in range(y-1, y+2):
         for dst_x in range(x-1, x+2):
-            if (dst_y, dst_x) != (y, x):
+            if move_seems_ok(dst_y, dst_x, king, board):
                 moves.append((dst_y, dst_x))
 
     return moves
