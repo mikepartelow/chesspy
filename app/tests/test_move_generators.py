@@ -292,3 +292,63 @@ class TestBishopMoveGenerator(unittest.TestCase):
     def test_in_bounds_0b(self):
         self.assertEqual("only generates in-bounds moves", False)
 
+
+class TestQueenMoveGenerator(unittest.TestCase):
+    def setUp(self):
+        self.game = Game()
+        self.board = self.game.board
+
+    def test_0w(self):
+        self.board = Board(' ' * 64)
+        self.board.place_piece_at('Q', 3, 3)
+        moves = move_generators.moves_for(3, 3, self.board)
+        self.assertEqual(sorted(moves), sorted([
+            (0, 0), (1, 1), (2, 2), (4, 4), (5, 5), (6, 6), (7, 7),
+            (6, 0), (5, 1), (4, 2), (2, 4), (1, 5), (0, 6),
+            (0, 3), (1, 3), (2, 3), (4, 3), (5, 3), (6, 3), (7, 3),
+            (3, 0), (3, 1), (3, 2), (3, 4), (3, 5), (3, 6), (3, 7)
+        ]))
+
+    def test_0b(self):
+        self.board = Board(' ' * 64)
+        self.board.place_piece_at('q', 3, 3)
+        moves = move_generators.moves_for(3, 3, self.board)
+        self.assertEqual(sorted(moves), sorted([
+            (0, 0), (1, 1), (2, 2), (4, 4), (5, 5), (6, 6), (7, 7),
+            (6, 0), (5, 1), (4, 2), (2, 4), (1, 5), (0, 6),
+            (0, 3), (1, 3), (2, 3), (4, 3), (5, 3), (6, 3), (7, 3),
+            (3, 0), (3, 1), (3, 2), (3, 4), (3, 5), (3, 6), (3, 7)
+        ]))
+
+    @unittest.skip
+    def test_capture_0w(self):
+        self.assertEqual("generates a move to capture", False)
+
+    @unittest.skip
+    def test_capture_0b(self):
+        self.assertEqual("generates a move to capture", False)
+
+    @unittest.skip
+    def test_blocked_0w(self):
+        self.assertEqual("otherwise legal move is blocked by own-side piece", False)
+
+    @unittest.skip
+    def test_blocked_0b(self):
+        self.assertEqual("otherwise legal move is blocked by own-side piece", False)
+
+    @unittest.skip
+    def test_blocked_1w(self):
+        self.assertEqual("otherwise legal move would put self in check", False)
+
+    @unittest.skip
+    def test_blocked_1b(self):
+        self.assertEqual("otherwise legal move would put self in check", False)
+
+    @unittest.skip
+    def test_in_bounds_0w(self):
+        self.assertEqual("only generates in-bounds moves", False)
+
+    @unittest.skip
+    def test_in_bounds_0b(self):
+        self.assertEqual("only generates in-bounds moves", False)
+

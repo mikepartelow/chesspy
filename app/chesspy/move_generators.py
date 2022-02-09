@@ -20,6 +20,8 @@ def moves_for(y, x, board):
             return rook_moves_for(y, x, board)
         case 'B' | 'b':
             return bishop_moves_for(y, x, board)
+        case 'Q' | 'q':
+            return list(set(rook_moves_for(y, x, board, piece='Q') + bishop_moves_for(y, x, board, piece='Q')))
 
     raise IndexError
 
@@ -27,7 +29,7 @@ def moves_for(y, x, board):
 def pawn_moves_for(y, x, board):
     """Return a list of legal moves for the Pawn at (y, x) on the given board."""
     pawn = board.square_at(y, x)
-    assert pawn in ('p', 'P')
+    assert pawn.upper() == 'P'
 
     if color_of(pawn) == Color.BLACK:
         # FIXME: DRY, copied from game.py
@@ -49,7 +51,7 @@ def pawn_moves_for(y, x, board):
 def knight_moves_for(y, x, board):
     """Return a list of legal moves for the Knight at (y, x) on the given board."""
     knight = board.square_at(y, x)
-    assert knight in ('n', 'N')
+    assert knight.upper() == 'N'
 
     offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
     offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
@@ -65,7 +67,7 @@ def knight_moves_for(y, x, board):
 def king_moves_for(y, x, board):
     """Return a list of legal moves for the King at (y, x) on the given board."""
     king = board.square_at(y, x)
-    assert king in ('k', 'K')
+    assert king.upper() == 'K'
 
     moves = []
 
@@ -77,10 +79,10 @@ def king_moves_for(y, x, board):
     return moves
 
 
-def rook_moves_for(y, x, board):
-    """Return a list of legal moves for the Rook at (y, x) on the given board."""
+def rook_moves_for(y, x, board, piece='R'):
+    """Return a list of legal moves for the Rook-like piece at (y, x) on the given board."""
     rook = board.square_at(y, x)
-    assert rook in ('r', 'R')
+    assert rook.upper() == piece
 
     moves = []
 
@@ -94,10 +96,10 @@ def rook_moves_for(y, x, board):
 
     return moves
 
-def bishop_moves_for(y, x, board):
-    """Return a list of legal moves for the Bishop at (y, x) on the given board."""
-    rook = board.square_at(y, x)
-    assert rook in ('b', 'B')
+def bishop_moves_for(y, x, board, piece='B'):
+    """Return a list of legal moves for the Bishop-like piece at (y, x) on the given board."""
+    bishop = board.square_at(y, x)
+    assert bishop.upper() == piece
 
     moves = []
     incrementors = ((-1, -1), (1, 1), (1, -1), (-1, 1),)
