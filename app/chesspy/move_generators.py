@@ -1,5 +1,4 @@
 """Move Generators generate lists of legal moves for pieces on a Board."""
-import logging
 from .board import in_bounds
 from .color import Color, color_of
 
@@ -45,12 +44,10 @@ def pawn_moves_for(y, x, board):
     assert pawn.upper() == 'P'
 
     if color_of(pawn) == Color.BLACK:
-        # FIXME: DRY, copied from game.py
-        def ahead_of(y, inc=1): return y + inc
+        def ahead_of(y, inc=1): return y + inc  # pylint: disable=multiple-statements
         starting_row = 1
     else:
-        # FIXME: DRY, copied from game.py
-        def ahead_of(y, inc=1): return y - inc
+        def ahead_of(y, inc=1): return y - inc  # pylint: disable=multiple-statements
         starting_row = 6
 
     moves = [(ahead_of(y), x)]
@@ -110,6 +107,7 @@ def rook_moves_for(y, x, board, piece='R'):
             moves.append((y, dst_x))
 
     return moves
+
 
 def bishop_moves_for(y, x, board, piece='B'):
     """Return a list of legal moves for the Bishop-like piece at (y, x) on the given board."""

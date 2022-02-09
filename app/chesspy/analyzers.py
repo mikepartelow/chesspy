@@ -33,7 +33,7 @@ def is_in_mate(board, color):
     for y in range(8):
         for x in range(8):
             if (p := board.square_at(y, x)) and color_of(p) == color:
-                for (dst_y, dst_x) in moves_for(y, x, board):
+                for (dst_y, dst_x) in moves_for(y, x, board):  # pylint: disable=not-an-iterable
 
                     test_board = Board(repr(board))
                     test_board.place_piece_at(p, dst_y, dst_x)
@@ -41,7 +41,7 @@ def is_in_mate(board, color):
 
                     if not is_in_check(test_board, color):
                         logging.debug("CheckAnalyzer::is_in_mate(%s) [%s (%d, %d) -> (%d, %d)]-> False",
-                            color, p, y, x, dst_y, dst_x)
+                                      color, p, y, x, dst_y, dst_x)
 
                         return False
 

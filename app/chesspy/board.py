@@ -9,6 +9,7 @@ PieceAtPos = collections.namedtuple('PieceAtPos', 'piece y x')
 # I did not just copy/paste this from literally every Python tutorial ever. Really, I typed it out.
 Pos = collections.namedtuple("Pos", "y x")
 
+
 def in_bounds(y, x):
     """Returns True if (y, x) are in bounds of the chess board."""
     return 0 <= y < 8 and 0 <= x < 8
