@@ -15,6 +15,8 @@ def moves_for(y, x, board):
             return knight_moves_for(y, x, board)
         case 'K' | 'k':
             return king_moves_for(y, x, board)
+        case 'R' | 'r':
+            return rook_moves_for(y, x, board)
 
     raise IndexError
 
@@ -58,7 +60,7 @@ def knight_moves_for(y, x, board):
 
 
 def king_moves_for(y, x, board):
-    """Return a list of legal moves for the Knight at (y, x) on the given board."""
+    """Return a list of legal moves for the King at (y, x) on the given board."""
     king = board.square_at(y, x)
     assert king in ('k', 'K')
 
@@ -68,5 +70,23 @@ def king_moves_for(y, x, board):
         for dst_x in range(x-1, x+2):
             if (dst_y, dst_x) != (y, x):
                 moves.append((dst_y, dst_x))
+
+    return moves
+
+
+def rook_moves_for(y, x, board):
+    """Return a list of legal moves for the Rook at (y, x) on the given board."""
+    rook = board.square_at(y, x)
+    assert rook in ('r', 'R')
+
+    moves = []
+
+    for dst_y in range(0, 8):
+        if dst_y != y:
+            moves.append((dst_y, x))
+
+    for dst_x in range(0, 8):
+        if dst_x != x:
+            moves.append((y, dst_x))
 
     return moves
