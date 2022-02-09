@@ -1,5 +1,6 @@
 """Move Generators generate lists of legal moves for pieces on a Board."""
 import logging
+from .board import in_bounds
 from .color import Color, color_of
 
 
@@ -17,6 +18,8 @@ def moves_for(y, x, board):
             return king_moves_for(y, x, board)
         case 'R' | 'r':
             return rook_moves_for(y, x, board)
+        case 'B' | 'b':
+            return bishop_moves_for(y, x, board)
 
     raise IndexError
 
@@ -88,5 +91,22 @@ def rook_moves_for(y, x, board):
     for dst_x in range(0, 8):
         if dst_x != x:
             moves.append((y, dst_x))
+
+    return moves
+
+def bishop_moves_for(y, x, board):
+    """Return a list of legal moves for the Bishop at (y, x) on the given board."""
+    rook = board.square_at(y, x)
+    assert rook in ('b', 'B')
+
+    moves = []
+    incrementors = ((-1, -1), (1, 1), (1, -1), (-1, 1),)
+
+    for incs in incrementors:
+        dst_y, dst_x = y, x
+        while in_bounds(dst_y, dst_x):
+            if (dst_y, dst_x) != (y, x):
+                moves.append((dst_y, dst_x))
+            dst_y, dst_x = dst_y - incs[0], dst_x - incs[1]
 
     return moves
