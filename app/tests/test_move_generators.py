@@ -1,5 +1,6 @@
 import unittest
 from chesspy.game import Game
+from chesspy.board import Board
 from chesspy.color import Color
 from chesspy import move_generators
 
@@ -55,3 +56,36 @@ class TestPawnMoveGenerator(unittest.TestCase):
         self.assertEqual("otherwise legal move is blocked by interposing piece", False)
         self.assertEqual("try to move 1 square", False)
         self.assertEqual("try to move 2 squares", False)
+
+class TestKnightMoveGenerator(unittest.TestCase):
+    def setUp(self):
+        self.game = Game()
+        self.board = self.game.board
+
+    def test_0w(self):
+        self.board = Board(' ' * 64)
+        self.board.place_piece_at('N', 3, 3)
+        moves = move_generators.moves_for(3, 3, self.board)
+        self.assertEqual(moves, [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)])
+
+    def test_0b(self):
+        self.board = Board(' ' * 64)
+        self.board.place_piece_at('n', 3, 3)
+        moves = move_generators.moves_for(3, 3, self.board)
+        self.assertEqual(moves, [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)])
+
+    @unittest.skip
+    def test_capture_0w(self):
+        self.assertEqual("generates a move to capture", False)
+
+    @unittest.skip
+    def test_capture_0b(self):
+        self.assertEqual("generates a move to capture", False)
+
+    @unittest.skip
+    def test_blocked_0w(self):
+        self.assertEqual("otherwise legal move is blocked by own-side piece", False)
+
+    @unittest.skip
+    def test_blocked_0b(self):
+        self.assertEqual("otherwise legal move is blocked by own-side piece", False)
