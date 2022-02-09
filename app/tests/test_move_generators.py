@@ -176,9 +176,10 @@ class TestKingMoveGenerator(unittest.TestCase):
     def test_blocked_1b(self):
         self.assertEqual("otherwise legal move would put self in check", False)
 
-    @unittest.skip
     def test_blocked_2w(self):
-        self.assertEqual("otherwise legal move would be adjacent to opponent's king", False)
+        self.board = Board('           bk         p   KPp       q                           ')
+        moves = move_generators.moves_for(3, 2, self.board)
+        self.assertEqual(sorted(moves), sorted([(2, 1), (2, 2), (3, 1), (4, 1), (4, 2), (4, 3)]))
 
     @unittest.skip
     def test_blocked_2b(self):

@@ -2,10 +2,10 @@
 import copy
 import logging
 from . import san
-from .color import Color, colorize, color_of
 from .board import Board
 from .castle import Castle
-from .analyzers import is_in_check
+from .color import Color, colorize, color_of
+from .analyzers import is_in_check, is_in_mate
 
 
 class Game:
@@ -81,6 +81,12 @@ class Game:
         #
         logging.debug("assert(mv.check == is_in_check(self.board, self.turn))")
         assert mv.check == is_in_check(self.board, self.turn)
+
+        # this is also a lovely sanity check but it slows us down by [unmeasured, assumed to be lots]
+        # currently worth it to generate new unit tests
+        #
+        logging.debug("assert(mv.mate == is_in_mate(self.board, self.turn))")
+        assert mv.mate == is_in_mate(self.board, self.turn)
 
         return capture
 

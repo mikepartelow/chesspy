@@ -1,6 +1,6 @@
 """Move Generators generate lists of legal moves for pieces on a Board."""
 from .board import in_bounds
-from .color import Color, color_of
+from .color import Color, color_of, opponent
 
 
 def moves_for(y, x, board):
@@ -34,6 +34,13 @@ def move_seems_ok(y, x, piece, board):
 
     if (p := board.square_at(y, x)) and color_of(p) == color_of(piece):
         return False
+
+    if piece.upper() == 'K':
+        # check if move would put kings adjacent
+        for opp_y in range(y-1, y+2):
+            for opp_x in range(x-1, x+2):
+                if in_bounds(opp_y, opp_x) and (p := board.square_at(opp_y, opp_x)) and p == opponent(piece):
+                    return False
 
     return True
 
