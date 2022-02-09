@@ -26,6 +26,12 @@ def is_in_check(board, color, king_pos=None):
     return False
 
 
+def is_in_mate(board, color):
+    """Returns True if the given color is mated."""
+
+    return False
+
+
 def is_in_knight_check(board, color, king_pos=None):
     """Returns True if the given color's player is in check on the given board from opponent's Knight."""
     logging.debug("CheckAnalyzer::is_in_knight_check(%s)", color)

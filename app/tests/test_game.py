@@ -69,32 +69,6 @@ class TestGameOverMan(unittest.TestCase):
         self.game.move_san('1/2-1/2')
         self.assertTrue(self.game.over)
 
-class TestIsMate(unittest.TestCase):
-    def setUp(self):
-        self.game = game.Game()
-
-    def test_immortal(self):
-        self.game.board = board.Board("r bk   rp  pBpNpn    n   p NP  P      P    P    P P K   q     b ")
-        self.assertTrue(self.game.is_in_mate())
-        self.assertTrue(self.game.over)
-
-        self.game.board = board.Board("r bk   rp  p pNpn  B n   p NP  P      P    P    P P K   q     b ")
-        self.game.move_san("Be7#")
-        self.assertTrue(self.game.is_in_mate())
-        self.assertTrue(self.game.over)
-
-    def test_gotc(self):
-        self.game.board = board.Board(" Q           pk   p   p  p  N  p b     P bn       r   P   K     ")
-        self.game.turn = Color.BLACK
-        self.assertTrue(self.game.is_in_mate())
-        self.assertTrue(self.game.over)
-
-        self.game.board = board.Board("Q           pk   p   p  p  N  p b     P bn     r     P   K     ")
-        self.game.turn = Color.BLACK
-        self.game.move_san("Rc2#")
-        self.assertTrue(self.game.is_in_mate())
-        self.assertTrue(self.game.over)
-
 class TestPromotion(unittest.TestCase):
     def setUp(self):
         self.game = game.Game()

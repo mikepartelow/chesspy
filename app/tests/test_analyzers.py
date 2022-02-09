@@ -1,7 +1,9 @@
 import unittest
 from chesspy import analyzers
+from chesspy.game import Game
 from chesspy.board import Board
 from chesspy.color import Color
+
 
 
 class TestIsCheck(unittest.TestCase):
@@ -267,3 +269,26 @@ class TestIsCheck(unittest.TestCase):
     def test_combo_0(self):
         self.assertFalse("test both black and white")
 
+class TestIsMate(unittest.TestCase):
+    def setUp(self):
+        self.game = Game()
+
+    def test_immortal(self):
+        self.game.board = Board("r bk   rp  p pNpn  B n   p NP  P      P    P    P P K   q     b ")
+        self.game.turn = Color.WHITE
+        self.assertFalse(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertFalse(self.game.over)
+
+        self.game.move_san("Be7#")
+        self.assertTrue(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertTrue(self.game.over)
+
+    def test_gotc(self):
+        self.game.board = Board(" Q           pk   p   p  p  N  p b     P bn     r     P   K     ")
+        self.game.turn = Color.BLACK
+        self.assertFalse(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertFalse(self.game.over)
+
+        self.game.move_san("Rc2#")
+        self.assertTrue(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertTrue(self.game.over)
