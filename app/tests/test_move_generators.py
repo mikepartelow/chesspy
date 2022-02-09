@@ -57,6 +57,15 @@ class TestPawnMoveGenerator(unittest.TestCase):
         self.assertEqual("try to move 1 square", False)
         self.assertEqual("try to move 2 squares", False)
 
+    @unittest.skip
+    def test_in_bounds_0w(self):
+        self.assertEqual("only generates in-bounds moves", False)
+
+    @unittest.skip
+    def test_in_bounds_0b(self):
+        self.assertEqual("only generates in-bounds moves", False)
+
+
 class TestKnightMoveGenerator(unittest.TestCase):
     def setUp(self):
         self.game = Game()
@@ -89,3 +98,70 @@ class TestKnightMoveGenerator(unittest.TestCase):
     @unittest.skip
     def test_blocked_0b(self):
         self.assertEqual("otherwise legal move is blocked by own-side piece", False)
+
+    @unittest.skip
+    def test_in_bounds_0w(self):
+        self.assertEqual("only generates in-bounds moves", False)
+
+    @unittest.skip
+    def test_in_bounds_0b(self):
+        self.assertEqual("only generates in-bounds moves", False)
+
+class TestKingMoveGenerator(unittest.TestCase):
+    def setUp(self):
+        self.game = Game()
+        self.board = self.game.board
+
+    def test_0w(self):
+        self.board = Board(' ' * 64)
+        self.board.place_piece_at('K', 3, 3)
+        moves = move_generators.moves_for(3, 3, self.board)
+        self.assertEqual(sorted(moves), sorted([(2,2), (2,3), (2, 4), (3, 4), (4, 4), (4, 3), (4, 2), (3, 2)]))
+
+    def test_0b(self):
+        self.board = Board(' ' * 64)
+        self.board.place_piece_at('k', 3, 3)
+        moves = move_generators.moves_for(3, 3, self.board)
+        self.assertEqual(sorted(moves), sorted([(2,2), (2,3), (2, 4), (3, 4), (4, 4), (4, 3), (4, 2), (3, 2)]))
+
+    @unittest.skip
+    def test_capture_0w(self):
+        self.assertEqual("generates a move to capture", False)
+
+    @unittest.skip
+    def test_capture_0b(self):
+        self.assertEqual("generates a move to capture", False)
+
+    @unittest.skip
+    def test_blocked_0w(self):
+        self.assertEqual("otherwise legal move is blocked by own-side piece", False)
+
+    @unittest.skip
+    def test_blocked_0b(self):
+        self.assertEqual("otherwise legal move is blocked by own-side piece", False)
+
+    @unittest.skip
+    def test_blocked_1w(self):
+        self.assertEqual("otherwise legal move would put self in check", False)
+
+    @unittest.skip
+    def test_blocked_1b(self):
+        self.assertEqual("otherwise legal move would put self in check", False)
+
+    @unittest.skip
+    def test_blocked_2w(self):
+        self.assertEqual("otherwise legal move would be adjacent to opponent's king", False)
+
+    @unittest.skip
+    def test_blocked_2b(self):
+        self.assertEqual("otherwise legal move would be adjacent to opponent's king", False)
+
+    @unittest.skip
+    def test_in_bounds_0w(self):
+        self.assertEqual("only generates in-bounds moves", False)
+
+    @unittest.skip
+    def test_in_bounds_0b(self):
+        self.assertEqual("only generates in-bounds moves", False)
+
+

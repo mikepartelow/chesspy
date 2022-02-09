@@ -13,6 +13,8 @@ def moves_for(y, x, board):
             return pawn_moves_for(y, x, board)
         case 'N' | 'n':
             return knight_moves_for(y, x, board)
+        case 'K' | 'k':
+            return king_moves_for(y, x, board)
 
     raise IndexError
 
@@ -55,4 +57,16 @@ def knight_moves_for(y, x, board):
     return moves
 
 
+def king_moves_for(y, x, board):
+    """Return a list of legal moves for the Knight at (y, x) on the given board."""
+    king = board.square_at(y, x)
+    assert king in ('k', 'K')
 
+    moves = []
+
+    for dst_y in range(y-1, y+2):
+        for dst_x in range(x-1, x+2):
+            if (dst_y, dst_x) != (y, x):
+                moves.append((dst_y, dst_x))
+
+    return moves
