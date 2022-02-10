@@ -5,7 +5,7 @@ from . import san
 from .board import Board
 from .castle import Castle
 from .color import Color, colorize, color_of
-from .analyzers import is_in_check, is_in_mate
+from .analyzers import is_in_check, is_in_mate, adjacent_kings
 
 
 class Game:
@@ -130,8 +130,8 @@ class Game:
         test_game = Game(board=Board(repr(self.board)), turn=self.turn)
         test_game.move_move(test_mv)
 
-        logging.debug("if not is_in_check(test_game.board, test_game.turn):")
-        if not is_in_check(test_game.board, test_game.turn):
+        logging.debug("if not is_in_check(test_game.board, test_game.turn) and not adjacent_kings(test_game.board):")
+        if not is_in_check(test_game.board, test_game.turn) and not adjacent_kings(test_game.board):
             mv.src_y, mv.src_x = y, x
             logging.debug("test_move_from_src() -> True")
             return True

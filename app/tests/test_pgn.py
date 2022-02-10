@@ -100,12 +100,13 @@ class TestMagnusLichess(unittest.TestCase):
 
                         if do_print:
                             print(game.board)
+                            print(f"|{repr(game.board)}|")
                             print("")
 
             self.assertEqual(game_count, game_count_actual)
 
     def test_DrNykterstein(self):
-        self.exec_test_pgn('lichess_DrNykterstein_2022-01-04', game_count=9664, do_print=False)
+        self.exec_test_pgn('lichess_DrNykterstein_2022-01-04', game_count=9664, do_print=True)
 
     def test_n7ZjoKNR(self):
         self.exec_test_pgn('n7ZjoKNR')

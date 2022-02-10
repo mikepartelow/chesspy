@@ -5,6 +5,23 @@ from chesspy.board import Board
 from chesspy.color import Color
 
 
+class TestAdjacentKings(unittest.TestCase):
+    def setUp(self):
+        self.board = Board()
+
+    def test_no(self):
+        self.assertFalse(analyzers.adjacent_kings(self.board))
+
+    def test_yes(self):
+        self.board.place_piece_at(None, 7, 4)
+        self.board.place_piece_at(None, 0, 4)
+
+        self.board.place_piece_at('K', 3, 4)
+
+        for y, x in [(3, 3), (2, 3), (2, 4), (2, 5), (3, 5), (4, 5), (4, 4), (4, 3)]:
+            self.board.place_piece_at('k', y, x)
+            self.assertTrue(analyzers.adjacent_kings(self.board))
+
 
 class TestIsCheck(unittest.TestCase):
     def setUp(self):
@@ -292,3 +309,13 @@ class TestIsMate(unittest.TestCase):
         self.game.move_san("Rc2#")
         self.assertTrue(analyzers.is_in_mate(self.game.board, self.game.turn))
         self.assertTrue(self.game.over)
+
+    def test_fdWzU5yk(self):
+        self.game.board = Board("Q     Q       p       pk             P b r     P  q  P K     R  ")
+        self.assertFalse(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertFalse(self.game.over)
+
+        self.game.move_san("Qh8#")
+        self.assertTrue(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertTrue(self.game.over)
+

@@ -5,6 +5,17 @@ from .move_generators import moves_for
 from .color import Color, colorize, color_of
 
 
+def adjacent_kings(board):
+    """Returns True if the kings are (illegally) adjacent."""
+    white_king_pos = board.king_position(Color.WHITE)
+    black_king_pos = board.king_position(Color.BLACK)
+
+    diff_y = abs(white_king_pos.y - black_king_pos.y)
+    diff_x = abs(white_king_pos.x - black_king_pos.x)
+
+    return diff_y <= 1 and diff_x <= 1
+
+
 def is_in_check(board, color, king_pos=None):
     """Returns True if the given color's player is in check on the given board."""
     logging.debug("CheckAnalyzer::is_in_check(%s)", color)
@@ -39,7 +50,7 @@ def is_in_mate(board, color):
                     test_board.place_piece_at(p, dst_y, dst_x)
                     test_board.place_piece_at(None, y, x)
 
-                    if not is_in_check(test_board, color):
+                    if not is_in_check(test_board, color) and not adjacent_kings(test_board):
                         logging.debug("CheckAnalyzer::is_in_mate(%s) [%s (%d, %d) -> (%d, %d)]-> False",
                                       color, p, y, x, dst_y, dst_x)
 

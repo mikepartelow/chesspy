@@ -1,6 +1,6 @@
 """Move Generators generate lists of legal moves for pieces on a Board."""
 from .board import in_bounds
-from .color import Color, color_of, opponent
+from .color import Color, color_of
 
 
 def moves_for(y, x, board):
@@ -25,24 +25,10 @@ def moves_for(y, x, board):
     raise IndexError
 
 
-def move_seems_ok(y, x, piece, board):
-    """Returns True if (y, x) seems like an OK move for piece on board.
+def collision(y, x, piece, board):
+    """Returns True if (y, x) on board contains a piece of the same color as piece."""
 
-    Checks some but not all conditions which might preclude the move."""
-    if not in_bounds(y, x):
-        return False
-
-    if (p := board.square_at(y, x)) and color_of(p) == color_of(piece):
-        return False
-
-    if piece.upper() == 'K':
-        # check if move would put kings adjacent
-        for opp_y in range(y-1, y+2):
-            for opp_x in range(x-1, x+2):
-                if in_bounds(opp_y, opp_x) and (p := board.square_at(opp_y, opp_x)) and p == opponent(piece):
-                    return False
-
-    return True
+    return (p := board.square_at(y, x)) and color_of(p) == color_of(piece)
 
 
 def pawn_moves_for(y, x, board):
@@ -77,7 +63,7 @@ def knight_moves_for(y, x, board):
 
     for (offset_y, offset_x) in zip(offsets_y, offsets_x):
         dst_y, dst_x = y+offset_y, x+offset_x
-        if in_bounds(dst_y, dst_x):
+        if in_bounds(dst_y, dst_x) and not collision(dst_y, dst_x, knight, board):
             moves.append((dst_y, dst_x))
 
     return moves
@@ -92,7 +78,9 @@ def king_moves_for(y, x, board):
 
     for dst_y in range(y-1, y+2):
         for dst_x in range(x-1, x+2):
-            if move_seems_ok(dst_y, dst_x, king, board):
+            if in_bounds(dst_y, dst_x) and \
+                    (dst_y, dst_x) != (y, x) and \
+                    not collision(dst_y, dst_x, king, board):
                 moves.append((dst_y, dst_x))
 
     return moves
@@ -107,10 +95,14 @@ def rook_moves_for(y, x, board, piece='R'):
 
     for dst_y in range(0, 8):
         if dst_y != y:
+            if collision(dst_y, x, rook, board):
+                break
             moves.append((dst_y, x))
 
     for dst_x in range(0, 8):
         if dst_x != x:
+            if collision(y, dst_x, rook, board):
+                break
             moves.append((y, dst_x))
 
     return moves
@@ -128,6 +120,8 @@ def bishop_moves_for(y, x, board, piece='B'):
         dst_y, dst_x = y, x
         while in_bounds(dst_y, dst_x):
             if (dst_y, dst_x) != (y, x):
+                if collision(dst_y, dst_x, bishop, board):
+                    break
                 moves.append((dst_y, dst_x))
             dst_y, dst_x = dst_y - incs[0], dst_x - incs[1]
 
