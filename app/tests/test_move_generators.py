@@ -29,11 +29,9 @@ class TestPawnMoveGenerator(unittest.TestCase):
         moves = move_generators.moves_for(3, 2, self.board)
         self.assertEqual(moves, [(4, 2)])
 
-    @unittest.skip
     def test_capture_0w(self):
         self.assertEqual("generates a move to capture", False)
 
-    @unittest.skip
     def test_capture_0b(self):
         self.assertEqual("generates a move to capture", False)
 
@@ -91,11 +89,9 @@ class TestKnightMoveGenerator(unittest.TestCase):
         moves = move_generators.moves_for(3, 3, self.board)
         self.assertEqual(moves, [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)])
 
-    @unittest.skip
     def test_capture_0w(self):
         self.assertEqual("generates a move to capture", False)
 
-    @unittest.skip
     def test_capture_0b(self):
         self.assertEqual("generates a move to capture", False)
 
@@ -144,11 +140,9 @@ class TestKingMoveGenerator(unittest.TestCase):
         moves = move_generators.moves_for(3, 3, self.board)
         self.assertEqual(sorted(moves), sorted([(2, 2), (2, 3), (2, 4), (3, 4), (4, 4), (4, 3), (4, 2), (3, 2)]))
 
-    @unittest.skip
     def test_capture_0w(self):
         self.assertEqual("generates a move to capture", False)
 
-    @unittest.skip
     def test_capture_0b(self):
         self.assertEqual("generates a move to capture", False)
 
@@ -204,13 +198,29 @@ class TestRookMoveGenerator(unittest.TestCase):
             (3, 0), (3, 1), (3, 2), (3, 4), (3, 5), (3, 6), (3, 7)
         ]))
 
-    @unittest.skip
     def test_capture_0w(self):
-        self.assertEqual("generates a move to capture", False)
+        self.board = Board(' ' * 64)
+        self.board.place_piece_at('R', 3, 0)
+        self.board.place_piece_at('p', 1, 0)
+        self.board.place_piece_at('p', 5, 0)
+        self.board.place_piece_at('p', 3, 6)
+        moves = move_generators.moves_for(3, 0, self.board)
+        self.assertEqual(sorted(moves), sorted([
+            (1, 0), (2, 0), (4, 0), (5, 0),
+            (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6),
+        ]))
 
-    @unittest.skip
     def test_capture_0b(self):
-        self.assertEqual("generates a move to capture", False)
+        self.board = Board(' ' * 64)
+        self.board.place_piece_at('r', 3, 0)
+        self.board.place_piece_at('P', 1, 0)
+        self.board.place_piece_at('P', 5, 0)
+        self.board.place_piece_at('P', 3, 6)
+        moves = move_generators.moves_for(3, 0, self.board)
+        self.assertEqual(sorted(moves), sorted([
+            (1, 0), (2, 0), (4, 0), (5, 0),
+            (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6),
+        ]))
 
     def test_blocked_0w(self):
         self.board = Board(' ' * 64)
@@ -266,11 +276,9 @@ class TestBishopMoveGenerator(unittest.TestCase):
             (6, 0), (5, 1), (4, 2), (2, 4), (1, 5), (0, 6),
         ]))
 
-    @unittest.skip
     def test_capture_0w(self):
         self.assertEqual("generates a move to capture", False)
 
-    @unittest.skip
     def test_capture_0b(self):
         self.assertEqual("generates a move to capture", False)
 
@@ -332,11 +340,9 @@ class TestQueenMoveGenerator(unittest.TestCase):
             (3, 0), (3, 1), (3, 2), (3, 4), (3, 5), (3, 6), (3, 7)
         ]))
 
-    @unittest.skip
     def test_capture_0w(self):
         self.assertEqual("generates a move to capture", False)
 
-    @unittest.skip
     def test_capture_0b(self):
         self.assertEqual("generates a move to capture", False)
 

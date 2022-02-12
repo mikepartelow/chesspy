@@ -28,7 +28,9 @@ def moves_for(y, x, board):
 def collision(y, x, piece, board):
     """Returns True if (y, x) on board contains a piece of the same color as piece."""
 
-    return (p := board.square_at(y, x)) and color_of(p) == color_of(piece)
+    if (p := board.square_at(y, x)):
+        return 'blocked' if color_of(p) == color_of(piece) else 'capture'
+    return False
 
 
 def pawn_moves_for(y, x, board):
@@ -93,16 +95,24 @@ def rook_moves_for(y, x, board, piece='R'):
 
     moves = []
 
-    for dst_y in range(0, 8):
-        if dst_y != y:
-            if collision(dst_y, x, rook, board):
-                break
+    for r in (range(y+1, 8), range(y-1, 0, -1)):
+        for dst_y in r:
+            match collision(dst_y, x, rook, board):
+                case 'capture':
+                    moves.append((dst_y, x))
+                    break
+                case 'blocked':
+                    break
             moves.append((dst_y, x))
 
-    for dst_x in range(0, 8):
-        if dst_x != x:
-            if collision(y, dst_x, rook, board):
-                break
+    for r in (range(x+1, 8), range(x-1, 0, -1)):
+        for dst_x in r:
+            match collision(y, dst_x, rook, board):
+                case 'capture':
+                    moves.append((y, dst_x))
+                    break
+                case 'blocked':
+                    break
             moves.append((y, dst_x))
 
     return moves
