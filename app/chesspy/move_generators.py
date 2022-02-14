@@ -45,10 +45,22 @@ def pawn_moves_for(y, x, board):
         def ahead_of(y, inc=1): return y - inc  # pylint: disable=multiple-statements
         starting_row = 6
 
-    moves = [(ahead_of(y), x)]
+    # collision() returning 'capture' for ahead_of() pawn is never really a capture, since pawn
+    # only captures diagonally, so we treat 'capture' and 'blocked' the same here
+    #
+    if collision(ahead_of(y), x, pawn, board):
+        moves = []
+    else:
+        moves = [(ahead_of(y), x)]
 
-    if y == starting_row:
-        moves.append((ahead_of(y, 2), x))
+        if y == starting_row:
+            if not collision(ahead_of(y, 2), x, pawn, board):
+                moves.append((ahead_of(y, 2), x))
+
+    for offset_x in (-1, 1):
+        dst_y, dst_x = ahead_of(y), x+offset_x
+        if in_bounds(dst_y, dst_x) and collision(dst_y, dst_x, pawn, board) == 'capture':
+            moves.append((dst_y, dst_x))
 
     return moves
 
@@ -65,8 +77,12 @@ def knight_moves_for(y, x, board):
 
     for (offset_y, offset_x) in zip(offsets_y, offsets_x):
         dst_y, dst_x = y+offset_y, x+offset_x
-        if in_bounds(dst_y, dst_x) and not collision(dst_y, dst_x, knight, board):
-            moves.append((dst_y, dst_x))
+        if in_bounds(dst_y, dst_x):
+            match collision(dst_y, dst_x, knight, board):
+                case 'blocked':
+                    pass
+                case _:
+                    moves.append((dst_y, dst_x))
 
     return moves
 
@@ -80,11 +96,12 @@ def king_moves_for(y, x, board):
 
     for dst_y in range(y-1, y+2):
         for dst_x in range(x-1, x+2):
-            if in_bounds(dst_y, dst_x) and \
-                    (dst_y, dst_x) != (y, x) and \
-                    not collision(dst_y, dst_x, king, board):
-                moves.append((dst_y, dst_x))
-
+            if in_bounds(dst_y, dst_x) and (dst_y, dst_x) != (y, x):
+                match collision(dst_y, dst_x, king, board):
+                    case 'blocked':
+                        pass
+                    case _:
+                        moves.append((dst_y, dst_x))
     return moves
 
 
@@ -95,8 +112,8 @@ def rook_moves_for(y, x, board, piece='R'):
 
     moves = []
 
-    for r in (range(y+1, 8), range(y-1, 0, -1)):
-        for dst_y in r:
+    for the_range in (range(y+1, 8), range(y-1, -1, -1)):
+        for dst_y in the_range:
             match collision(dst_y, x, rook, board):
                 case 'capture':
                     moves.append((dst_y, x))
@@ -105,8 +122,8 @@ def rook_moves_for(y, x, board, piece='R'):
                     break
             moves.append((dst_y, x))
 
-    for r in (range(x+1, 8), range(x-1, 0, -1)):
-        for dst_x in r:
+    for the_range in (range(x+1, 8), range(x-1, -1, -1)):
+        for dst_x in the_range:
             match collision(y, dst_x, rook, board):
                 case 'capture':
                     moves.append((y, dst_x))
@@ -130,8 +147,12 @@ def bishop_moves_for(y, x, board, piece='B'):
         dst_y, dst_x = y, x
         while in_bounds(dst_y, dst_x):
             if (dst_y, dst_x) != (y, x):
-                if collision(dst_y, dst_x, bishop, board):
-                    break
+                match collision(dst_y, dst_x, bishop, board):
+                    case 'capture':
+                        moves.append((dst_y, dst_x))
+                        break
+                    case 'blocked':
+                        break
                 moves.append((dst_y, dst_x))
             dst_y, dst_x = dst_y - incs[0], dst_x - incs[1]
 
