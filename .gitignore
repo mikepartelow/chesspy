@@ -7,3 +7,4 @@ app/tests/games/lichess_DrNykterstein_2022-01-04.pgn
 ignore.*
 long.*.pgn
 long.pgn
+failures.*
