@@ -319,3 +319,13 @@ class TestIsMate(unittest.TestCase):
         self.assertTrue(analyzers.is_in_mate(self.game.board, self.game.turn))
         self.assertTrue(self.game.over)
 
+class TestIsStaleMate(unittest.TestCase):
+    def setUp(self):
+        self.game = Game()
+
+    def test_NSImdaxd(self):
+        self.game.board = Board("       k     Q           P           P       KP                 ")
+        self.assertFalse(analyzers.is_in_mate(self.game.board, self.game.turn))
+
+        self.game.move_san('b6')
+        self.assertTrue(analyzers.is_in_mate(self.game.board, self.game.turn))

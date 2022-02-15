@@ -85,8 +85,10 @@ class Game:
         # this is also a lovely sanity check but it slows us down by [unmeasured, assumed to be lots]
         # currently worth it to generate new unit tests
         #
+        # checkmate = is_in_mate and mv.check
+        # stalemate = is_in_mate and not mv.check
         logging.debug("assert(mv.mate == is_in_mate(self.board, self.turn))")
-        assert mv.mate == is_in_mate(self.board, self.turn)
+        assert (mv.mate == is_in_mate(self.board, self.turn)) or not mv.check
 
         return capture
 

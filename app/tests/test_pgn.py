@@ -80,11 +80,15 @@ class TestMagnusLichess(unittest.TestCase):
     # downlaod the file at: https://lichess.org/@/DrNykterstein/download
     # could use any lichess pgn file
 
-    def exec_test_pgn(self, basename, game_count=1, do_print=False):
+    def exec_test_pgn(self, basename, game_count=1, do_print=False, continue_on_fail=False):
         pgnfile = f"tests/games/{basename}.pgn"
         metadata_file = f"tests/games/ignore.metadata.{basename}.pgn"
+        failure_file = f"tests/games/failures.metadata.{basename}.pgn"
 
         if os.path.exists(pgnfile):
+            with open(failure_file, "w") as failure_f:
+                failure_f.truncate()
+
             with open(metadata_file, "w") as metadata_f:
                 game_count_actual = 0
 
@@ -96,7 +100,16 @@ class TestMagnusLichess(unittest.TestCase):
                         if do_print:
                             print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")
 
-                        game.move_san(move.sanstr)
+                        try:
+                            game.move_san(move.sanstr)
+                        except (AssertionError, IndexError) as e:
+                            with open(failure_file, "a") as failure_f:
+                                failure_f.write('[Site "{}"]\n'.format(pgn_game.metadata.site))
+
+                            if continue_on_fail:
+                                break
+                            else:
+                                raise
 
                         if do_print:
                             print(game.board)
@@ -106,7 +119,8 @@ class TestMagnusLichess(unittest.TestCase):
             self.assertEqual(game_count, game_count_actual)
 
     def test_DrNykterstein(self):
-        self.exec_test_pgn('lichess_DrNykterstein_2022-01-04', game_count=9664, do_print=True)
+        if os.environ.get('PYCHESS_TEST_LONG_TEST', None) == 'YES':
+            self.exec_test_pgn('lichess_DrNykterstein_2022-01-04', game_count=9664, do_print=True, continue_on_fail=True)
 
     def test_n7ZjoKNR(self):
         self.exec_test_pgn('n7ZjoKNR')
