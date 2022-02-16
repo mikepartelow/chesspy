@@ -46,15 +46,23 @@ def is_in_mate(board, color):
             if (p := board.square_at(y, x)) and color_of(p) == color:
                 for (dst_y, dst_x) in moves_for(y, x, board):  # pylint: disable=not-an-iterable
 
-                    test_board = Board(repr(board))
-                    test_board.place_piece_at(p, dst_y, dst_x)
-                    test_board.place_piece_at(None, y, x)
+                    old_src = board.square_at(y, x)
+                    old_dst = board.square_at(dst_y, dst_x)
 
-                    if not is_in_check(test_board, color) and not adjacent_kings(test_board):
+                    board.place_piece_at(p, dst_y, dst_x)
+                    board.place_piece_at(None, y, x)
+
+                    if not is_in_check(board, color) and not adjacent_kings(board):
                         logging.debug("CheckAnalyzer::is_in_mate(%s) [%s (%d, %d) -> (%d, %d)]-> False",
                                       color, p, y, x, dst_y, dst_x)
 
+                        board.place_piece_at(old_dst, dst_y, dst_x)
+                        board.place_piece_at(old_src, y, x)
+
                         return False
+
+                    board.place_piece_at(old_dst, dst_y, dst_x)
+                    board.place_piece_at(old_src, y, x)
 
     logging.debug("CheckAnalyzer::is_in_mate(%s) -> True", color)
     return True

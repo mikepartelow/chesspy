@@ -29,7 +29,7 @@ There exist better chess engines than this, but I didn't have the pleasure of wr
 ### Split PGN test files
 
     pushd tests/games
-    cat long.pgn | ./split_pgn 500 long 1
+    cat long.pgn | ./split_pgn 50 long 10
     popd
     TEST_LONG=long python3 -m unittest tests
 
