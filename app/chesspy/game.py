@@ -1,5 +1,4 @@
 """Implements a Game class encapsulating a Board object and a move engine for the rules of standard chess."""
-import copy
 import logging
 from . import san
 from .board import Board

@@ -1,6 +1,5 @@
 """Implements Analyzers that give insights into Board positions."""
 import logging
-from .board import Board
 from .move_generators import moves_for
 from .color import Color, colorize, color_of
 
@@ -44,7 +43,7 @@ def is_in_mate(board, color):
     for y in range(8):
         for x in range(8):
             if (p := board.square_at(y, x)) and color_of(p) == color:
-                for dst_y, dst_x in moves_for(y, x, board):
+                for dst_y, dst_x in moves_for(y, x, board):  # pylint:disable=not-an-iterable
 
                     old_src = board.square_at(y, x)
                     old_dst = board.square_at(dst_y, dst_x)

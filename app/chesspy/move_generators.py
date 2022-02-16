@@ -140,4 +140,3 @@ def bishop_moves_for(y, x, board, piece='B'):
                         break
                 yield (dst_y, dst_x)
             dst_y, dst_x = dst_y - incs[0], dst_x - incs[1]
-
