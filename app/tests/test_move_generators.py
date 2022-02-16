@@ -12,48 +12,48 @@ class TestPawnMoveGenerator(unittest.TestCase):
 
     def test_0w(self):
         moves = move_generators.moves_for(6, 4, self.board)
-        self.assertEqual(moves, [(5, 4), (4, 4)])
+        self.assertEqual(list(moves), [(5, 4), (4, 4)])
 
         self.game.move_san('e3')
 
         moves = move_generators.moves_for(5, 4, self.board)
-        self.assertEqual(moves, [(4, 4)])
+        self.assertEqual(list(moves), [(4, 4)])
 
     def test_0b(self):
         moves = move_generators.moves_for(1, 2, self.board)
-        self.assertEqual(moves, [(2, 2), (3, 2)])
+        self.assertEqual(list(moves), [(2, 2), (3, 2)])
 
         self.game.turn = Color.BLACK
         self.game.move_san('c5')
 
         moves = move_generators.moves_for(3, 2, self.board)
-        self.assertEqual(moves, [(4, 2)])
+        self.assertEqual(list(moves), [(4, 2)])
 
     def test_capture_0w(self):
         self.board.place_piece_at('n', 4, 4)
         moves = move_generators.moves_for(6, 4, self.board)
-        self.assertEqual(moves, [(5, 4)])
+        self.assertEqual(list(moves), [(5, 4)])
 
         self.board.place_piece_at('n', 5, 4)
         moves = move_generators.moves_for(6, 4, self.board)
-        self.assertEqual(moves, [])
+        self.assertEqual(list(moves), [])
 
         self.board.place_piece_at('n', 5, 3)
         moves = move_generators.moves_for(6, 4, self.board)
-        self.assertEqual(moves, [(5, 3)])
+        self.assertEqual(list(moves), [(5, 3)])
 
     def test_capture_0b(self):
         self.board.place_piece_at('N', 3, 2)
         moves = move_generators.moves_for(1, 2, self.board)
-        self.assertEqual(moves, [(2, 2)])
+        self.assertEqual(list(moves), [(2, 2)])
 
         self.board.place_piece_at('N', 2, 2)
         moves = move_generators.moves_for(1, 2, self.board)
-        self.assertEqual(moves, [])
+        self.assertEqual(list(moves), [])
 
         self.board.place_piece_at('N', 2, 1)
         moves = move_generators.moves_for(1, 2, self.board)
-        self.assertEqual(moves, [(2, 1)])
+        self.assertEqual(list(moves), [(2, 1)])
 
     @unittest.skip
     def test_en_passant_0w(self):
@@ -66,28 +66,28 @@ class TestPawnMoveGenerator(unittest.TestCase):
     def test_blocked_0w(self):
         self.board.place_piece_at('N', 4, 4)
         moves = move_generators.moves_for(6, 4, self.board)
-        self.assertEqual(moves, [(5, 4)])
+        self.assertEqual(list(moves), [(5, 4)])
 
         self.board.place_piece_at('N', 5, 4)
         moves = move_generators.moves_for(6, 4, self.board)
-        self.assertEqual(moves, [])
+        self.assertEqual(list(moves), [])
 
         self.board.place_piece_at(None, 4, 4)
         moves = move_generators.moves_for(6, 4, self.board)
-        self.assertEqual(moves, [])
+        self.assertEqual(list(moves), [])
 
     def test_blocked_0b(self):
         self.board.place_piece_at('N', 3, 2)
         moves = move_generators.moves_for(1, 2, self.board)
-        self.assertEqual(moves, [(2, 2)])
+        self.assertEqual(list(moves), [(2, 2)])
 
         self.board.place_piece_at('N', 2, 2)
         moves = move_generators.moves_for(1, 2, self.board)
-        self.assertEqual(moves, [])
+        self.assertEqual(list(moves), [])
 
         self.board.place_piece_at(None, 3, 2)
         moves = move_generators.moves_for(1, 2, self.board)
-        self.assertEqual(moves, [])
+        self.assertEqual(list(moves), [])
 
     @unittest.skip
     def test_in_bounds_0w(self):
@@ -107,13 +107,13 @@ class TestKnightMoveGenerator(unittest.TestCase):
         self.board = Board(' ' * 64)
         self.board.place_piece_at('N', 3, 3)
         moves = move_generators.moves_for(3, 3, self.board)
-        self.assertEqual(moves, [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)])
+        self.assertEqual(list(moves), [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)])
 
     def test_0b(self):
         self.board = Board(' ' * 64)
         self.board.place_piece_at('n', 3, 3)
         moves = move_generators.moves_for(3, 3, self.board)
-        self.assertEqual(moves, [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)])
+        self.assertEqual(list(moves), [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)])
 
     def test_capture_0w(self):
         self.board = Board(' ' * 64)
@@ -121,7 +121,7 @@ class TestKnightMoveGenerator(unittest.TestCase):
         for y, x in [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)]:
             self.board.place_piece_at('r', y, x)
         moves = move_generators.moves_for(3, 3, self.board)
-        self.assertEqual(moves, [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)])
+        self.assertEqual(list(moves), [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)])
 
     def test_capture_0b(self):
         self.board = Board(' ' * 64)
@@ -129,7 +129,7 @@ class TestKnightMoveGenerator(unittest.TestCase):
         for y, x in [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)]:
             self.board.place_piece_at('R', y, x)
         moves = move_generators.moves_for(3, 3, self.board)
-        self.assertEqual(moves, [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)])
+        self.assertEqual(list(moves), [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)])
 
     def test_blocked_0w(self):
         self.board = Board(' ' * 64)
@@ -137,7 +137,7 @@ class TestKnightMoveGenerator(unittest.TestCase):
         for y, x in [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)]:
             self.board.place_piece_at('R', y, x)
         moves = move_generators.moves_for(3, 3, self.board)
-        self.assertEqual(moves, [])
+        self.assertEqual(list(moves), [])
 
     def test_blocked_0b(self):
         self.board = Board(' ' * 64)
@@ -145,19 +145,19 @@ class TestKnightMoveGenerator(unittest.TestCase):
         for y, x in [(2, 1), (2, 5), (4, 1), (4, 5), (1, 2), (1, 4), (5, 2), (5, 4)]:
             self.board.place_piece_at('r', y, x)
         moves = move_generators.moves_for(3, 3, self.board)
-        self.assertEqual(moves, [])
+        self.assertEqual(list(moves), [])
 
     def test_in_bounds_0w(self):
         self.board = Board(' ' * 64)
         self.board.place_piece_at('N', 0, 0)
         moves = move_generators.moves_for(0, 0, self.board)
-        self.assertEqual(moves, [(1, 2), (2, 1)])
+        self.assertEqual(list(moves), [(1, 2), (2, 1)])
 
     def test_in_bounds_0b(self):
         self.board = Board(' ' * 64)
         self.board.place_piece_at('n', 7, 7)
         moves = move_generators.moves_for(7, 7, self.board)
-        self.assertEqual(moves, [(6, 5), (5, 6)])
+        self.assertEqual(list(moves), [(6, 5), (5, 6)])
 
 class TestKingMoveGenerator(unittest.TestCase):
     def setUp(self):

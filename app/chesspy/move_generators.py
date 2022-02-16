@@ -1,10 +1,11 @@
 """Move Generators generate lists of legal moves for pieces on a Board."""
+import itertools
 from .board import in_bounds
 from .color import Color, color_of
 
 
 def moves_for(y, x, board):
-    """Return a list of legal moves for the piece at (y, x) on the given board.
+    """Yields legal moves for the piece at (y, x) on the given board.
 
     Raises IndexError if no piece exists at (y, x).
     """
@@ -20,7 +21,7 @@ def moves_for(y, x, board):
         case 'B' | 'b':
             return bishop_moves_for(y, x, board)
         case 'Q' | 'q':
-            return list(set(rook_moves_for(y, x, board, piece='Q') + bishop_moves_for(y, x, board, piece='Q')))
+            return itertools.chain(rook_moves_for(y, x, board, piece='Q'), bishop_moves_for(y, x, board, piece='Q'))
 
     raise IndexError
 
@@ -34,7 +35,7 @@ def collision(y, x, piece, board):
 
 
 def pawn_moves_for(y, x, board):
-    """Return a list of legal moves for the Pawn at (y, x) on the given board."""
+    """Yields legal moves for the Pawn at (y, x) on the given board."""
     pawn = board.square_at(y, x)
     assert pawn.upper() == 'P'
 
@@ -48,32 +49,26 @@ def pawn_moves_for(y, x, board):
     # collision() returning 'capture' for ahead_of() pawn is never really a capture, since pawn
     # only captures diagonally, so we treat 'capture' and 'blocked' the same here
     #
-    if collision(ahead_of(y), x, pawn, board):
-        moves = []
-    else:
-        moves = [(ahead_of(y), x)]
+    if not collision(ahead_of(y), x, pawn, board):
+        yield (ahead_of(y), x)
 
         if y == starting_row:
             if not collision(ahead_of(y, 2), x, pawn, board):
-                moves.append((ahead_of(y, 2), x))
+                yield (ahead_of(y, 2), x)
 
     for offset_x in (-1, 1):
         dst_y, dst_x = ahead_of(y), x+offset_x
         if in_bounds(dst_y, dst_x) and collision(dst_y, dst_x, pawn, board) == 'capture':
-            moves.append((dst_y, dst_x))
-
-    return moves
+            yield (dst_y, dst_x)
 
 
 def knight_moves_for(y, x, board):
-    """Return a list of legal moves for the Knight at (y, x) on the given board."""
+    """Yields legal moves for the Knight at (y, x) on the given board."""
     knight = board.square_at(y, x)
     assert knight.upper() == 'N'
 
     offsets_y = (-1, -1,  1, 1, -2, -2,  2, 2)
     offsets_x = (-2,  2, -2, 2, -1,  1, -1, 1)
-
-    moves = []
 
     for (offset_y, offset_x) in zip(offsets_y, offsets_x):
         dst_y, dst_x = y+offset_y, x+offset_x
@@ -82,17 +77,13 @@ def knight_moves_for(y, x, board):
                 case 'blocked':
                     pass
                 case _:
-                    moves.append((dst_y, dst_x))
-
-    return moves
+                    yield (dst_y, dst_x)
 
 
 def king_moves_for(y, x, board):
-    """Return a list of legal moves for the King at (y, x) on the given board."""
+    """Yields legal moves for the King at (y, x) on the given board."""
     king = board.square_at(y, x)
     assert king.upper() == 'K'
-
-    moves = []
 
     for dst_y in range(y-1, y+2):
         for dst_x in range(x-1, x+2):
@@ -101,46 +92,40 @@ def king_moves_for(y, x, board):
                     case 'blocked':
                         pass
                     case _:
-                        moves.append((dst_y, dst_x))
-    return moves
+                        yield (dst_y, dst_x)
 
 
 def rook_moves_for(y, x, board, piece='R'):
-    """Return a list of legal moves for the Rook-like piece at (y, x) on the given board."""
+    """Yields legal moves for the Rook-like piece at (y, x) on the given board."""
     rook = board.square_at(y, x)
     assert rook.upper() == piece
-
-    moves = []
 
     for the_range in (range(y+1, 8), range(y-1, -1, -1)):
         for dst_y in the_range:
             match collision(dst_y, x, rook, board):
                 case 'capture':
-                    moves.append((dst_y, x))
+                    yield (dst_y, x)
                     break
                 case 'blocked':
                     break
-            moves.append((dst_y, x))
+            yield (dst_y, x)
 
     for the_range in (range(x+1, 8), range(x-1, -1, -1)):
         for dst_x in the_range:
             match collision(y, dst_x, rook, board):
                 case 'capture':
-                    moves.append((y, dst_x))
+                    yield (y, dst_x)
                     break
                 case 'blocked':
                     break
-            moves.append((y, dst_x))
-
-    return moves
+            yield (y, dst_x)
 
 
 def bishop_moves_for(y, x, board, piece='B'):
-    """Return a list of legal moves for the Bishop-like piece at (y, x) on the given board."""
+    """Yields legal moves for the Bishop-like piece at (y, x) on the given board."""
     bishop = board.square_at(y, x)
     assert bishop.upper() == piece
 
-    moves = []
     incrementors = ((-1, -1), (1, 1), (1, -1), (-1, 1),)
 
     for incs in incrementors:
@@ -149,11 +134,10 @@ def bishop_moves_for(y, x, board, piece='B'):
             if (dst_y, dst_x) != (y, x):
                 match collision(dst_y, dst_x, bishop, board):
                     case 'capture':
-                        moves.append((dst_y, dst_x))
+                        yield (dst_y, dst_x)
                         break
                     case 'blocked':
                         break
-                moves.append((dst_y, dst_x))
+                yield (dst_y, dst_x)
             dst_y, dst_x = dst_y - incs[0], dst_x - incs[1]
 
-    return moves
