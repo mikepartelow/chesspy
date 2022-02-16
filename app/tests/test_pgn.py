@@ -124,13 +124,15 @@ class TestMagnusLichess(unittest.TestCase):
             set_start_method('fork') # necessary for MacOS
             for filename in filenames:
                 p = Process(target=self.exec_test_pgn, args=(filename,),
-                                                       kwargs={'do_print': False, 'continue_on_fail': True})
+                                                       kwargs={'do_print': False, 'continue_on_fail': False})
                 p.start()
                 procs.append(p)
 
             [ p.join() for p in procs ]
 
             logging.disable(logging.NOTSET)
+
+            self.assertEqual([0], list(set(p.exitcode for p in procs)))
 
     def test_n7ZjoKNR(self):
         self.exec_test_pgn('n7ZjoKNR')
