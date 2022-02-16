@@ -83,17 +83,7 @@ class Board:
     def place_piece_at(self, piece, y, x):
         """Place the given piece on the board at the given coordinates.
 
-        >>> b = Board()
-        >>> b.place_piece_at('K', 2, 3)
-        >>> b.squares[2*8+3]
-        'K'
-
-        Raises ArgumentError if coordinates are out of bounds.
-        >>> Board().place_piece_at(None, -1, 8)
-        Traceback (most recent call last):
-        ...
-        IndexError
-
+        Raises IndexError if coordinates are out of bounds.
         """
         if y < 0 or y > 7 or x < 0 or x > 7:
             raise IndexError

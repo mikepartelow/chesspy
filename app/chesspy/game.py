@@ -123,23 +123,32 @@ class Game:
         If move is illegal, returns False.
 
         self.board is unaltered upon return but may be altered during test_move_from_src() execution."""
+
+        result = False
+
         # this logically necessary but unoptimized check slows us down by about 2x
         #
         logging.debug("test_move_from_src(%s, %s, %r)", y, x, mv)
-        test_mv = copy.copy(mv)
-        test_mv.src_y, test_mv.src_x = y, x
 
-        test_game = Game(board=Board(repr(self.board)), turn=self.turn)
-        test_game.move_move(test_mv)
+        assert not mv.castle
+        assert not mv.en_passant
 
-        logging.debug("if not is_in_check(test_game.board, test_game.turn) and not adjacent_kings(test_game.board):")
-        if not is_in_check(test_game.board, test_game.turn) and not adjacent_kings(test_game.board):
+        old_src = self.board.square_at(y, x)
+        old_dst = self.board.square_at(mv.dst_y, mv.dst_x)
+
+        self.board.place_piece_at(old_src, mv.dst_y, mv.dst_x)
+        self.board.place_piece_at(None, y, x)
+
+        logging.debug("if not is_in_check(self.board, self.turn) and not adjacent_kings(self.board):")
+        if not is_in_check(self.board, self.turn) and not adjacent_kings(self.board):
             mv.src_y, mv.src_x = y, x
-            logging.debug("test_move_from_src() -> True")
-            return True
+            result = True
 
-        logging.debug("test_move_from_src() -> False")
-        return False
+        self.board.place_piece_at(old_dst, mv.dst_y, mv.dst_x)
+        self.board.place_piece_at(old_src, y, x)
+
+        logging.debug("test_move_from_src() -> %s", result)
+        return result
 
     def deduce_src_knight(self, mv):
         """Initializes mv.src with coordinates of Knight that can legally move to mv.dst, if such Knight exists."""
