@@ -1,7 +1,26 @@
 import unittest
 from chesspy import analyzers
+from chesspy.game import Game
 from chesspy.board import Board
 from chesspy.color import Color
+
+
+class TestAdjacentKings(unittest.TestCase):
+    def setUp(self):
+        self.board = Board()
+
+    def test_no(self):
+        self.assertFalse(analyzers.adjacent_kings(self.board))
+
+    def test_yes(self):
+        self.board.place_piece_at(None, 7, 4)
+        self.board.place_piece_at(None, 0, 4)
+
+        self.board.place_piece_at('K', 3, 4)
+
+        for y, x in [(3, 3), (2, 3), (2, 4), (2, 5), (3, 5), (4, 5), (4, 4), (4, 3)]:
+            self.board.place_piece_at('k', y, x)
+            self.assertTrue(analyzers.adjacent_kings(self.board))
 
 
 class TestIsCheck(unittest.TestCase):
@@ -267,3 +286,46 @@ class TestIsCheck(unittest.TestCase):
     def test_combo_0(self):
         self.assertFalse("test both black and white")
 
+class TestIsMate(unittest.TestCase):
+    def setUp(self):
+        self.game = Game()
+
+    def test_immortal(self):
+        self.game.board = Board("r bk   rp  p pNpn  B n   p NP  P      P    P    P P K   q     b ")
+        self.game.turn = Color.WHITE
+        self.assertFalse(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertFalse(self.game.over)
+
+        self.game.move_san("Be7#")
+        self.assertTrue(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertTrue(self.game.over)
+
+    def test_gotc(self):
+        self.game.board = Board(" Q           pk   p   p  p  N  p b     P bn     r     P   K     ")
+        self.game.turn = Color.BLACK
+        self.assertFalse(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertFalse(self.game.over)
+
+        self.game.move_san("Rc2#")
+        self.assertTrue(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertTrue(self.game.over)
+
+    def test_fdWzU5yk(self):
+        self.game.board = Board("Q     Q       p       pk             P b r     P  q  P K     R  ")
+        self.assertFalse(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertFalse(self.game.over)
+
+        self.game.move_san("Qh8#")
+        self.assertTrue(analyzers.is_in_mate(self.game.board, self.game.turn))
+        self.assertTrue(self.game.over)
+
+class TestIsStaleMate(unittest.TestCase):
+    def setUp(self):
+        self.game = Game()
+
+    def test_NSImdaxd(self):
+        self.game.board = Board("       k     Q           P           P       KP                 ")
+        self.assertFalse(analyzers.is_in_mate(self.game.board, self.game.turn))
+
+        self.game.move_san('b6')
+        self.assertTrue(analyzers.is_in_mate(self.game.board, self.game.turn))

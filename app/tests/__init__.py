@@ -12,8 +12,9 @@ logging.basicConfig(filename=TEST_LOG_PATH,
     level=logging.DEBUG)
 
 from .test_san import *
-from .test_board import *
-from .test_game import *
 from .test_pgn import *
-from .test_analyzers import *
+from .test_game import *
 from .test_color import *
+from .test_board import *
+from .test_analyzers import *
+from .test_move_generators import *

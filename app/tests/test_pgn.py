@@ -1,9 +1,12 @@
 import os
+import glob
+import logging
 import datetime
 import unittest
 import itertools
 import chesspy.game
 from chesspy import pgn
+from multiprocessing import Process, set_start_method
 
 def board_reprs(path):
     with open(path, 'r') as f:
@@ -80,32 +83,54 @@ class TestMagnusLichess(unittest.TestCase):
     # downlaod the file at: https://lichess.org/@/DrNykterstein/download
     # could use any lichess pgn file
 
-    def exec_test_pgn(self, basename, game_count=1, do_print=False):
+    def exec_test_pgn(self, basename, do_print=False, continue_on_fail=False):
         pgnfile = f"tests/games/{basename}.pgn"
-        metadata_file = f"tests/games/ignore.metadata.{basename}.pgn"
+        failure_file = f"tests/games/failures.metadata.{basename}.pgn"
 
         if os.path.exists(pgnfile):
-            with open(metadata_file, "w") as metadata_f:
-                game_count_actual = 0
+            with open(failure_file, "w") as failure_f:
+                failure_f.truncate()
 
-                for pgn_game in pgn.Gamefile(pgnfile):
-                    game = chesspy.game.Game()
-                    metadata_f.write('[Site "{}"]\n'.format(pgn_game.metadata.site))
-                    game_count_actual += 1
-                    for move in pgn_game:
-                        if do_print:
-                            print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")
+            for pgn_game in pgn.Gamefile(pgnfile):
+                game = chesspy.game.Game()
+                for move in pgn_game:
+                    if do_print:
+                        print(f"{int(move.idx/2 + 1)}. {game.turn}: {move.sanstr}")
 
+                    try:
                         game.move_san(move.sanstr)
+                    except (AssertionError, IndexError) as e:
+                        with open(failure_file, "a") as failure_f:
+                            failure_f.write('[Site "{}"]\n'.format(pgn_game.metadata.site))
 
-                        if do_print:
-                            print(game.board)
-                            print("")
+                        if continue_on_fail:
+                            break
+                        else:
+                            raise
 
-            self.assertEqual(game_count, game_count_actual)
+                    if do_print:
+                        print(game.board)
+                        print(f"|{repr(game.board)}|")
+                        print("")
 
-    def test_DrNykterstein(self):
-        self.exec_test_pgn('lichess_DrNykterstein_2022-01-04', game_count=9664, do_print=False)
+    def test_long(self):
+        if (long_basename := os.environ.get('TEST_LONG', None)):
+            logging.disable(logging.CRITICAL)
+
+            filenames = glob.glob(f"tests/games/{long_basename}.*.pgn")
+            filenames = [ os.path.basename(n).split('.pgn')[0] for n in filenames ]
+
+            procs = []
+            set_start_method('fork') # necessary for MacOS
+            for filename in filenames:
+                p = Process(target=self.exec_test_pgn, args=(filename,),
+                                                       kwargs={'do_print': False, 'continue_on_fail': True})
+                p.start()
+                procs.append(p)
+
+            [ p.join() for p in procs ]
+
+            logging.disable(logging.NOTSET)
 
     def test_n7ZjoKNR(self):
         self.exec_test_pgn('n7ZjoKNR')

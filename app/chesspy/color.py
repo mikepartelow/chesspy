@@ -36,3 +36,10 @@ def colorize(ch, color):
     if color == Color.WHITE:
         return ch.upper()
     return ch.lower()
+
+
+def opponent(ch):
+    """Returns the opponent's piece of the same kind. Given White King returns Black King, etc."""
+    if ch.isupper():
+        return ch.lower()
+    return ch.upper()

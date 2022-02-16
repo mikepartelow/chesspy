@@ -1,6 +1,18 @@
 """Implements Analyzers that give insights into Board positions."""
 import logging
-from .color import Color, colorize
+from .move_generators import moves_for
+from .color import Color, colorize, color_of
+
+
+def adjacent_kings(board):
+    """Returns True if the kings are (illegally) adjacent."""
+    white_king_pos = board.king_position(Color.WHITE)
+    black_king_pos = board.king_position(Color.BLACK)
+
+    diff_y = abs(white_king_pos.y - black_king_pos.y)
+    diff_x = abs(white_king_pos.x - black_king_pos.x)
+
+    return diff_y <= 1 and diff_x <= 1
 
 
 def is_in_check(board, color, king_pos=None):
@@ -24,6 +36,35 @@ def is_in_check(board, color, king_pos=None):
 
     logging.debug("CheckAnalyzer::is_in_check(%s) -> False", color)
     return False
+
+
+def is_in_mate(board, color):
+    """Returns True if the given color is mated."""
+    for y in range(8):
+        for x in range(8):
+            if (p := board.square_at(y, x)) and color_of(p) == color:
+                for dst_y, dst_x in moves_for(y, x, board):  # pylint:disable=not-an-iterable
+
+                    old_src = board.square_at(y, x)
+                    old_dst = board.square_at(dst_y, dst_x)
+
+                    board.place_piece_at(p, dst_y, dst_x)
+                    board.place_piece_at(None, y, x)
+
+                    if not is_in_check(board, color) and not adjacent_kings(board):
+                        logging.debug("CheckAnalyzer::is_in_mate(%s) [%s (%d, %d) -> (%d, %d)]-> False",
+                                      color, p, y, x, dst_y, dst_x)
+
+                        board.place_piece_at(old_dst, dst_y, dst_x)
+                        board.place_piece_at(old_src, y, x)
+
+                        return False
+
+                    board.place_piece_at(old_dst, dst_y, dst_x)
+                    board.place_piece_at(old_src, y, x)
+
+    logging.debug("CheckAnalyzer::is_in_mate(%s) -> True", color)
+    return True
 
 
 def is_in_knight_check(board, color, king_pos=None):
