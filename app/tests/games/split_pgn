@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 
@@ -9,6 +9,10 @@ if __name__ == "__main__":
 
     games_per_file = int(sys.argv[1])
     output_file_prefix = sys.argv[2]
+    if len(sys.argv) > 2:
+        max_splits = int(sys.argv[3])
+    else:
+        max_splits = 9999
     split_count = 0
     game_count = 0
     game_f = None
@@ -22,6 +26,8 @@ if __name__ == "__main__":
                     game_f = None
 
             if game_f is None:
+                if split_count >= max_splits:
+                    break
                 filename = f"{output_file_prefix}.{split_count}.pgn"
                 game_f = open(filename, "w")
                 split_count += 1
