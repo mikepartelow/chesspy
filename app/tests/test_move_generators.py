@@ -57,10 +57,14 @@ class TestPawnMoveGenerator(unittest.TestCase):
 
     @unittest.skip
     def test_en_passant_0w(self):
+        # this will require knowledge of previous move - we can't do it just on position alone
+        # find and address any "honor system" tests
         self.assertEqual("generates a move to en_passant", False)
 
     @unittest.skip
     def test_en_passant_0b(self):
+        # this will require knowledge of previous move - we can't do it just on position alone
+        # find and address any "honor system" tests
         self.assertEqual("generates a move to en_passant", False)
 
     def test_blocked_0w(self):

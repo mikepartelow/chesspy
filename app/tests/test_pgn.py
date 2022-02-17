@@ -100,6 +100,10 @@ class TestMagnusLichess(unittest.TestCase):
                     try:
                         game.move_san(move.sanstr)
                     except (AssertionError, IndexError) as e:
+                        print("")
+                        print(game.board)
+                        print(f"|{repr(game.board)}|")
+                        print(move.sanstr)
                         with open(failure_file, "a") as failure_f:
                             failure_f.write('[Site "{}"]\n'.format(pgn_game.metadata.site))
 
