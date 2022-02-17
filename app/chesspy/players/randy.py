@@ -30,4 +30,4 @@ class Randy:
                         moves.append(mv)
 
         # FIXME: return san
-        return random.sample(moves, 1)[0]
+        return random.choice(moves)
