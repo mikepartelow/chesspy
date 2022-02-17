@@ -30,4 +30,5 @@ class Randy:
                         moves.append(mv)
 
         # FIXME: return san
+        #        sanstr(move, board) <-- for now, generate unnecessisarily verbose san like Re4xe6+
         return random.choice(moves)
