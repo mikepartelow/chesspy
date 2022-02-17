@@ -280,6 +280,7 @@ class Game:
         """
         if (p := self.board.square_at(mv.dst_y, mv.dst_x)) and color_of(p) == self.turn:
             # can't land on our own piece
+            logging.debug("Can't land on our own piece: (%s, %s) : %s / %s", mv.dst_y, mv.dst_x, p, self.turn)
             raise IndexError
 
         match mv.piece:
