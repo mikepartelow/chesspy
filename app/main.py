@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         if sys.argv[1] == "board":
-            print(chesspy.game.Game())
+            print(chesspy.game.Game().board)
             sys.exit(0)
         elif sys.argv[1] == "randy":
             play(chesspy.players.Randy)

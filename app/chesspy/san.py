@@ -19,9 +19,38 @@ def char_to_x(ch):
     return ord(ch) - ord('a')
 
 
+def y_to_char(y):
+    """Given a y coordinate 7-0 return a chess file a-h"""
+    logging.debug("y_to_char(%s)", y)
+    return chr(ord('8') - y)
+
+
+def x_to_char(x):
+    """Given a x coordinate 0-7 return a chess rank 1-8"""
+    logging.debug("x_to_char(%s)", x)
+    return chr(ord('a') + x)
+
+
 def out_of_bounds(coords):
     """Given coordinates (y, x) return True if the coordinates are valid for 0-indexed 8x8 grid."""
     return coords[0] < 0 or coords[0] > 7 or coords[1] < 0 or coords[1] > 7
+
+
+def make_san(move, verbose=False):
+    """Create a SAN formatted string from the given Move object."""
+    piece = '' if move.piece == 'P' else move.piece
+    rank_src, file_src = y_to_char(move.src_y), x_to_char(move.src_x)
+    rank_dst, file_dst = y_to_char(move.dst_y), x_to_char(move.dst_x)
+    capture = 'x' if move.capture else ''
+
+    if move.mate:
+        check = '#'
+    elif move.check:
+        check = '+'
+    else:
+        check = ''
+
+    return f"{piece}{file_src}{rank_src}{capture}{file_dst}{rank_dst}{check}"
 
 
 def parse(sanstr, game=None):
