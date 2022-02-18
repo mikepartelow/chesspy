@@ -225,6 +225,9 @@ class Game:
             def ahead_of(y): return y - 1  # pylint: disable=multiple-statements
             def behind(y): return y + 1  # pylint: disable=multiple-statements
 
+        # FIXME: mv_tmp = copy.copy(mv). before return, if test_mv_from_src(mv_tmp) then mv = tmp_mv
+        #        TDD!
+
         if mv.capture:
             p_src = colorize('P', self.turn)
             p_dst = self.board.square_at(mv.dst_y, mv.dst_x)
@@ -269,7 +272,7 @@ class Game:
                 if (abs(mv.dst_y - p[1]) == 2 and p[1] == origin) or abs(mv.dst_y - p[1]) == 1:
                     mv.src_y, mv.src_x = p[1:]
 
-        return mv.src_y is not None and mv.src_x is not None
+
 
     def deduce_src(self, mv):
         """Given a partially constructed Move, deduce src coordinates.

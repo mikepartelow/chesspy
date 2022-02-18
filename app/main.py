@@ -15,33 +15,35 @@ def play(player_class):
 
     move_num = 1
 
-    while not game.over:
-        print(game.board)
+    with open("randy.pgn", "w") as game_file:
+        while not game.over:
+            print(game.board)
 
-        while True:
-            move_str = input(f"{move_num}. ")
-            try:
-                game.move_san(move_str)
-                break
-            except (IndexError, AssertionError) as exc:
-                logging.exception(str(exc))
-                print("---")
-                print(game.board)
-                print(game.turn)
-                print("---")
+            while True:
+                sanstr = input(f"{move_num}. ")
+                try:
+                    game.move_san(sanstr)
+                    break
+                except (IndexError, AssertionError) as exc:
+                    logging.exception(str(exc))
+                    print("---")
+                    print(game.board)
+                    print(game.turn)
+                    print("---")
 
-        if not game.over:
-            move_str = player.suggest_move()
-            # pylint:disable=fixme
-            # FIXME: move_san
-            #        move_move does not check for legality, black can move into check!
-            game.move_move(move_str)
-            # FIXME: move_san would do this for us!
-            game.turn = Color.toggle(game.turn)
+            game_file.write(f"{move_num}. {sanstr}")
 
-            # print(f"{move_num}... {move_str}")
+            if not game.over:
+                # FIXME: deduce_src_pawn and deduce_src_king do not check for check!
+                # FIXME: unit tests for deduce_src moves that expose check
+                sanstr = player.suggest_move_san()
+                game.move_san(sanstr)
 
-        move_num += 1
+                print(f"{move_num}... {sanstr}")
+
+                game_file.write(f" {sanstr}\n")
+
+            move_num += 1
 
 
 def play_immortal():
