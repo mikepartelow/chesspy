@@ -10,13 +10,11 @@ class TestRandy(unittest.TestCase):
         game = Game()
         player_w = players.Randy(game)
         player_b = players.Randy(game)
-        moves = 100
 
         with open("tests/games/randy_v_randy.txt", "w") as game_file:
-            for player in itertools.cycle((player_w, player_b)):
-                if game.over or moves < 0:
+            for move, player in enumerate(itertools.cycle((player_w, player_b))):
+                if game.over or move > 100:
                     break
-                moves -= 1
 
                 sanstr = player.suggest_move_san()
                 game_file.write(f"{repr(game.board)}\n")
