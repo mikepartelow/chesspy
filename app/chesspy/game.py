@@ -20,6 +20,9 @@ class Game:
         self.turn = turn or Color.WHITE
         self.over = False
 
+        self.assert_check = True
+        self.assert_mate = True
+
     def move_castle(self, mv):
         """Given a mv for Castling, execute the move on self.board."""
         assert mv.castle
@@ -78,16 +81,18 @@ class Game:
         # this is a lovely sanity check but it slows us down by about 2.25x
         # it's also slower on average when mv.check is False, which is most of the time.
         #
-        logging.debug("assert(mv.check == is_in_check(self.board, self.turn))")
-        assert mv.check == is_in_check(self.board, self.turn)
+        if self.assert_check:
+            logging.debug("assert(mv.check == is_in_check(self.board, self.turn))")
+            assert mv.check == is_in_check(self.board, self.turn)
 
         # this is also a lovely sanity check but it slows us down by [unmeasured, assumed to be lots]
         # currently worth it to generate new unit tests
         #
         # checkmate = is_in_mate and mv.check
         # stalemate = is_in_mate and not mv.check
-        logging.debug("assert(mv.mate == is_in_mate(self.board, self.turn))")
-        assert (mv.mate == is_in_mate(self.board, self.turn)) or not mv.check
+        if self.assert_mate:
+            logging.debug("assert(mv.mate == is_in_mate(self.board, self.turn))")
+            assert (mv.mate == is_in_mate(self.board, self.turn)) or not mv.check
 
         return capture
 
