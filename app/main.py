@@ -5,7 +5,6 @@ import sys
 import logging
 import chesspy.game
 import chesspy.players
-from chesspy.color import Color
 
 
 def play(player_class):

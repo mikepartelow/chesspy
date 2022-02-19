@@ -272,8 +272,6 @@ class Game:
                 if (abs(mv.dst_y - p[1]) == 2 and p[1] == origin) or abs(mv.dst_y - p[1]) == 1:
                     mv.src_y, mv.src_x = p[1:]
 
-
-
     def deduce_src(self, mv):
         """Given a partially constructed Move, deduce src coordinates.
 
