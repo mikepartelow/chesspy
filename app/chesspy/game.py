@@ -94,6 +94,9 @@ class Game:
             logging.debug("assert(mv.mate == is_in_mate(self.board, self.turn))")
             assert (mv.mate == is_in_mate(self.board, self.turn)) or not mv.check
 
+        assert self.board.square_at(*self.board.king_position(Color.WHITE)) == 'K'
+        assert self.board.square_at(*self.board.king_position(Color.BLACK)) == 'k'
+
         return capture
 
     def move_move(self, mv):

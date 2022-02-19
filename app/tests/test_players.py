@@ -1,5 +1,6 @@
 import unittest
 import itertools
+import traceback
 from chesspy import players
 from chesspy.game import Game
 from chesspy.color import Color
@@ -19,13 +20,16 @@ class TestRandy(unittest.TestCase):
                 if game.over or move > 200:
                     break
 
-                sanstr = player.suggest_move_san()
-
-                game.move_san(sanstr)
-
                 game_file.write(f"{str(game.board)}\n")
                 game_file.write(f"{repr(game.board)}\n")
+
+                sanstr = player.suggest_move_san()
+
                 game_file.write(f"{move}: {color}: {sanstr}\n")
                 game_file.write("\n")
 
-                # FIXME: game should assert the 2 kings are on the board after each move
+                try:
+                    game.move_san(sanstr)
+                except (IndexError, AssertionError) as exc:
+                    traceback.print_exception(exc, file=game_file)
+                    raise
