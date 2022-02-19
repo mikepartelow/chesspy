@@ -38,7 +38,7 @@ def out_of_bounds(coords):
 
 def make_san(move, verbose=False):
     """Create a SAN formatted string from the given Move object."""
-    piece = move.piece or ''
+    piece = move.piece if move.piece not in (None, 'P') else ''
     rank_src, file_src = y_to_char(move.src_y), x_to_char(move.src_x)
     rank_dst, file_dst = y_to_char(move.dst_y), x_to_char(move.dst_x)
     capture = 'x' if move.capture else ''
