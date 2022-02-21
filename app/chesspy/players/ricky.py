@@ -1,9 +1,9 @@
 """Ricky plays smart chess. He's self-smarted basically by himself."""
+# pylint:disable=wrong-import-order
 import random
 from ..san import make_san
 from ..color import color_of
 from .player import ChessPlayer
-from ..move_generators import moves_for
 from chesspy.analyzers import is_in_check, is_in_mate
 
 PIECE_VALUES = dict(P=1, N=3, B=3, R=5, Q=9, K=1)

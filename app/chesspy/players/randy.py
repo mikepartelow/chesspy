@@ -2,7 +2,6 @@
 import random
 from ..san import make_san
 from .player import ChessPlayer
-from ..color import Color, color_of
 
 
 class Randy(ChessPlayer):
