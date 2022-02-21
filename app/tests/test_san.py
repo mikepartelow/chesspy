@@ -1,7 +1,7 @@
 import unittest
-from chesspy import san, game, board
 from chesspy.color import Color
 from chesspy.castle import Castle
+from chesspy import san, game, board
 
 class TestMove(unittest.TestCase):
     def test_0(self):
@@ -62,6 +62,7 @@ class TestSanBasic(unittest.TestCase):
         self.assertEqual(mv.dst, (5, 4))
         self.assertEqual(mv.piece, 'R')
         self.assertTrue(mv.capture)
+        self.assertEqual('Rd3xe3', san.make_san(mv, verbose=True))
 
     def test_6(self):
         mv = san.parse('Rd3xe3+')
@@ -70,6 +71,7 @@ class TestSanBasic(unittest.TestCase):
         self.assertEqual(mv.piece, 'R')
         self.assertTrue(mv.capture)
         self.assertTrue(mv.check)
+        self.assertEqual('Rd3xe3+', san.make_san(mv, verbose=True))
 
     def test_7(self):
         mv = san.parse('Rd3xe3#')
@@ -79,6 +81,7 @@ class TestSanBasic(unittest.TestCase):
         self.assertTrue(mv.capture)
         self.assertTrue(mv.check)
         self.assertTrue(mv.mate)
+        self.assertEqual('Rd3xe3#', san.make_san(mv, verbose=True))
 
     def test_8(self):
         mv = san.parse('O-O')
@@ -154,6 +157,7 @@ class TestSanFancy(unittest.TestCase):
         self.assertEqual(mv.dst, (0, 4))
         self.assertEqual(mv.piece, 'R')
         self.assertTrue(mv.check)
+        self.assertEqual('Rf8e8+', san.make_san(mv, verbose=True))
 
 class TestSanAnnotations(unittest.TestCase):
     annotations = ( '!', '!!', '?', '??', '!?', '?!', )
@@ -174,12 +178,14 @@ class TestSanPawn(unittest.TestCase):
         self.assertEqual(mv.dst, (5, 4))
         self.assertEqual(mv.piece, 'P')
         self.assertFalse(mv.capture)
+        self.assertEqual('e2e3', san.make_san(mv, verbose=True))
 
         mv = san.parse('e4', game=self.game)
         self.assertEqual(mv.src, (6, 4))
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'P')
         self.assertFalse(mv.capture)
+        self.assertEqual('e2e4', san.make_san(mv, verbose=True))
 
     def test_1(self):
         self.game.turn = Color.BLACK
@@ -188,12 +194,14 @@ class TestSanPawn(unittest.TestCase):
         self.assertEqual(mv.dst, (3, 4))
         self.assertEqual(mv.piece, 'P')
         self.assertFalse(mv.capture)
+        self.assertEqual('e7e5', san.make_san(mv, verbose=True))
 
         mv = san.parse('e6', game=self.game)
         self.assertEqual(mv.src, (1, 4))
         self.assertEqual(mv.dst, (2, 4))
         self.assertEqual(mv.piece, 'P')
         self.assertFalse(mv.capture)
+        self.assertEqual('e7e6', san.make_san(mv, verbose=True))
 
     def test_2a(self):
         # test 'e5' with interposition
@@ -260,6 +268,7 @@ class TestSanPawn(unittest.TestCase):
         self.assertEqual(mv.dst, (5, 2))
         self.assertEqual(mv.piece, 'P')
         self.assertTrue(mv.capture)
+        self.assertEqual('d2xc3', san.make_san(mv, verbose=True))
 
         # don't capture self
         self.game.board.place_piece_at('P', 5, 2)
@@ -275,6 +284,7 @@ class TestSanPawn(unittest.TestCase):
         self.assertEqual(mv.dst, (2, 5))
         self.assertEqual(mv.piece, 'P')
         self.assertTrue(mv.capture)
+        self.assertEqual('e7xf6', san.make_san(mv, verbose=True))
 
         # don't capture self
         self.game.board.place_piece_at('p', 2, 5)
@@ -290,6 +300,7 @@ class TestSanPawn(unittest.TestCase):
         self.assertEqual(mv.dst, (2, 5))
         self.assertEqual(mv.piece, 'P')
         self.assertTrue(mv.capture)
+        self.assertEqual('g7xf6', san.make_san(mv, verbose=True))
 
         # don't capture self
         self.game.board.place_piece_at('p', 2, 5)
@@ -306,6 +317,7 @@ class TestSanPawn(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'P')
         self.assertFalse(mv.capture)
+        self.assertEqual('e5e4', san.make_san(mv, verbose=True))
 
         self.game.board.place_piece_at('p', 3, 4)
         self.game.board.place_piece_at('R', 4, 4)
@@ -325,6 +337,7 @@ class TestSanPawn(unittest.TestCase):
         self.assertEqual(mv.piece, 'P')
         self.assertTrue(mv.capture)
         self.assertTrue(mv.en_passant)
+        self.assertEqual('g5xf6', san.make_san(mv, verbose=True))
 
     def test_en_passant_honor_system_1(self):
         # FIXME: starting this way we aren't testing game memory - no way to know for sure that
@@ -339,6 +352,7 @@ class TestSanPawn(unittest.TestCase):
         self.assertEqual(mv.piece, 'P')
         self.assertTrue(mv.capture)
         self.assertTrue(mv.en_passant)
+        self.assertEqual('e4xf3', san.make_san(mv, verbose=True))
 
     @unittest.skip
     def test_en_passant_trust_no_one_0(self):
@@ -354,12 +368,14 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.dst, (5, 5))
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
+        self.assertEqual('Ng1f3', san.make_san(mv, verbose=True))
 
         mv = san.parse('Nh3', game=self.game)
         self.assertEqual(mv.src, (7, 6))
         self.assertEqual(mv.dst, (5, 7))
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
+        self.assertEqual('Ng1h3', san.make_san(mv, verbose=True))
 
         self.game.turn = Color.BLACK
         mv = san.parse('Nc6', game=self.game)
@@ -367,6 +383,7 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.dst, (2, 2))
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
+        self.assertEqual('Nb8c6', san.make_san(mv, verbose=True))
 
         self.game.turn = Color.BLACK
         mv = san.parse('Na6', game=self.game)
@@ -374,6 +391,7 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.dst, (2, 0))
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
+        self.assertEqual('Nb8a6', san.make_san(mv, verbose=True))
 
     def test_1(self):
         # knight moves that can only be disambiguated by src knight color
@@ -385,6 +403,7 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.dst, (2, 5))
         self.assertEqual(mv.piece, 'N')
         self.assertTrue(mv.capture)
+        self.assertEqual('Ng8xf6', san.make_san(mv, verbose=True))
 
     def test_2(self):
         # knight move disambiguated by SAN.
@@ -395,6 +414,7 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.dst, (6, 3))
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
+        self.assertEqual('Nb1d2', san.make_san(mv, verbose=True))
 
     def test_3(self):
         # knight move disambiguated by SAN where a src coordinate is 0
@@ -405,6 +425,7 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 1))
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
+        self.assertEqual('Na6b4', san.make_san(mv, verbose=True))
 
     def test_4(self):
         # knight move disambiguated by "would expose check"
@@ -416,6 +437,7 @@ class TestSanKnight(unittest.TestCase):
         self.assertEqual(mv.dst, (6, 4))
         self.assertEqual(mv.piece, 'N')
         self.assertFalse(mv.capture)
+        self.assertEqual('Ng1e2', san.make_san(mv, verbose=True))
 
         self.assertEqual(repr(self.game.board), board_repr)
 
@@ -435,6 +457,7 @@ class TestSanBishop(unittest.TestCase):
         self.assertEqual(mv.dst, (1, 6))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
+        self.assertEqual('Bf8g7', san.make_san(mv, verbose=True))
 
     def test_0b(self):
         self.game.turn = Color.BLACK
@@ -449,6 +472,7 @@ class TestSanBishop(unittest.TestCase):
         self.assertEqual(mv.dst, (5, 0))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
+        self.assertEqual('Bf8a3', san.make_san(mv, verbose=True))
 
     def test_0c(self):
         with self.assertRaises(IndexError):
@@ -461,6 +485,7 @@ class TestSanBishop(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 5))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
+        self.assertEqual('Bc1f4', san.make_san(mv, verbose=True))
 
     def test_0d(self):
         with self.assertRaises(IndexError):
@@ -473,6 +498,7 @@ class TestSanBishop(unittest.TestCase):
         self.assertEqual(mv.dst, (3, 1))
         self.assertEqual(mv.piece, 'B')
         self.assertFalse(mv.capture)
+        self.assertEqual('Bf1b5', san.make_san(mv, verbose=True))
 
     @unittest.skip
     def test_1(self):
@@ -539,6 +565,7 @@ class TestSanKing(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'K')
         self.assertFalse(mv.capture)
+        self.assertEqual('Kd4e4', san.make_san(mv, verbose=True))
 
     def test_0b(self):
         self.game.board.place_piece_at('K', 4, 5)
@@ -547,6 +574,7 @@ class TestSanKing(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'K')
         self.assertFalse(mv.capture)
+        self.assertEqual('Kf4e4', san.make_san(mv, verbose=True))
 
     def test_0c(self):
         self.game.board.place_piece_at('K', 3, 4)
@@ -555,6 +583,7 @@ class TestSanKing(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'K')
         self.assertFalse(mv.capture)
+        self.assertEqual('Ke5e4', san.make_san(mv, verbose=True))
 
     def test_0d(self):
         self.game.board.place_piece_at('K', 5, 4)
@@ -563,6 +592,7 @@ class TestSanKing(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'K')
         self.assertFalse(mv.capture)
+        self.assertEqual('Ke3e4', san.make_san(mv, verbose=True))
 
     def test_1a(self):
         self.game.board.place_piece_at('K', 3, 3)
@@ -571,6 +601,7 @@ class TestSanKing(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'K')
         self.assertFalse(mv.capture)
+        self.assertEqual('Kd5e4', san.make_san(mv, verbose=True))
 
     def test_1b(self):
         self.game.board.place_piece_at('K', 3, 5)
@@ -579,6 +610,7 @@ class TestSanKing(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'K')
         self.assertFalse(mv.capture)
+        self.assertEqual('Kf5e4', san.make_san(mv, verbose=True))
 
     def test_1c(self):
         self.game.board.place_piece_at('K', 5, 3)
@@ -587,6 +619,7 @@ class TestSanKing(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'K')
         self.assertFalse(mv.capture)
+        self.assertEqual('Kd3e4', san.make_san(mv, verbose=True))
 
     def test_1d(self):
         self.game.board.place_piece_at('K', 5, 5)
@@ -595,6 +628,7 @@ class TestSanKing(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'K')
         self.assertFalse(mv.capture)
+        self.assertEqual('Kf3e4', san.make_san(mv, verbose=True))
 
     @unittest.skip
     def test_2a(self):
@@ -612,6 +646,7 @@ class TestSanQueen(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
+        self.assertEqual('Qa4e4', san.make_san(mv, verbose=True))
 
     def test_0b(self):
         self.game.board.place_piece_at('Q', 4, 7)
@@ -620,6 +655,7 @@ class TestSanQueen(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
+        self.assertEqual('Qh4e4', san.make_san(mv, verbose=True))
 
     def test_0c(self):
         self.game.board.place_piece_at('Q', 2, 4)
@@ -628,6 +664,7 @@ class TestSanQueen(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
+        self.assertEqual('Qe6e4', san.make_san(mv, verbose=True))
 
     def test_0d(self):
         self.game.board.place_piece_at('Q', 5, 4)
@@ -636,6 +673,7 @@ class TestSanQueen(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
+        self.assertEqual('Qe3e4', san.make_san(mv, verbose=True))
 
     def test_1a(self):
         self.game.turn = Color.BLACK
@@ -649,6 +687,7 @@ class TestSanQueen(unittest.TestCase):
         self.assertEqual(mv.dst, (3, 6))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
+        self.assertEqual('Qd8g5', san.make_san(mv, verbose=True))
 
     def test_1b(self):
         self.game.turn = Color.BLACK
@@ -662,6 +701,7 @@ class TestSanQueen(unittest.TestCase):
         self.assertEqual(mv.dst, (3, 0))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
+        self.assertEqual('Qd8a5', san.make_san(mv, verbose=True))
 
     def test_1c(self):
         with self.assertRaises(IndexError):
@@ -674,6 +714,7 @@ class TestSanQueen(unittest.TestCase):
         self.assertEqual(mv.dst, (6, 4))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
+        self.assertEqual('Qd1e2', san.make_san(mv, verbose=True))
 
     def test_1d(self):
         with self.assertRaises(IndexError):
@@ -685,6 +726,7 @@ class TestSanQueen(unittest.TestCase):
         self.assertEqual(mv.dst, (5, 1))
         self.assertEqual(mv.piece, 'Q')
         self.assertFalse(mv.capture)
+        self.assertEqual('Qd1b3', san.make_san(mv, verbose=True))
 
     def test_2a(self):
         self.game.board = board.Board(" Q   QK        R              p      r       k P                ")
@@ -694,6 +736,7 @@ class TestSanQueen(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 5))
         self.assertEqual(mv.piece, 'Q')
         self.assertTrue(mv.capture)
+        self.assertEqual('Qb8xf4+', san.make_san(mv, verbose=True))
 
 class TestSanRook(unittest.TestCase):
     def setUp(self):
@@ -706,6 +749,7 @@ class TestSanRook(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'R')
         self.assertFalse(mv.capture)
+        self.assertEqual('Ra4e4', san.make_san(mv, verbose=True))
 
     def test_0b(self):
         self.game.board.place_piece_at('R', 4, 7)
@@ -714,6 +758,7 @@ class TestSanRook(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'R')
         self.assertFalse(mv.capture)
+        self.assertEqual('Rh4e4', san.make_san(mv, verbose=True))
 
     def test_0c(self):
         self.game.board.place_piece_at('R', 2, 4)
@@ -722,6 +767,7 @@ class TestSanRook(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'R')
         self.assertFalse(mv.capture)
+        self.assertEqual('Re6e4', san.make_san(mv, verbose=True))
 
     def test_0d(self):
         self.game.board.place_piece_at('R', 5, 4)
@@ -730,6 +776,7 @@ class TestSanRook(unittest.TestCase):
         self.assertEqual(mv.dst, (4, 4))
         self.assertEqual(mv.piece, 'R')
         self.assertFalse(mv.capture)
+        self.assertEqual('Re3e4', san.make_san(mv, verbose=True))
 
     def test_1a(self):
         # illegal move: interposition
@@ -824,3 +871,4 @@ class TestSanDeluxe1(unittest.TestCase):
     def test_0(self):
         # if 'x' in san then mv.capture is True
         self.assertTrue(False)
+

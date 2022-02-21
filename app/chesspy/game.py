@@ -1,7 +1,9 @@
 """Implements a Game class encapsulating a Board object and a move engine for the rules of standard chess."""
+# pylint:disable=wrong-import-order
 import logging
 from . import san
 from .board import Board
+from copy import deepcopy
 from .castle import Castle
 from .color import Color, colorize, color_of
 from .analyzers import is_in_check, is_in_mate, adjacent_kings
@@ -19,6 +21,19 @@ class Game:
         self.board = board or Board()
         self.turn = turn or Color.WHITE
         self.over = False
+
+        self.assert_check = True
+        self.assert_mate = True
+
+    def deepcopy(self):
+        """Returns a deep copy of the current game."""
+        board = deepcopy(self.board)
+        new_game = Game(board=board, turn=self.turn)
+        new_game.over = self.over
+        new_game.assert_check = self.assert_check
+        new_game.assert_mate = self.assert_mate
+
+        return new_game
 
     def move_castle(self, mv):
         """Given a mv for Castling, execute the move on self.board."""
@@ -78,16 +93,21 @@ class Game:
         # this is a lovely sanity check but it slows us down by about 2.25x
         # it's also slower on average when mv.check is False, which is most of the time.
         #
-        logging.debug("assert(mv.check == is_in_check(self.board, self.turn))")
-        assert mv.check == is_in_check(self.board, self.turn)
+        if self.assert_check:
+            logging.debug("assert(mv.check == is_in_check(self.board, self.turn))")
+            assert mv.check == is_in_check(self.board, self.turn)
 
         # this is also a lovely sanity check but it slows us down by [unmeasured, assumed to be lots]
         # currently worth it to generate new unit tests
         #
         # checkmate = is_in_mate and mv.check
         # stalemate = is_in_mate and not mv.check
-        logging.debug("assert(mv.mate == is_in_mate(self.board, self.turn))")
-        assert (mv.mate == is_in_mate(self.board, self.turn)) or not mv.check
+        if self.assert_mate:
+            logging.debug("assert(mv.mate == is_in_mate(self.board, self.turn))")
+            assert (mv.mate == is_in_mate(self.board, self.turn)) or not mv.check
+
+        assert self.board.square_at(*self.board.king_position(Color.WHITE)) == 'K'
+        assert self.board.square_at(*self.board.king_position(Color.BLACK)) == 'k'
 
         return capture
 
@@ -225,6 +245,10 @@ class Game:
             def ahead_of(y): return y - 1  # pylint: disable=multiple-statements
             def behind(y): return y + 1  # pylint: disable=multiple-statements
 
+        # pylint:disable=fixme
+        # FIXME: mv_tmp = copy.copy(mv). before return, if test_mv_from_src(mv_tmp) then mv = tmp_mv
+        #        TDD!
+
         if mv.capture:
             p_src = colorize('P', self.turn)
             p_dst = self.board.square_at(mv.dst_y, mv.dst_x)
@@ -269,8 +293,6 @@ class Game:
                 if (abs(mv.dst_y - p[1]) == 2 and p[1] == origin) or abs(mv.dst_y - p[1]) == 1:
                     mv.src_y, mv.src_x = p[1:]
 
-        return mv.src_y is not None and mv.src_x is not None
-
     def deduce_src(self, mv):
         """Given a partially constructed Move, deduce src coordinates.
 
@@ -280,6 +302,7 @@ class Game:
         """
         if (p := self.board.square_at(mv.dst_y, mv.dst_x)) and color_of(p) == self.turn:
             # can't land on our own piece
+            logging.debug("Can't land on our own piece: (%s, %s) : %s / %s", mv.dst_y, mv.dst_x, p, self.turn)
             raise IndexError
 
         match mv.piece:

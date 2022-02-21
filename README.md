@@ -29,15 +29,9 @@ There exist better chess engines than this, but I didn't have the pleasure of wr
 ### Split PGN test files
 
     pushd tests/games
-    cat long.pgn | ./split_pgn 50 long 10
+    cat long.pgn | ./split_pgn 1500 long
     popd
-    TEST_LONG=long python3 -m unittest tests
-
-### Virtual Env
-
-    python3.10 -m venv venv
-    venv/bin/python3.10 -m unittest tests
-    TEST_LONG=long venv/bin/python3.10 -m unittest tests.test_pgn.TestMagnusLichess.test_long
+    TEST_LONG=long python3.10 -m unittest tests
 
 > On Mac, running tests with Docker bind mounts [slows the tests](https://github.com/docker/for-mac/issues/3677) down by about 15x.
 > It's actually faster to rebuild the container and run the tests than to use bind mounts on a long-running container.

@@ -1,6 +1,5 @@
 import os
 import glob
-import logging
 import datetime
 import unittest
 import itertools
@@ -100,6 +99,10 @@ class TestMagnusLichess(unittest.TestCase):
                     try:
                         game.move_san(move.sanstr)
                     except (AssertionError, IndexError) as e:
+                        print("")
+                        print(game.board)
+                        print(f"|{repr(game.board)}|")
+                        print(move.sanstr)
                         with open(failure_file, "a") as failure_f:
                             failure_f.write('[Site "{}"]\n'.format(pgn_game.metadata.site))
 
@@ -115,8 +118,6 @@ class TestMagnusLichess(unittest.TestCase):
 
     def test_long(self):
         if (long_basename := os.environ.get('TEST_LONG', None)):
-            logging.disable(logging.CRITICAL)
-
             filenames = glob.glob(f"tests/games/{long_basename}.*.pgn")
             filenames = [ os.path.basename(n).split('.pgn')[0] for n in filenames ]
 
@@ -124,13 +125,13 @@ class TestMagnusLichess(unittest.TestCase):
             set_start_method('fork') # necessary for MacOS
             for filename in filenames:
                 p = Process(target=self.exec_test_pgn, args=(filename,),
-                                                       kwargs={'do_print': False, 'continue_on_fail': True})
+                                                       kwargs={'do_print': False, 'continue_on_fail': False})
                 p.start()
                 procs.append(p)
 
             [ p.join() for p in procs ]
 
-            logging.disable(logging.NOTSET)
+            self.assertEqual([0], list(set(p.exitcode for p in procs)))
 
     def test_n7ZjoKNR(self):
         self.exec_test_pgn('n7ZjoKNR')

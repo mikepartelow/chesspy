@@ -17,6 +17,23 @@ def board_reprs(path):
         for line in f.readlines():
             yield line.replace("\n", '') # can't strip because space at EOL is OK!
 
+class TestDeepcopy(unittest.TestCase):
+    def test_0(self):
+        g0 = game.Game()
+        g0.turn = Color.BLACK
+        g1 = g0.deepcopy()
+
+        for y in range(8):
+            for x in range(8):
+                g0.board.squares[8*y + x] = 0
+
+        for y in range(8):
+            for x in range(8):
+                self.assertNotEqual(0, g1.board.squares[8*y + x])
+
+        self.assertEqual(g0.over, g1.over)
+        self.assertEqual(g0.turn, g1.turn)
+
 class TestTurns(unittest.TestCase):
     def test_0(self):
         g = game.Game()
@@ -40,6 +57,11 @@ class TestMoveSan(unittest.TestCase):
         self.assertEqual('R', self.game.board.square_at(3, 6))
         self.assertEqual(None, self.game.board.square_at(2, 6))
         self.assertEqual('R', self.game.board.square_at(5, 6))
+
+    def illegal_move_0(self):
+        # it does not accept illegal moves
+        # raises or returns False or something
+        self.assertFalse(True)
 
 class TestGameOverMan(unittest.TestCase):
     def setUp(self):
