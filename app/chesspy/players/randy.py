@@ -2,9 +2,9 @@
 import random
 from ..move import Move
 from ..san import make_san
-from ..analyzers import is_in_check
 from ..color import Color, color_of
 from ..move_generators import moves_for
+from ..analyzers import is_in_check, adjacent_kings
 
 
 class ChessPlayer:
@@ -17,7 +17,8 @@ class ChessPlayer:
         test_game = self.game.clone()
         test_game.move_san(sanstr)
 
-        is_legal = not is_in_check(test_game.board, self.game.turn)
+        is_legal = not adjacent_kings(test_game.board) and \
+                   not is_in_check(test_game.board, self.game.turn)
 
         return is_legal
 
