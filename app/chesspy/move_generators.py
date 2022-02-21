@@ -49,8 +49,9 @@ def pawn_moves_for(y, x, board):
     # collision() returning 'capture' for ahead_of() pawn is never really a capture, since pawn
     # only captures diagonally, so we treat 'capture' and 'blocked' the same here
     #
-    if not collision(ahead_of(y), x, pawn, board):
-        yield (ahead_of(y), x)
+    dst_y = ahead_of(y)
+    if in_bounds(dst_y, x) and not collision(dst_y, x, pawn, board):
+        yield (dst_y, x)
 
         if y == starting_row:
             if not collision(ahead_of(y, 2), x, pawn, board):

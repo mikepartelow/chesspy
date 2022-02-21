@@ -21,7 +21,7 @@ class TestRandy(unittest.TestCase):
         randys = ((self.player_w, 'white'), (self.player_b, 'black'))
         with open("logs/randy_v_randy.log", "w") as game_file:
             for move, (player, color) in enumerate(itertools.cycle(randys)):
-                if self.game.over or move > 200:
+                if self.game.over or move > 300:
                     break
 
                 game_file.write(f"{str(self.game.board)}\n")
