@@ -2,6 +2,7 @@
 import logging
 from . import san
 from .board import Board
+from copy import deepcopy
 from .castle import Castle
 from .color import Color, colorize, color_of
 from .analyzers import is_in_check, is_in_mate, adjacent_kings
@@ -22,6 +23,15 @@ class Game:
 
         self.assert_check = True
         self.assert_mate = True
+
+    def clone(self):
+        board = deepcopy(self.board)
+        new_game = Game(board=board, turn=self.turn)
+        new_game.over = self.over
+        new_game.assert_check = self.assert_check
+        new_game.assert_mate = self.assert_mate
+
+        return new_game
 
     def move_castle(self, mv):
         """Given a mv for Castling, execute the move on self.board."""

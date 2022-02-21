@@ -1,6 +1,5 @@
 import os
 import glob
-import logging
 import datetime
 import unittest
 import itertools
@@ -119,8 +118,6 @@ class TestMagnusLichess(unittest.TestCase):
 
     def test_long(self):
         if (long_basename := os.environ.get('TEST_LONG', None)):
-            logging.disable(logging.CRITICAL)
-
             filenames = glob.glob(f"tests/games/{long_basename}.*.pgn")
             filenames = [ os.path.basename(n).split('.pgn')[0] for n in filenames ]
 
@@ -133,8 +130,6 @@ class TestMagnusLichess(unittest.TestCase):
                 procs.append(p)
 
             [ p.join() for p in procs ]
-
-            logging.disable(logging.NOTSET)
 
             self.assertEqual([0], list(set(p.exitcode for p in procs)))
 

@@ -9,7 +9,7 @@ logging.basicConfig(filename=TEST_LOG_PATH,
     encoding='utf-8',
     format='[%(levelname).1s]::[%(filename)s:%(lineno)d]::[%(message)s]',
     datefmt='%Y-%m-%d:%H:%M:%S',
-    level=logging.DEBUG)
+    level=logging.CRITICAL)
 
 from .test_san import *
 from .test_pgn import *
