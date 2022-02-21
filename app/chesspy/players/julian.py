@@ -93,6 +93,7 @@ class Julian(ChessPlayer):
         #        -> but maybe smarter behavior belongs in Bubbles
         # FIXME: rename self.check_move, "check" is overloaded.
         # FIXME: consider map/reduce style
+        # FIXME: unit/sanity checks. is this actually doing what we expect?
 
         for move in moves[:MOVES_TO_CONSIDER]:
             # FIXME: this isn't how it works!
