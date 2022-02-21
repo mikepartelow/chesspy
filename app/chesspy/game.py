@@ -1,4 +1,5 @@
 """Implements a Game class encapsulating a Board object and a move engine for the rules of standard chess."""
+# pylint:disable=wrong-import-order
 import logging
 from . import san
 from .board import Board
@@ -24,7 +25,8 @@ class Game:
         self.assert_check = True
         self.assert_mate = True
 
-    def clone(self):
+    def deepcopy(self):
+        """Returns a deep copy of the current game."""
         board = deepcopy(self.board)
         new_game = Game(board=board, turn=self.turn)
         new_game.over = self.over
@@ -243,6 +245,7 @@ class Game:
             def ahead_of(y): return y - 1  # pylint: disable=multiple-statements
             def behind(y): return y + 1  # pylint: disable=multiple-statements
 
+        # pylint:disable=fixme
         # FIXME: mv_tmp = copy.copy(mv). before return, if test_mv_from_src(mv_tmp) then mv = tmp_mv
         #        TDD!
 

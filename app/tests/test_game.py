@@ -17,11 +17,11 @@ def board_reprs(path):
         for line in f.readlines():
             yield line.replace("\n", '') # can't strip because space at EOL is OK!
 
-class TestClone(unittest.TestCase):
+class TestDeepcopy(unittest.TestCase):
     def test_0(self):
         g0 = game.Game()
         g0.turn = Color.BLACK
-        g1 = g0.clone()
+        g1 = g0.deepcopy()
 
         for y in range(8):
             for x in range(8):

@@ -7,6 +7,7 @@ from ..move_generators import moves_for
 from ..analyzers import is_in_check, adjacent_kings
 
 
+# pylint:disable=too-few-public-methods
 class ChessPlayer:
     """Abstract Chess Player who checks their moves."""
     def __init__(self, game, color=Color.BLACK):
@@ -14,11 +15,11 @@ class ChessPlayer:
 
     def check_move(self, sanstr):
         """Returns True if the move is legal."""
-        test_game = self.game.clone()
+        test_game = self.game.deepcopy()
         test_game.move_san(sanstr)
 
         is_legal = not adjacent_kings(test_game.board) and \
-                   not is_in_check(test_game.board, self.game.turn)
+            not is_in_check(test_game.board, self.game.turn)
 
         return is_legal
 
@@ -44,7 +45,7 @@ class Randy(ChessPlayer):
                         mv.capture = (self.game.board.square_at(mv.dst_y, mv.dst_x) is not None)
                         moves.append(mv)
 
-        random.shuffle(moves) # that's so Randy
+        random.shuffle(moves)  # that's so Randy
 
         for move in moves:
             sanstr = make_san(move, verbose=True)

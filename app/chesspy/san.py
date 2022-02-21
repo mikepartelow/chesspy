@@ -36,7 +36,7 @@ def out_of_bounds(coords):
     return coords[0] < 0 or coords[0] > 7 or coords[1] < 0 or coords[1] > 7
 
 
-def make_san(move, verbose=False):
+def make_san(move, verbose=False):  # pylint:disable=unused-argument
     """Create a SAN formatted string from the given Move object."""
     piece = move.piece if move.piece not in (None, 'P') else ''
     rank_src, file_src = y_to_char(move.src_y), x_to_char(move.src_x)

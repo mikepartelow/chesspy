@@ -14,7 +14,7 @@ def play(player_class):
 
     move_num = 1
 
-    with open("randy.pgn", "w") as game_file:
+    with open("randy.pgn", "w", encoding="utf-8") as game_file:
         while not game.over:
             print(game.board)
 
@@ -33,6 +33,7 @@ def play(player_class):
             game_file.write(f"{move_num}. {sanstr}")
 
             if not game.over:
+                # pylint:disable=fixme
                 # FIXME: deduce_src_pawn and deduce_src_king do not check for check!
                 # FIXME: unit tests for deduce_src moves that expose check
                 sanstr = player.suggest_move_san()
