@@ -33,6 +33,7 @@ class PlayerTest:
 
                         game_file.write(f"{move}: {color}: {sanstr}\n")
                         game_file.write("\n")
+                        game_file.flush()
 
                         if sanstr is None:
                             self.assertTrue(is_in_mate(self.game.board, self.game.turn))
