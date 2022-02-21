@@ -105,16 +105,12 @@ class TestRicky(PlayerTest.TestPlayer):
         self.player_b = players.Ricky(self.game, color=Color.BLACK)
 
 
-@unittest.skip
-class TestRickyVsRandy(PlayerTest.TestPlayer):
+class TestJulian(PlayerTest.TestPlayer):
     def setUp(self):
         super().setUp()
-        self.player_w = players.Ricky(self.game, color=Color.WHITE)
-        self.player_b = players.Randy(self.game, color=Color.BLACK)
+        self.player_w = players.Julian(self.game, color=Color.WHITE)
+        self.player_b = players.Julian(self.game, color=Color.BLACK)
 
-    def test_ricky_usually_wins(self):
-        # Ricky is supposed to be smarter than Randy, so Ricky should win more often
-        self.assertFalse(True)
 
 @unittest.skip
 class TestRandyVsRicky(PlayerTest.TestPlayer):
@@ -125,4 +121,26 @@ class TestRandyVsRicky(PlayerTest.TestPlayer):
 
     def test_ricky_usually_wins(self):
         # Ricky is supposed to be smarter than Randy, so Ricky should win more often
+        self.assertFalse(True)
+
+@unittest.skip
+class TestRandyVsJulian(PlayerTest.TestPlayer):
+    def setUp(self):
+        super().setUp()
+        self.player_w = players.Randy(self.game, color=Color.WHITE)
+        self.player_b = players.Julian(self.game, color=Color.BLACK)
+
+    def test_julian_usually_wins(self):
+        # Julian is supposed to be smarter than Randy, so Julian should win more often
+        self.assertFalse(True)
+
+@unittest.skip
+class TestRickyVsJulian(PlayerTest.TestPlayer):
+    def setUp(self):
+        super().setUp()
+        self.player_w = players.Ricky(self.game, color=Color.WHITE)
+        self.player_b = players.Julian(self.game, color=Color.BLACK)
+
+    def test_julian_usually_wins(self):
+        # Julian is supposed to be smarter than Ricky, so Julian should win more often
         self.assertFalse(True)
