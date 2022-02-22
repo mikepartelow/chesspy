@@ -30,7 +30,7 @@ def collision(y, x, piece, board):
     """Returns True if (y, x) on board contains a piece of the same color as piece."""
 
     if (p := board.square_at(y, x)):
-        return 'blocked' if color_of(p) == color_of(piece) else 'capture'
+        return 'blocked' if (color_of(p) == color_of(piece) or p in ('k', 'K')) else 'capture'
     return False
 
 
