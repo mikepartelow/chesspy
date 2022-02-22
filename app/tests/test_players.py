@@ -6,6 +6,7 @@ from chesspy import players
 from chesspy.game import Game
 from chesspy.board import Board
 from chesspy.color import Color
+from multiprocessing import Pool
 from chesspy.analyzers import is_in_check, is_in_mate, adjacent_kings
 
 
@@ -17,33 +18,37 @@ class PlayerTest:
             self.game.assert_mate = False
 
         def test_pvp(self):
-            rvr_runs = int(os.environ.get('PVP_RUNS', 10))
-            for _ in range(rvr_runs):
-                self.setUp()
-                randys = ((self.player_w, 'white'), (self.player_b, 'black'))
-                with open(f"logs/{str(self.player_w)}_v_{str(self.player_b)}.log", "w") as game_file:
-                    for move, (player, color) in enumerate(itertools.cycle(randys)):
-                        if self.game.over or move > 300:
-                            break
+            pool = Pool()
+            try:
+                rvr_runs = int(os.environ.get('PVP_RUNS', 10))
+                for _ in range(rvr_runs):
+                    self.setUp()
+                    randys = ((self.player_w, 'white'), (self.player_b, 'black'))
+                    with open(f"logs/{str(self.player_w)}_v_{str(self.player_b)}.log", "w") as game_file:
+                        for move, (player, color) in enumerate(itertools.cycle(randys)):
+                            if self.game.over or move > 300:
+                                break
 
-                        game_file.write(f"{str(self.game.board)}\n")
-                        game_file.write(f"|{repr(self.game.board)}|\n")
+                            game_file.write(f"{str(self.game.board)}\n")
+                            game_file.write(f"|{repr(self.game.board)}|\n")
 
-                        sanstr = player.suggest_move_san()
+                            sanstr = player.suggest_move_san(pool)
 
-                        game_file.write(f"{move}: {color}: {sanstr}\n")
-                        game_file.write("\n")
-                        game_file.flush()
+                            game_file.write(f"{move}: {color}: {sanstr}\n")
+                            game_file.write("\n")
+                            game_file.flush()
 
-                        if sanstr is None:
-                            self.assertTrue(is_in_mate(self.game.board, self.game.turn))
-                            break
+                            if sanstr is None:
+                                self.assertTrue(is_in_mate(self.game.board, self.game.turn))
+                                break
 
-                        try:
-                            self.game.move_san(sanstr)
-                        except (IndexError, AssertionError) as exc:
-                            traceback.print_exception(exc, file=game_file)
-                            raise
+                            try:
+                                self.game.move_san(sanstr)
+                            except (IndexError, AssertionError) as exc:
+                                traceback.print_exception(exc, file=game_file)
+                                raise
+            finally:
+                pool.close()
 
         def test_exits_check(self):
             # Player gets out of check
