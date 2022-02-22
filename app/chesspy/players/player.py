@@ -11,7 +11,7 @@ class ChessPlayer:
     def __init__(self, game, color=Color.BLACK):
         self.game, self.color = game, color
 
-    def check_move(self, sanstr):
+    def test_move_san(self, sanstr):
         """Returns False if the move is not legal.
 
         If move is legal, returns a new Game where the given move was executed."""

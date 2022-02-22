@@ -13,6 +13,7 @@ PIECE_VALUES = dict(P=1, N=3, B=3, R=5, Q=9, K=1)
 class Julian(ChessPlayer):
     """Julian thinks deeply about his moves."""
     def __init__(self, game, color=Color.BLACK, pool=None, search_depth=2, moves_to_consider=6):
+        super().__init__(game, color)
         self.game, self.color = game, color
         self.pool = pool
 
@@ -29,6 +30,7 @@ class Julian(ChessPlayer):
         return self_dict
 
     def score_board(self, board):
+        """Returns a score representing relative strength of board position."""
         score = 0
 
         for y in range(8):
@@ -51,9 +53,10 @@ class Julian(ChessPlayer):
         return score
 
     def consider_move_san(self, packet):
+        """Considers the move given as (sanstr, depth) in packet. Returns a score if move is legal, or None."""
         sanstr, depth = packet
         score = None
-        if test_game := self.check_move(sanstr):
+        if test_game := self.test_move_san(sanstr):
             if depth > 0:
                 assert test_game.turn != self.game.turn
                 opponent_player = self.__class__(test_game, color=test_game.turn)
@@ -74,17 +77,19 @@ class Julian(ChessPlayer):
         return score
 
     def suggest_move_san(self, depth=None):
-        """Returns Julian's "best idea" for a move, or None if there are no legal moves."""
+        """Returns Julian's "best idea" for a move, or None if there are no legal moves.
+
+        Uses self.pool to parallelize if self.pool is not None."""
         if depth is None:
             depth = self.search_depth
         assert depth >= 0
 
+        # pylint:disable=fixme
         # FIXME: stop making so many temp_games
         # FIXME: combine analyzers (e.g. analyze for mate and check at once, don't scan board twice)
         # FIXME: don't do anything twice, like generators and analyzers
         # FIXME: repr(board) -> score DB to bypass computation
         #        more likely: (repr(board), sanstr) -> (score, is_check, is_mate). might want to use shared memory for that
-        # FIXME: rename self.check_move, "check" is overloaded.
 
         best_move_score, best_move_sanstr = float("-inf"), None
 

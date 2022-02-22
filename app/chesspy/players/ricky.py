@@ -20,7 +20,7 @@ class Ricky(ChessPlayer):
         """Evaluates a move. Returns None if the move is not legal, or a score for relative move value."""
         score = None
 
-        if (test_game := self.check_move(sanstr)):
+        if (test_game := self.test_move_san(sanstr)):
             score = 0
 
             # easy/dumb way to discourage repeating the same move.

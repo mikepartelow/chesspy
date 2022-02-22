@@ -17,7 +17,7 @@ class Randy(ChessPlayer):
 
         for move in moves:
             sanstr = make_san(move, verbose=True)
-            if self.check_move(sanstr):
+            if self.test_move_san(sanstr):
                 return sanstr
 
         return None
