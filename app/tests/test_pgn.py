@@ -5,7 +5,7 @@ import unittest
 import itertools
 import chesspy.game
 from chesspy import pgn
-from multiprocessing import Process, set_start_method
+from multiprocessing import Process
 
 def board_reprs(path):
     with open(path, 'r') as f:
@@ -122,7 +122,6 @@ class TestMagnusLichess(unittest.TestCase):
             filenames = [ os.path.basename(n).split('.pgn')[0] for n in filenames ]
 
             procs = []
-            set_start_method('fork') # necessary for MacOS
             for filename in filenames:
                 p = Process(target=self.exec_test_pgn, args=(filename,),
                                                        kwargs={'do_print': False, 'continue_on_fail': False})

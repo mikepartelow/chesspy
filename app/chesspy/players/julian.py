@@ -12,13 +12,21 @@ PIECE_VALUES = dict(P=1, N=3, B=3, R=5, Q=9, K=1)
 
 class Julian(ChessPlayer):
     """Julian thinks deeply about his moves."""
-    def __init__(self, game, color=Color.BLACK, search_depth=2, moves_to_consider=6):
+    def __init__(self, game, color=Color.BLACK, pool=None, search_depth=2, moves_to_consider=6):
         self.game, self.color = game, color
+        self.pool = pool
+
         self.search_depth = search_depth
         self.moves_to_consider = moves_to_consider
 
     def __str__(self):
         return "Julian"
+
+    def __getstate__(self):
+        """Remove self.pool before Pickling so we can use Pool.map."""
+        self_dict = self.__dict__.copy()
+        del self_dict['pool']
+        return self_dict
 
     def score_board(self, board):
         score = 0
@@ -49,7 +57,6 @@ class Julian(ChessPlayer):
             if depth > 0:
                 assert test_game.turn != self.game.turn
                 opponent_player = self.__class__(test_game, color=test_game.turn)
-                # FIXME: decrementing depth here is incorrect but currently necessary to not explode the stack
                 opponent_move_san = opponent_player.suggest_move_san(depth=depth-1)
 
                 if opponent_move_san:
@@ -66,7 +73,7 @@ class Julian(ChessPlayer):
 
         return score
 
-    def suggest_move_san(self, pool=None, depth=None):
+    def suggest_move_san(self, depth=None):
         """Returns Julian's "best idea" for a move, or None if there are no legal moves."""
         if depth is None:
             depth = self.search_depth
@@ -94,8 +101,8 @@ class Julian(ChessPlayer):
         sanstrs = [make_san(move, verbose=True) for move in moves]
         packets = [(sanstr, depth) for sanstr in sanstrs]
 
-        if pool:
-            scores = pool.map(self.consider_move_san, packets)
+        if self.pool:
+            scores = self.pool.map(self.consider_move_san, packets)
         else:
             scores = map(self.consider_move_san, packets)
 
