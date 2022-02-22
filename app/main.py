@@ -10,11 +10,14 @@ import chesspy.players
 def play(player_class):
     """Play an interactive game of chess against the supplied player_class."""
     game = chesspy.game.Game()
+    game.assert_check = False
+    game.assert_mate = False
+
     player = player_class(game)
 
     move_num = 1
 
-    with open("randy.pgn", "w", encoding="utf-8") as game_file:
+    with open(f"{str(player)}.pgn", "w", encoding="utf-8") as game_file:
         while not game.over:
             print(game.board)
 
@@ -37,11 +40,12 @@ def play(player_class):
                 # FIXME: deduce_src_pawn and deduce_src_king do not check for check!
                 # FIXME: unit tests for deduce_src moves that expose check
                 sanstr = player.suggest_move_san()
-                game.move_san(sanstr)
-
-                print(f"{move_num}... {sanstr}")
-
-                game_file.write(f" {sanstr}\n")
+                if sanstr is None:
+                    game.over = True  # FIXME: this should be auto-detected
+                else:
+                    game.move_san(sanstr)
+                    print(f"{move_num}... {sanstr}")
+                    game_file.write(f" {sanstr}\n")
 
             move_num += 1
 
@@ -83,6 +87,12 @@ if __name__ == "__main__":
             sys.exit(0)
         elif sys.argv[1] == "randy":
             play(chesspy.players.Randy)
+            sys.exit(0)
+        elif sys.argv[1] == "ricky":
+            play(chesspy.players.Ricky)
+            sys.exit(0)
+        elif sys.argv[1] == "julian":
+            play(chesspy.players.Julian)
             sys.exit(0)
 
     play_immortal()

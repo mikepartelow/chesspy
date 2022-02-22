@@ -8,5 +8,6 @@ ignore.*
 long.*.pgn
 long.pgn
 failures.*
-randy.pgn
+Randy.pgn
+Julian.pgn
 randy_v_randy.txt
