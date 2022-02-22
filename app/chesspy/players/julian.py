@@ -84,13 +84,7 @@ class Julian(ChessPlayer):
         # FIXME: don't do anything twice, like generators and analyzers
         # FIXME: repr(board) -> score DB to bypass computation
         #        more likely: (repr(board), sanstr) -> (score, is_check, is_mate). might want to use shared memory for that
-        # FIXME: openings DB (scores are not based on simple sum of piece values) -> Bubbles
-        # FIXME: smarter pruning than random MOVES_TO_CONSIDER. maybe always consider moving Q
-        #        -> but maybe smarter behavior belongs in Bubbles
         # FIXME: rename self.check_move, "check" is overloaded.
-        # FIXME: unit/sanity checks. is this actually doing what we expect?
-        # FIXME: search harder as number of pieces decreases!
-        # FIXME: iterative, not recursive (Bubbles?)
 
         best_move_score, best_move_sanstr = float("-inf"), None
 
